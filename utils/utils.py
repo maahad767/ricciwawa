@@ -5,6 +5,14 @@ import base64
 
 
 def text_to_speech(text, language_code="en-US", ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL):
+    """
+    Takes a text and converts to speech using google cloud text to speech service.
+
+    :param text: Text to convert to
+    :param language_code: The language of your text in code, for example, "en-US"
+    :param ssml_gender: gender of the output speech. default is NEUTRAL.
+    :return: audio/speech of the provided text in wave(.wav) format.
+    """
     client = texttospeech.TextToSpeechClient()
     synthesis_input = texttospeech.SynthesisInput(text=text)
     voice = texttospeech.VoiceSelectionParams({
@@ -24,6 +32,13 @@ def text_to_speech(text, language_code="en-US", ssml_gender=texttospeech.SsmlVoi
 
 
 def speech_to_text(audio_file, language):
+    f"""
+    Converts a speech to text using google cloud speech to text api.
+    
+    :param audio_file: the speech's audio file in .wav format
+    :param language: the language of the speech
+    :return: transcript of the speech as a dictionary
+    """
     client = speech.SpeechClient()
     binary_audio = audio_file.read()
     audio = speech.RecognitionAudio(content=binary_audio)
@@ -42,6 +57,14 @@ def speech_to_text(audio_file, language):
 
 
 def pronunciation_assessment(audio_file, reference_text, language='en-us'):
+    """
+    Pronunciation assessment using azure pronunciation assessment api.
+
+    :param audio_file: audio of the speech in .wav format with 16k bit rate.
+    :param reference_text: the transcript of the speech
+    :param language: language of the speech.
+    :return: returns a dictionary containing information about recognition status and scores like accuracy, fluency, etc
+    """
     subscription_key = "aea95857cbf14d41b132fefe96a3052e"  # transfer this to settings.py
     region = "eastasia"  # transfer this to settings.py
     wave_header16_k16_bit_mono = bytes(
@@ -76,4 +99,3 @@ def pronunciation_assessment(audio_file, reference_text, language='en-us'):
     response = requests.post(url=url, data=get_chunk(audio_file), headers=headers)
 
     return response.text
-
