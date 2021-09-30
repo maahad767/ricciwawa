@@ -1,0 +1,79 @@
+from google.cloud import texttospeech, speech
+import requests
+import time
+import base64
+
+
+def text_to_speech(text, language_code="en-US", ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL):
+    client = texttospeech.TextToSpeechClient()
+    synthesis_input = texttospeech.SynthesisInput(text=text)
+    voice = texttospeech.VoiceSelectionParams({
+        'language_code': language_code,
+        'ssml_gender': ssml_gender
+    })
+    audio_config = texttospeech.AudioConfig({
+        'audio_encoding': texttospeech.AudioEncoding.MP3
+    })
+    response = client.synthesize_speech(
+        input=synthesis_input, voice=voice, audio_config=audio_config
+    )
+
+    with open("output.mp3", "wb") as output_file:
+        output_file.write(response.audio_content)
+        return output_file
+
+
+def speech_to_text(audio_file, language):
+    client = speech.SpeechClient()
+    binary_audio = audio_file.read()
+    audio = speech.RecognitionAudio(content=binary_audio)
+    config = speech.RecognitionConfig({
+        'encoding': speech.RecognitionConfig.AudioEncoding.LINEAR16,
+        'sample_rate_hertz': 16000,
+        'language_code': language,
+    })
+    response = client.recognize(config=config, audio=audio)
+    transcript = str()
+    for result in response.results:
+        transcript += result.alternatives[0].transcript
+        print("Transcript: {}".format(result.alternatives[0].transcript))
+
+    return {'transcript': transcript}
+
+
+def pronunciation_assessment(audio_file, reference_text, language='en-us'):
+    subscription_key = "aea95857cbf14d41b132fefe96a3052e"  # transfer this to settings.py
+    region = "eastasia"  # transfer this to settings.py
+    wave_header16_k16_bit_mono = bytes(
+        [82, 73, 70, 70, 78, 128, 0, 0, 87, 65, 86, 69, 102, 109, 116, 32, 18, 0, 0, 0, 1, 0, 1, 0, 128, 62, 0, 0, 0,
+         125, 0, 0, 2, 0, 16, 0, 0, 0, 100, 97, 116, 97, 0, 0, 0, 0])
+
+    def get_chunk(audio_source, chunk_size=1024):
+        yield wave_header16_k16_bit_mono
+        while True:
+            time.sleep(chunk_size / 32000)
+            chunk = audio_source.read(chunk_size)
+            if not chunk:
+                break
+            yield chunk
+
+    # check next 3 lines, if they're redundant, remove these.
+    pron_assessment_params_json = "{\"ReferenceText\":\"%s\",\"GradingSystem\":\"HundredMark\"," \
+                                  "\"Dimension\":\"Comprehensive\"}" % reference_text
+    pron_assessment_params_base64 = base64.b64encode(bytes(pron_assessment_params_json, 'utf-8'))
+    pron_assessment_params = str(pron_assessment_params_base64, "utf-8")
+
+    url = f"https://{region}.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1?language" \
+          f"={language}"
+    headers = {'Accept': 'application/json;text/xml',
+               'Connection': 'Keep-Alive',
+               'Content-Type': 'audio/wav; codecs=audio/pcm; samplerate=16000',
+               'Ocp-Apim-Subscription-Key': subscription_key,
+               'Pronunciation-Assessment': pron_assessment_params,
+               'Transfer-Encoding': 'chunked',
+               'Expect': '100-continue'}
+
+    response = requests.post(url=url, data=get_chunk(audio_file), headers=headers)
+
+    return response.text
+
