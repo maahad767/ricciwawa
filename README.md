@@ -9,3 +9,5 @@
 * To change ip and port you can add them as args with the runserver command for example, `python manage.py runserver 0.0.0.0:5050`
 * To create superuser, run `python manage.py createsuperuser` (optional)
 * To access admin interface, go to 127.0.0.1:8000/admin (ip:port/admin) in the browser
+
+## Documentation

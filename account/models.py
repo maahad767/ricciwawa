@@ -31,7 +31,7 @@ class ReportUser(models.Model):
 
 class IgnoreBlockUser(models.Model):
     """
-    Model of blocking/ignoring a user
+    Model of blocking/ignoring a user, the information will be used to filter out posts from blocked/ignored users.
     """
     TYPES = (
         (0, 'ignored'),
