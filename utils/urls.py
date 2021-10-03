@@ -2,7 +2,7 @@ from django.urls import path
 
 from . import views
 
-app_name = 'util'
+app_name = 'utils'
 
 urlpatterns = [
     path('text-to-speech/', views.TextToSpeechView.as_view(), name='text_to_speech'),

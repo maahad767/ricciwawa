@@ -44,7 +44,7 @@ INSTALLED_APPS = [
 
     # reusable local apps
     'firebase_auth',
-    'util',
+    'utils',
 
     # 3rd party apps
     'rest_framework',
