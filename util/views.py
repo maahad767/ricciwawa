@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .serializers import TextToSpeechSerializer, SpeechToTextSerializer, PronunciationAssessmentSerializer
-from . import utils
+from . import util
 
 """
 The file contains View Classes for utility APIs such as Text To Speech, Speech To Text, etc. 
@@ -27,7 +27,7 @@ class TextToSpeechView(generics.GenericAPIView):
         serializer = self.serializer_class(request)
         if serializer.is_valid():
             data = serializer.data
-            speech_file = utils.text_to_speech(data['text'])
+            speech_file = util.text_to_speech(data['text'])
             return Response({'speech_file': speech_file})
         return Response(serializer.errors)
 
@@ -40,7 +40,7 @@ class SpeechToTextView(generics.GenericAPIView):
         serializer = self.serializer_class(request)
         if serializer.is_valid():
             data = serializer.data
-            transcript = utils.speech_to_text(speech_file=data['speech_file'], language_code=data['language_code'])
+            transcript = util.speech_to_text(speech_file=data['speech_file'], language_code=data['language_code'])
             return Response(transcript)
         return Response(serializer.errors)
 
@@ -53,8 +53,8 @@ class PronunciationAssessmentView(generics.GenericAPIView):
         serializer = self.serializer_class(request)
         if serializer.is_valid():
             data = serializer.data
-            assessment_report = utils.pronunciation_assessment(speech_file=data['speech_file'],
-                                                               reference_text=data['reference_text'],
-                                                               language_code=data['language_code'])
+            assessment_report = util.pronunciation_assessment(speech_file=data['speech_file'],
+                                                              reference_text=data['reference_text'],
+                                                              language_code=data['language_code'])
             return Response(assessment_report)
         return Response(serializer.errors)
