@@ -1,3 +1,5 @@
+from abc import ABC
+
 from rest_framework import serializers
 
 """
@@ -8,12 +10,16 @@ then it can also be used to create and update actions as well. The feature comes
 
 
 class TextToSpeechSerializer(serializers.Serializer):
-    pass
+    text = serializers.CharField(required=True)
+    language_code = serializers.CharField(required=False)
 
 
 class SpeechToTextSerializer(serializers.Serializer):
-    pass
+    speech_file = serializers.FileField(allow_empty_file=False, required=True)
+    language_code = serializers.CharField(required=False)
 
 
 class PronunciationAssessmentSerializer(serializers.Serializer):
-    pass
+    reference_text = serializers.CharField(required=True)
+    speech_file = serializers.FileField(allow_empty_file=False, required=True)
+    language_code = serializers.CharField(required=False)

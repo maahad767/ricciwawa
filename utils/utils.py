@@ -31,21 +31,21 @@ def text_to_speech(text, language_code="en-US", ssml_gender=texttospeech.SsmlVoi
         return output_file
 
 
-def speech_to_text(audio_file, language):
-    f"""
+def speech_to_text(speech_file, language_code):
+    """
     Converts a speech to text using google cloud speech to text api.
     
-    :param audio_file: the speech's audio file in .wav format
-    :param language: the language of the speech
+    :param speech_file: the speech's audio file in .wav format
+    :param language_code: the language of the speech
     :return: transcript of the speech as a dictionary
     """
     client = speech.SpeechClient()
-    binary_audio = audio_file.read()
+    binary_audio = speech_file.read()
     audio = speech.RecognitionAudio(content=binary_audio)
     config = speech.RecognitionConfig({
         'encoding': speech.RecognitionConfig.AudioEncoding.LINEAR16,
         'sample_rate_hertz': 16000,
-        'language_code': language,
+        'language_code': language_code,
     })
     response = client.recognize(config=config, audio=audio)
     transcript = str()
@@ -56,13 +56,13 @@ def speech_to_text(audio_file, language):
     return {'transcript': transcript}
 
 
-def pronunciation_assessment(audio_file, reference_text, language='en-us'):
+def pronunciation_assessment(speech_file, reference_text, language_code='en-us'):
     """
     Pronunciation assessment using azure pronunciation assessment api.
 
-    :param audio_file: audio of the speech in .wav format with 16k bit rate.
+    :param speech_file: audio of the speech in .wav format with 16k bit rate.
     :param reference_text: the transcript of the speech
-    :param language: language of the speech.
+    :param language_code: language of the speech.
     :return: returns a dictionary containing information about recognition status and scores like accuracy, fluency, etc
     """
     subscription_key = "aea95857cbf14d41b132fefe96a3052e"  # transfer this to settings.py
@@ -87,7 +87,7 @@ def pronunciation_assessment(audio_file, reference_text, language='en-us'):
     pron_assessment_params = str(pron_assessment_params_base64, "utf-8")
 
     url = f"https://{region}.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1?language" \
-          f"={language}"
+          f"={language_code}"
     headers = {'Accept': 'application/json;text/xml',
                'Connection': 'Keep-Alive',
                'Content-Type': 'audio/wav; codecs=audio/pcm; samplerate=16000',
@@ -96,6 +96,6 @@ def pronunciation_assessment(audio_file, reference_text, language='en-us'):
                'Transfer-Encoding': 'chunked',
                'Expect': '100-continue'}
 
-    response = requests.post(url=url, data=get_chunk(audio_file), headers=headers)
+    response = requests.post(url=url, data=get_chunk(speech_file), headers=headers)
 
     return response.text
