@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class User(AbstractUser):
@@ -18,10 +19,12 @@ class ReportUser(models.Model):
         (0, 'pending'),
         (1, 'reviewed'),
     )
-    reported_user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='reported user', on_delete=models.CASCADE)
-    reported_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='reported by', on_delete=models.CASCADE)
-    reasoning = models.TextField(verbose_name='comments/reasoning')
-    comment = models.TextField(verbose_name='comment by reviewer', null=True, blank=True)
+    reported_user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('reported user'),
+                                      on_delete=models.CASCADE)
+    reported_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('reported by'),
+                                    related_name='reports', on_delete=models.CASCADE)
+    reasoning = models.TextField(_('comments/reasoning'))
+    comment = models.TextField(_('comment by reviewer'), null=True, blank=True)
     status = models.SmallIntegerField(choices=STATUS, default=0)
     attachment = models.FileField(upload_to='reports/', null=True, blank=True)
 
@@ -38,6 +41,7 @@ class IgnoreBlockUser(models.Model):
         (1, 'blocked'),
     )
 
-    to_user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='blocked/ignored user', on_delete=models.CASCADE)
-    by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='blocked/ignored by', on_delete=models.CASCADE)
+    to_user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('blocked/ignored user'), on_delete=models.CASCADE)
+    by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('blocked/ignored by'),
+                           related_name='ignore_blocked_users', on_delete=models.CASCADE)
     _type = models.SmallIntegerField(choices=TYPES, default=0)

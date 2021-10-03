@@ -140,8 +140,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Rest Framework Settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'REST_framework.authentication.SessionAuthentication',
         'firebase_auth.authentication.FirebaseAuthentication',  # includes firebase authentication
+        'rest_framework.authentication.SessionAuthentication',
     ),
 }
 

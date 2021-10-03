@@ -6,15 +6,15 @@ from .models import ReportUser, IgnoreBlockUser
 
 
 @register(get_user_model())
-class UserAdmin(admin.AdminSite):
+class UserAdmin(admin.ModelAdmin):
     pass
 
 
 @register(ReportUser)
-class ReportUserAdmin(admin.AdminSite):
+class ReportUserAdmin(admin.ModelAdmin):
     pass
 
 
 @register(IgnoreBlockUser)
-class IgnoreBlockUserAdmin(admin.AdminSite):
+class IgnoreBlockUserAdmin(admin.ModelAdmin):
     pass
