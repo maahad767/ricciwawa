@@ -8,7 +8,7 @@ class ReportUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReportUser
         fields = ['reported_user', 'reasoning', 'attachment', 'status', 'comment']
-        readonly_fields = ['status', 'comment']
+        read_only_fields = ['status', 'comment']
 
 
 class IgnoreBlockUserSerializer(serializers.ModelSerializer):

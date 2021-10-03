@@ -1,4 +1,6 @@
 import os
+
+from django.contrib.auth import get_user_model
 from firebase_admin import credentials, auth, initialize_app
 from django.conf import settings
 from django.utils import timezone
@@ -35,7 +37,7 @@ class FirebaseAuthentication(BaseAuthentication):
         except Exception:
             raise FirebaseError()
 
-        user, created = settings.AUTH_USER_MODEL.objects.get_or_create(username=uid)
+        user, created = get_user_model().objects.get_or_create(username=uid)
         user.last_login = timezone.localtime()
 
         return user, None
