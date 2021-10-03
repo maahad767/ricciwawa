@@ -28,7 +28,8 @@ def text_to_speech(text, language_code="en-US", ssml_gender=texttospeech.SsmlVoi
 
     with open("output.mp3", "wb") as output_file:
         output_file.write(response.audio_content)
-        return output_file
+
+    return open("output.mp3", "wb").read()
 
 
 def speech_to_text(speech_file, language_code):
