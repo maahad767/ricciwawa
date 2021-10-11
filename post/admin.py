@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import (Post, Comment, Subscription, Playlist, LikeComment, LikePost, SavePlaylist, ViewPost,
-                     Favourite, Follow, Subscribe)
+                     Favourite, Follow, Subscribe, FavouriteVocabulary)
 
 
 """
@@ -63,4 +63,9 @@ class LikePostAdmin(admin.ModelAdmin):
 
 @admin.register(LikeComment)
 class LikeCommentAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(FavouriteVocabulary)
+class FavouriteVocabularyAdmin(admin.ModelAdmin):
     pass

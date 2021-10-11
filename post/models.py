@@ -124,6 +124,11 @@ class SavePlaylist(models.Model):
     playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE)
 
 
+class FavouriteVocabulary(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    word = models.CharField(max_length=50)
+
+
 class Notification(models.Model):
     """
     Model to send notification and store them
