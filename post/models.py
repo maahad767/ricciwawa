@@ -2,15 +2,20 @@ from django.db import models
 from django.contrib.auth import get_user_model
 
 
+PRIVACY_CHOICES = [(0, 'private'), (1, 'public')]
+
+
 class Subscription(models.Model):
     """
     Model for Subscription Plans
     """
+    STATE_CHOICES = ((0, 'closed'), (1, 'open'),)
+
+    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
-    duration_type = models.CharField(max_length=20)  # choice field: monthly/yearly
-    privacy = models.CharField(max_length=50)  # choice public/private
+    state = models.SmallIntegerField(choices=STATE_CHOICES)  # choice public/private
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -19,12 +24,13 @@ class Playlist(models.Model):
     """
     Model for playlist
     """
+    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
     subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE,
                                      related_name='posts', null=True, blank=True)
     thumbnail = models.ImageField(null=True, blank=True)
-    privacy = models.CharField(max_length=50)  # choice public/private
+    privacy = models.SmallIntegerField(choices=PRIVACY_CHOICES)  # choice public/private
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -33,16 +39,14 @@ class Post(models.Model):
     """
     Model for storing Post/Story contents.
     """
-    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="posts")
-    subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE,
-                                     related_name='posts', null=True, blank=True)
-    playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE,
-                                 related_name='posts', null=True, blank=True)
+    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE, null=True, blank=True)
+    playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=512)  # post's title
     text = models.TextField(null=True)  # post description
     language = models.CharField(max_length=50)  # post's language in code format
-    privacy = models.CharField(max_length=50)  # choice public/private
-    attachment_type = models.CharField(max_length=50)  # choice field
+    privacy = models.SmallIntegerField(choices=PRIVACY_CHOICES)  # choice public/private
+    attachment_type = models.CharField(max_length=50, null=True)  # choice field
     attachment = models.FileField(null=True, blank=True)  # image/video/audio attachment with the post
     text_chinese = models.TextField(null=True, blank=True)  # chinese text
     text_simplified_chinese = models.TextField(null=True, blank=True)  # chinese text simplified version
@@ -79,7 +83,7 @@ class LikeComment(models.Model):
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
 
 
-class View(models.Model):
+class ViewPost(models.Model):
     """
     Model to track views in a post
     """
@@ -109,6 +113,7 @@ class Subscribe(models.Model):
     """
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE)
+    is_approved = models.BooleanField(default=False)
 
 
 class SavePlaylist(models.Model):
