@@ -1,3 +1,4 @@
+from django.http import FileResponse
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -27,8 +28,12 @@ class TextToSpeechView(generics.GenericAPIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             data = serializer.data
-            speech_file = utils.text_to_speech(data['text'])
-            return Response({'speech_file': speech_file})
+            speech_audio_content = utils.text_to_speech(data['text'])
+            with open('outfile.mp3', 'wb') as outfile:
+                outfile.write(speech_audio_content)
+            outfile = open('outfile.mp3', 'rb')
+            return FileResponse(outfile, filename='test.mp3', as_attachment=True)
+
         return Response(serializer.errors)
 
 

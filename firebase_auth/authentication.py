@@ -2,9 +2,10 @@ import os
 
 from django.contrib.auth import get_user_model
 from firebase_admin import credentials, auth, initialize_app
-from django.conf import settings
 from django.utils import timezone
 from rest_framework.authentication import BaseAuthentication
+from rest_framework.permissions import AllowAny
+from rest_framework.settings import api_settings
 
 from .exceptions import FirebaseError, InvalidAuthToken, NoAuthToken
 
@@ -21,6 +22,8 @@ class FirebaseAuthentication(BaseAuthentication):
     def authenticate(self, request):
         auth_header = request.headers.get("FirebaseAuthorization")
         if not auth_header:
+            if AllowAny in api_settings.DEFAULT_PERMISSION_CLASSES:
+                return None
             raise NoAuthToken("No auth token provided")
 
         id_token = auth_header.split(" ").pop()

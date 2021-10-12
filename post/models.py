@@ -2,9 +2,6 @@ from django.db import models
 from django.contrib.auth import get_user_model
 
 
-PRIVACY_CHOICES = [(0, 'private'), (1, 'public')]
-
-
 class Subscription(models.Model):
     """
     Model for Subscription Plans
@@ -15,7 +12,7 @@ class Subscription(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
-    state = models.SmallIntegerField(choices=STATE_CHOICES)  # choice public/private
+    state = models.SmallIntegerField(choices=STATE_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -24,6 +21,7 @@ class Playlist(models.Model):
     """
     Model for playlist
     """
+    PRIVACY_CHOICES = [(0, 'private'), (1, 'public')]
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
@@ -39,6 +37,7 @@ class Post(models.Model):
     """
     Model for storing Post/Story contents.
     """
+    PRIVACY_CHOICES = [(0, 'private'), (1, 'public')]
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE, null=True, blank=True)
     playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE, null=True, blank=True)

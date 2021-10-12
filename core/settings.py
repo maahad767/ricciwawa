@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     # 3rd party apps
     'rest_framework',
     'django_elasticsearch_dsl',
+    'drf_spectacular',
+    'drf_spectacular_sidecar',
 ]
 
 MIDDLEWARE = [
@@ -144,6 +146,10 @@ REST_FRAMEWORK = {
         'firebase_auth.authentication.FirebaseAuthentication',  # includes firebase authentication
         'rest_framework.authentication.SessionAuthentication',
     ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ]
 }
 
 
@@ -163,3 +169,13 @@ AUTH_USER_MODEL = 'account.User'
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 GS_BUCKET_NAME = 'ricciwawa'
 STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'  # Storage backend for static files
+
+# Schema Settings
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'RICCIWAWA APIs',
+    'DESCRIPTION': 'API for RICCIWAWA',
+    'VERSION': '1.0.0',
+    'SWAGGER_UI_DIST': 'SIDECAR',
+    'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
+    'REDOC_DIST': 'SIDECAR',
+}
