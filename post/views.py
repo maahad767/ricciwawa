@@ -1,10 +1,8 @@
-from rest_framework import generics
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.response import Response
 
-from .models import Subscription
-from .serializers import SubscriptionSerializer
+from .models import Subscription, Playlist, Post
+from .serializers import SubscriptionSerializer, PlaylistSerializer, PostSerializer
 
 
 class SubscriptionViewset(viewsets.ModelViewSet):
@@ -13,3 +11,19 @@ class SubscriptionViewset(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Subscription.objects.filter(owner=self.request.user)
+
+
+class PlaylistViewset(viewsets.ModelViewSet):
+    serializer_class = PlaylistSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Playlist.objects.filter(owner=self.request.user)
+
+
+class PostViewset(viewsets.ModelViewSet):
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Post.objects.filter(user=self.request.user)
