@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
 
 
 class Subscription(models.Model):
@@ -126,6 +127,25 @@ class SavePlaylist(models.Model):
 class FavouriteVocabulary(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     word = models.CharField(max_length=50)
+
+
+class ReportPost(models.Model):
+    """
+    Model for tracking and storing post reports.
+    """
+    STATUS = (
+        (0, 'pending'),
+        (1, 'reviewed'),
+    )
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    reported_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    reasoning = models.TextField(_('comments/reasoning'))
+    comment = models.TextField(_('comment by reviewer'), null=True, blank=True)
+    status = models.SmallIntegerField(choices=STATUS, default=0)
+    attachment = models.FileField(upload_to='reports/', null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.reported_by} reported {self.post.title[:50]}'
 
 
 class Notification(models.Model):

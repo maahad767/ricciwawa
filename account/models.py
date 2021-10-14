@@ -41,7 +41,7 @@ class IgnoreBlockUser(models.Model):
         (1, 'blocked'),
     )
 
-    to_user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('blocked/ignored user'), on_delete=models.CASCADE)
+    to = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('blocked/ignored user'), on_delete=models.CASCADE)
     by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('blocked/ignored by'),
                            related_name='ignore_blocked_users', on_delete=models.CASCADE)
     _type = models.SmallIntegerField(choices=TYPES, default=0)
