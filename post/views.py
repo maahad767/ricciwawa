@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Subscription, Playlist, Post, Comment, FavouriteVocabulary
 from .serializers import SubscriptionSerializer, PlaylistSerializer, PostSerializer, CommentSerializer, \
     LikePostSerializer, ViewPostSerializer, FollowSerializer, FavouriteSerializer, FavouriteVocabularySerializer, \
-    SavePlaylistSerializer, SubscribeSerializer
+    SavePlaylistSerializer, SubscribeSerializer, ReportPostSerializer
 
 
 class NewsfeedView(generics.RetrieveAPIView):
@@ -117,4 +117,9 @@ class SubscribeView(generics.CreateAPIView):
 
 class UnsubscribeView(generics.DestroyAPIView):
     serializer_class = SubscribeSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class ReportPostView(generics.CreateAPIView):
+    serializer_class = ReportPostSerializer
     permission_classes = [IsAuthenticated]

@@ -14,11 +14,11 @@ path() is used to route Views.
 app_name = 'post'
 
 router = routers.SimpleRouter()
-router.register(r'subscription', SubscriptionViewset, basename='post')
-router.register(r'playlist', PlaylistViewset, basename='post')
-router.register(r'post', PostViewset, basename='post')
-router.register(r'comment', CommentViewset, basename='post')
-router.register(r'fav-vocab', FavouriteVocabularyViewset, basename='post')
+router.register(r'subscriptions', SubscriptionViewset, basename='post')
+router.register(r'playlists', PlaylistViewset, basename='post')
+router.register(r'posts', PostViewset, basename='post')
+router.register(r'comments', CommentViewset, basename='post')
+router.register(r'fav-vocabs', FavouriteVocabularyViewset, basename='post')
 
 urlpatterns = [
     path('get-newsfeed-contents/', NewsfeedView.as_view()),
