@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from .models import (Post, Comment, LikePost, LikeComment, Subscription, Subscribe, Playlist, SavePlaylist, ViewPost,
-                     Favourite, Follow)
+                     Favourite, Follow, FavouriteVocabulary)
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -74,8 +74,15 @@ class FollowSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class FavoriteSerializer(serializers.ModelSerializer):
+class FavouriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Favourite
+        fields = '__all__'
+
+
+class FavouriteVocabularySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = FavouriteVocabulary
         fields = '__all__'
