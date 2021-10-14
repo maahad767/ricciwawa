@@ -2,37 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from .models import ReportUser, IgnoreBlockUser
-
-
-# Custom Fields
-class UsernameField(serializers.RelatedField):
-
-    def to_representation(self, obj):
-        return obj.username
-
-    def to_internal_value(self, data):
-        try:
-            reported_user = get_user_model().objects.get(username=data)
-            if reported_user == serializers.CurrentUserDefault():
-                raise serializers.ValidationError(
-                    'Can not report yourself!'
-                )
-            return reported_user
-
-        except KeyError:
-            raise serializers.ValidationError(
-                'reported_user is a required field.'
-            )
-
-        except ValueError:
-            raise serializers.ValidationError(
-                'reported_user should be username'
-            )
-
-        except get_user_model().DoesNotExist:
-            raise serializers.ValidationError(
-                'User does not exist.'
-            )
+from .fields import UsernameField
 
 
 class ReportUserSerializer(serializers.ModelSerializer):

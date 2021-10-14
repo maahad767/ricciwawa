@@ -9,15 +9,19 @@ from .serializers import SubscriptionSerializer, PlaylistSerializer, PostSeriali
     SavePlaylistSerializer, SubscribeSerializer, ReportPostSerializer
 
 
-class NewsfeedView(generics.RetrieveAPIView):
+class NewsfeedView(generics.ListAPIView):
     """
     Returns posts for newsfeed. If the user is logged in, then it returns both the public and subscribed plan's posts.
     If the user is not logged in, then it returns only public posts.
     """
+    serializer_class = PostSerializer
+
     def get_queryset(self):
-        if self.request.is_authenticated():
-            return Post.objects.filter(Q(privacy=1) |
-                                       (Q(privacy=0) & Q(subscription__in=self.request.user.subscriptions)))
+        if self.request.user.is_authenticated:
+            return Post.objects.filter(Q(privacy=1)
+                                       | (Q(privacy=0) &
+                                          Q(subscription__in=self.request.user.subscriptions.all().values(
+                                              'subscription'))))
         else:
             return Post.objects.filter(privacy=1)
 
@@ -43,7 +47,7 @@ class PostViewset(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Post.objects.filter(user=self.request.user)
+        return Post.objects.filter(owner=self.request.user)
 
 
 class CommentViewset(viewsets.ModelViewSet):
@@ -51,7 +55,7 @@ class CommentViewset(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Comment.objects.filter(user=self.request.user)
+        return Comment.objects.filter(owner=self.request.user)
 
 
 class FavouriteVocabularyViewset(viewsets.ModelViewSet):

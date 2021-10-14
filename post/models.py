@@ -13,7 +13,7 @@ class Subscription(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
-    state = models.SmallIntegerField(choices=STATE_CHOICES)
+    state = models.SmallIntegerField(choices=STATE_CHOICES, default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -29,7 +29,7 @@ class Playlist(models.Model):
     subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE,
                                      related_name='posts', null=True, blank=True)
     thumbnail = models.ImageField(null=True, blank=True)
-    privacy = models.SmallIntegerField(choices=PRIVACY_CHOICES)  # choice public/private
+    privacy = models.SmallIntegerField(choices=PRIVACY_CHOICES, default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -39,26 +39,32 @@ class Post(models.Model):
     Model for storing Post/Story contents.
     """
     PRIVACY_CHOICES = [(0, 'private'), (1, 'public')]
+    ATTACHMENT_TYPE_CHOICES = [(0, 'none'), (1, 'image'), (2, 'audio'), (3, 'video')]
+
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE, null=True, blank=True)
     playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE, null=True, blank=True)
-    title = models.CharField(max_length=512)  # post's title
-    text = models.TextField(null=True)  # post description
-    language = models.CharField(max_length=50)  # post's language in code format
-    privacy = models.SmallIntegerField(choices=PRIVACY_CHOICES)  # choice public/private
-    attachment_type = models.CharField(max_length=50, null=True)  # choice field
-    attachment = models.FileField(null=True, blank=True)  # image/video/audio attachment with the post
-    text_chinese = models.TextField(null=True, blank=True)  # chinese text
-    text_simplified_chinese = models.TextField(null=True, blank=True)  # chinese text simplified version
-    text_traditional_chinese = models.TextField(null=True)  # chinese traditional version
-    created_at = models.DateTimeField(auto_now_add=True)  # creation time
-    updated_at = models.DateTimeField(auto_now=True)  # update time
+    title = models.CharField(max_length=512)
+    text = models.TextField(null=True)
+    privacy = models.SmallIntegerField(choices=PRIVACY_CHOICES, default=1)
+    attachment_type = models.SmallIntegerField(choices=ATTACHMENT_TYPE_CHOICES, default=0)
+    attachment = models.FileField(null=True, blank=True)
+    text_chinese = models.TextField(null=True, blank=True)
+    text_simplified_chinese = models.TextField(null=True, blank=True)
+    text_traditional_chinese = models.TextField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def likes(self):
+        return self.users_liked.count()
 
 
 class Comment(models.Model):
     """
     Model for Comments
     """
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='replies', null=True, blank=True)
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='comments')
     text = models.TextField(null=True, blank=True)
@@ -71,15 +77,15 @@ class LikePost(models.Model):
     """
     Model to track likes in a post
     """
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='liked_posts')
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='users_liked')
+    liker = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
 
 class LikeComment(models.Model):
     """
     Model to track likes in a comment
     """
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='liked_comments')
+    liker = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
 
 
@@ -87,15 +93,15 @@ class ViewPost(models.Model):
     """
     Model to track views in a post
     """
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='viewed_posts')
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='users_viewed')
+    viewer = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
 
 class Follow(models.Model):
     """
     Model for Follow a User
     """
-    follower = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='following')
+    followed_user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='following')
     followed_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='followers')
 
 
@@ -103,7 +109,7 @@ class Favourite(models.Model):
     """
     Model for making a Post favorite
     """
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='favorites')
+    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='favorites')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='favorite_by')
 
 
@@ -111,8 +117,8 @@ class Subscribe(models.Model):
     """
     Model to track who subscribes which subscription plan
     """
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    subscription = models.ForeignKey(Subscription, related_name='subscriptions', on_delete=models.CASCADE)
+    subscriber = models.ForeignKey(get_user_model(),  related_name='subscriptions', on_delete=models.CASCADE)
+    subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE)
     is_approved = models.BooleanField(default=False)
 
 
@@ -120,7 +126,7 @@ class SavePlaylist(models.Model):
     """
     Model to save playlist by a user
     """
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE)
 
 
