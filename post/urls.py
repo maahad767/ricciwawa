@@ -2,8 +2,8 @@ from django.urls import path
 from rest_framework import routers
 
 from post.views import SubscriptionViewset, PlaylistViewset, PostViewset, CommentViewset, NewsfeedView, \
-    FavouriteVocabularyViewset, LikePostView, UnlikePostView, ViewPostView, FollowView, AddFavouriteView, UnfollowView, \
-    RemoveFavouriteView, SavePlaylistView, UnsavePlaylistView, SubscribeView
+    FavouriteVocabularyViewset, LikePostView, UnlikePostView, ViewPostView, FollowView, AddFavouriteView, \
+    RemoveFavouriteView, SavePlaylistView, UnsavePlaylistView, SubscribeView, UnfollowView
 
 """
 Router is used to route ViewSets. 
