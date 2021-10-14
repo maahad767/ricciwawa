@@ -111,7 +111,7 @@ class Subscribe(models.Model):
     Model to track who subscribes which subscription plan
     """
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE)
+    subscription = models.ForeignKey(Subscription, related_name='subscriptions', on_delete=models.CASCADE)
     is_approved = models.BooleanField(default=False)
 
 

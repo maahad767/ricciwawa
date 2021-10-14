@@ -16,7 +16,7 @@ class TextToSpeechSerializer(serializers.Serializer):
 
 class SpeechToTextSerializer(serializers.Serializer):
     speech_file = serializers.FileField(allow_empty_file=False, required=True)
-    language_code = serializers.CharField(required=False)
+    language_code = serializers.CharField()
 
 
 class PronunciationAssessmentSerializer(serializers.Serializer):

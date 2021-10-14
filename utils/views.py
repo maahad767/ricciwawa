@@ -45,7 +45,9 @@ class SpeechToTextView(generics.GenericAPIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             data = serializer.data
-            transcript = utils.speech_to_text(speech_file=data['speech_file'], language_code=data['language_code'])
+            print(request.FILES)
+            transcript = utils.speech_to_text(speech_file=request.data['speech_file'],
+                                              language_code=data['language_code'])
             return Response(transcript)
         return Response(serializer.errors)
 

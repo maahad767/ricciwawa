@@ -1,3 +1,5 @@
+from django.db.models import Q
+
 from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
@@ -5,6 +7,19 @@ from .models import Subscription, Playlist, Post, Comment, FavouriteVocabulary
 from .serializers import SubscriptionSerializer, PlaylistSerializer, PostSerializer, CommentSerializer, \
     LikePostSerializer, ViewPostSerializer, FollowSerializer, FavouriteSerializer, FavouriteVocabularySerializer, \
     SavePlaylistSerializer, SubscribeSerializer
+
+
+class NewsfeedView(generics.RetrieveAPIView):
+    """
+    Returns posts for newsfeed. If the user is logged in, then it returns both the public and subscribed plan's posts.
+    If the user is not logged in, then it returns only public posts.
+    """
+    def get_queryset(self):
+        if self.request.is_authenticated():
+            return Post.objects.filter(Q(privacy=1) |
+                                       (Q(privacy=0) & Q(subscription__in=self.request.user.subscriptions)))
+        else:
+            return Post.objects.filter(privacy=1)
 
 
 class SubscriptionViewset(viewsets.ModelViewSet):
