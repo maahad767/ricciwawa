@@ -4,7 +4,7 @@ from rest_framework import routers
 from post.views import SubscriptionViewset, PlaylistViewset, PostViewset, CommentViewset, NewsfeedView, \
     FavouriteVocabularyViewset, LikePostView, UnlikePostView, ViewPostView, FollowView, AddFavouriteView, \
     RemoveFavouriteView, SavePlaylistView, UnsavePlaylistView, SubscribeView, UnfollowView, IgnorePostView, \
-    UnignorePostView
+    UnignorePostView, UserPostListView
 
 """
 Router is used to route ViewSets. 
@@ -23,6 +23,7 @@ router.register(r'fav-vocabs', FavouriteVocabularyViewset, basename='post')
 
 urlpatterns = [
     path('get-newsfeed-contents/', NewsfeedView.as_view()),
+    path('get-user-posts/<str:username>', UserPostListView.as_view()),
     path('like-post/', LikePostView.as_view()),
     path('unlike-post/<int:pk>/', UnlikePostView.as_view()),
     path('mark-post-viewd/', ViewPostView.as_view()),

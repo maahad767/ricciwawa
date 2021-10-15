@@ -1,8 +1,11 @@
+from django.contrib.auth import get_user_model
 from django.db.models import Q
 
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, generics, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.response import Response
 
+from account.models import IgnoreBlockUser
 from .models import Subscription, Playlist, Post, Comment, FavouriteVocabulary
 from .serializers import SubscriptionSerializer, PlaylistSerializer, PostSerializer, CommentSerializer, \
     LikePostSerializer, ViewPostSerializer, FollowSerializer, FavouriteSerializer, FavouriteVocabularySerializer, \
@@ -48,6 +51,32 @@ class PostViewset(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Post.objects.filter(owner=self.request.user)
+
+
+class UserPostListView(generics.ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        owner = self.request.user
+        user = get_user_model().objects.get(username=self.kwargs['username'])
+        self_blocked_ignored_users = IgnoreBlockUser.objects.filter(to=user, by=owner).first()
+        if self_blocked_ignored_users:
+            response = {
+                'error': 'you have blocked/ignored the user'
+            }
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        blocked_by_target_user = IgnoreBlockUser.objects.filter(to=owner, by=user).first()
+        if blocked_by_target_user:
+            response = {
+                'error': 'you are blocked/ignored by the user'
+            }
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+        return Post.objects.filter(owner=user).filter(Q(privacy=1)
+                                                      | (Q(privacy=0)
+                                                         & Q(subscription__in=owner.subscriptions.values(
+                                                                  'subscription'))))
 
 
 class CommentViewset(viewsets.ModelViewSet):
