@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from account.fields import UsernameField
 from .models import (Post, Comment, LikePost, LikeComment, Subscription, Subscribe, Playlist, SavePlaylist, ViewPost,
-                     Favourite, Follow, FavouriteVocabulary, ReportPost)
+                     Favourite, Follow, FavouriteVocabulary, ReportPost, IgnorePost)
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -101,6 +101,14 @@ class FavouriteVocabularySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FavouriteVocabulary
+        fields = '__all__'
+
+
+class IgnorePostSerializer(serializers.ModelSerializer):
+    ignored_by = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = IgnorePost
         fields = '__all__'
 
 

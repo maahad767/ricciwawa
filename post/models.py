@@ -135,6 +135,11 @@ class FavouriteVocabulary(models.Model):
     word = models.CharField(max_length=50)
 
 
+class IgnorePost(models.Model):
+    ignored_post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    ignored_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+
+
 class ReportPost(models.Model):
     """
     Model for tracking and storing post reports.

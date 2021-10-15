@@ -3,7 +3,8 @@ from rest_framework import routers
 
 from post.views import SubscriptionViewset, PlaylistViewset, PostViewset, CommentViewset, NewsfeedView, \
     FavouriteVocabularyViewset, LikePostView, UnlikePostView, ViewPostView, FollowView, AddFavouriteView, \
-    RemoveFavouriteView, SavePlaylistView, UnsavePlaylistView, SubscribeView, UnfollowView
+    RemoveFavouriteView, SavePlaylistView, UnsavePlaylistView, SubscribeView, UnfollowView, IgnorePostView, \
+    UnignorePostView
 
 """
 Router is used to route ViewSets. 
@@ -33,4 +34,6 @@ urlpatterns = [
     path('unsave-playlist/<int:pk>/', UnsavePlaylistView.as_view()),
     path('subscribe-plan/', SubscribeView.as_view()),
     path('unsubscribe-plan/<int:pk>/', SubscribeView.as_view()),
-] + router.urls
+    path('ignore-post/', IgnorePostView.as_view()),
+    path('unignore-post/', UnignorePostView.as_view()),
+ ] + router.urls
