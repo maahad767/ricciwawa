@@ -22,8 +22,8 @@ router.register(r'comments', CommentViewset, basename='post')
 router.register(r'fav-vocabs', FavouriteVocabularyViewset, basename='post')
 
 urlpatterns = [
-    path('get-newsfeed-contents/', NewsfeedView.as_view()),
-    path('get-user-posts/<str:username>', UserPostListView.as_view()),
+    path('newsfeed-contents/', NewsfeedView.as_view()),
+    path('user-posts/<str:username>', UserPostListView.as_view()),
     path('like-post/', LikePostView.as_view()),
     path('unlike-post/<int:pk>/', UnlikePostView.as_view()),
     path('mark-post-viewd/', ViewPostView.as_view()),
@@ -35,6 +35,6 @@ urlpatterns = [
     path('unsave-playlist/<int:pk>/', UnsavePlaylistView.as_view()),
     path('subscribe-plan/', SubscribeView.as_view()),
     path('unsubscribe-plan/<int:pk>/', SubscribeView.as_view()),
-    path('ignore-post/', IgnorePostView.as_view()),
-    path('unignore-post/', UnignorePostView.as_view()),
+    path('ignore-post/<int:pk>/', IgnorePostView.as_view()),
+    path('unignore-post/<int:pk>/', UnignorePostView.as_view()),
  ] + router.urls
