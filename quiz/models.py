@@ -13,5 +13,26 @@ class Quiz(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-class Option(models.Model):
+class Question(models.Model):
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+    title = models.CharField(max_length=256)
+    question = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+class MultipleChoiceQuestion(Question):
     pass
+
+
+class Choice(models.Model):
+    question = models.ForeignKey(MultipleChoiceQuestion, on_delete=models.CASCADE)
+    choice_text = models.TextField(null=True)
+    is_correct_choice = models.BooleanField(default=False)
+
+
+class InputAnswerQuestion(Question):
+    answer = models.TextField()
