@@ -44,7 +44,7 @@ def speech_to_text(speech_file, sample_rate, language_code):
     audio = speech.RecognitionAudio(content=binary_audio)
     config = speech.RecognitionConfig({
         'encoding': speech.RecognitionConfig.AudioEncoding.LINEAR16,
-        'sample_rate_hertz': sample_rate,
+        'sample_rate_hertz': int(sample_rate),
         'language_code': language_code,
     })
     response = client.recognize(config=config, audio=audio)
