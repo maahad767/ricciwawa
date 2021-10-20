@@ -30,10 +30,11 @@ def text_to_speech(text, language_code="en-US", ssml_gender=texttospeech.SsmlVoi
     return response.audio_content
 
 
-def speech_to_text(speech_file, language_code):
+def speech_to_text(speech_file, sample_rate, language_code):
     """
     Converts a speech to text using google cloud speech to text api.
     
+    :param sample_rate: sample rate of the audio file
     :param speech_file: the speech's audio file in .wav format
     :param language_code: the language of the speech
     :return: transcript of the speech as a dictionary
@@ -43,7 +44,7 @@ def speech_to_text(speech_file, language_code):
     audio = speech.RecognitionAudio(content=binary_audio)
     config = speech.RecognitionConfig({
         'encoding': speech.RecognitionConfig.AudioEncoding.LINEAR16,
-        'sample_rate_hertz': 16000,
+        'sample_rate_hertz': sample_rate,
         'language_code': language_code,
     })
     response = client.recognize(config=config, audio=audio)
