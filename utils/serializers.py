@@ -16,7 +16,8 @@ class TextToSpeechSerializer(serializers.Serializer):
 
 class SpeechToTextSerializer(serializers.Serializer):
     speech_file = serializers.FileField(allow_empty_file=False, required=True)
-    sample_rate = serializers.IntegerField(min_value=8000, max_value=48000)
+    sample_rate = serializers.IntegerField(min_value=8000, max_value=48000, default=16000)
+    audio_channel_count = serializers.IntegerField(min_value=1, max_value=8, default=1)
     language_code = serializers.CharField()
 
 

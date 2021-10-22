@@ -30,10 +30,19 @@ def text_to_speech(text, language_code="en-US", ssml_gender=texttospeech.SsmlVoi
     return response.audio_content
 
 
-def speech_to_text(speech_file, sample_rate, language_code):
+def speech_to_text(speech_file, sample_rate, audio_channel_count, language_code):
     """
     Converts a speech to text using google cloud speech to text api.
     
+    :param audio_channel_count: The number of channels in the input audio data. ONLY set
+            this for MULTI-CHANNEL recognition. Valid values for
+            LINEAR16 and FLAC are ``1``-``8``. Valid values for OGG_OPUS
+            are '1'-'254'. Valid value for MULAW, AMR, AMR_WB and
+            SPEEX_WITH_HEADER_BYTE is only ``1``. If ``0`` or omitted,
+            defaults to one channel (mono). Note: We only recognize the
+            first channel by default. To perform independent recognition
+            on each channel set
+            ``enable_separate_recognition_per_channel`` to 'true'.
     :param sample_rate: sample rate of the audio file
     :param speech_file: the speech's audio file in .wav format
     :param language_code: the language of the speech
@@ -45,6 +54,7 @@ def speech_to_text(speech_file, sample_rate, language_code):
     config = speech.RecognitionConfig({
         'encoding': speech.RecognitionConfig.AudioEncoding.LINEAR16,
         'sample_rate_hertz': int(sample_rate),
+        'audio_channel_count': int(audio_channel_count),
         'language_code': language_code,
     })
     response = client.recognize(config=config, audio=audio)
