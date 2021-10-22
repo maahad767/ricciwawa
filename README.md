@@ -11,3 +11,7 @@
 * To access admin interface, go to 127.0.0.1:8000/admin (ip:port/admin) in the browser
 
 ## Documentation
+NEW(DJANGO): https://maahad767.pythonanywhere.com/api/schema/swagger-ui/ <br>
+MAPPING(OLD->NEW): https://docs.google.com/document/d/1qTf6luJgeOYb8ZPYPp1vOf7agtfvJB0jK0ftdgVfmes/edit?usp=sharing
+
+
