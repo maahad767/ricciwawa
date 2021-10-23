@@ -5,7 +5,7 @@ from post.models import Post
 
 
 class Quiz(models.Model):
-    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    creator = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
@@ -36,3 +36,15 @@ class Choice(models.Model):
 
 class InputAnswerQuestion(Question):
     answer = models.TextField()
+
+
+class AttemptQuiz(models.Model):
+    examinee = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+    # total score
+
+
+class AttemptQuestion(models.Model):
+    quiz_attempt = models.ForeignKey(AttemptQuiz, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+
