@@ -25,7 +25,7 @@ class Question(models.Model):
 
 
 class MultipleChoiceQuestion(Question):
-    pass
+    has_multiple_correct_choices = models.BooleanField(default=False)
 
 
 class Choice(models.Model):
