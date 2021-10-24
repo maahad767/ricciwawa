@@ -14,4 +14,8 @@
 NEW(DJANGO): https://maahad767.pythonanywhere.com/api/schema/swagger-ui/ <br>
 MAPPING(OLD->NEW): https://docs.google.com/document/d/1qTf6luJgeOYb8ZPYPp1vOf7agtfvJB0jK0ftdgVfmes/edit?usp=sharing
 
+## Admin Panel
+admin panel url: https://maahad767.pythonanywhere.com/admin/
+username: admin
+password: adminadmin
 
