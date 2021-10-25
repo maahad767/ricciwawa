@@ -5,6 +5,7 @@ from rest_framework.response import Response
 
 from .serializers import TextToSpeechSerializer, SpeechToTextSerializer, PronunciationAssessmentSerializer
 from . import utils
+from .utils import speech_tts_msft
 
 """
 The file contains View Classes for utility APIs such as Text To Speech, Speech To Text, etc. 
@@ -66,3 +67,22 @@ class PronunciationAssessmentView(generics.GenericAPIView):
                                                                language_code=data['language_code'])
             return Response(assessment_report)
         return Response(serializer.errors)
+
+
+class Mp3TaskHandler(generics.GenericAPIView):
+    """
+    Author: Kenneth Y.
+    Just wrapped for django
+    """
+    def post(self, request, *args, **kwargs):
+        lang = request.data.get("lang")
+        input_text = request.data.get("mp3_text")
+        mp3_output_filename = request.data.get("filename")
+        # use google TTS for Cantonese - but turns out Google is only slightly better in words recognition
+        # but poor in voice quality
+        # if lang == "hk":
+        #    result = speech_tts_google (lang, input_text, mp3_output_filename)
+        # else:
+        result = speech_tts_msft(lang, input_text, mp3_output_filename)
+        # store the signed_mp3_url to datastore
+        return Response(result)

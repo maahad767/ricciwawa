@@ -1,8 +1,12 @@
-from django.http import FileResponse
-from google.cloud import texttospeech, speech
+import json
+import logging
+import random
+import string
 import requests
 import time
 import base64
+
+from google.cloud import texttospeech, speech, storage
 
 
 def text_to_speech(text, language_code="en-US", ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL):
@@ -109,3 +113,150 @@ def pronunciation_assessment(speech_file, reference_text, language_code='en-us')
     response = requests.post(url=url, data=get_chunk(speech_file), headers=headers)
 
     return response.text
+
+
+####################
+# Below lives codes by Kenneth Yip
+####################
+
+def upload_blob(source_file_name):
+    """
+    Uploads a file to the bucket.
+    Created by: Kenneth Y.
+    """
+    bucket_name = "ricciwawa"
+    storage_path = "media/temp/"
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(source_file_name)
+
+    blob.upload_from_filename(storage_path + source_file_name)
+
+
+# create a random string for hash
+def get_random_string(length):
+    """
+    Created by: Kenneth Y.
+    """
+    letters = string.ascii_lowercase
+    result_str = ''.join(random.choice(letters) for i in range(length))
+    return result_str
+
+
+def speech_tts_msft(lang, original_input_text, mp3_output_filename):
+    """
+    A text to speech function using Azure APIs.
+    Created By: Kenneth Y.
+    """
+    previous_word_boundry_offset = 0
+    previous_word_audio_offset = 0
+    first_offset = 0
+    total_len = 0
+    input_text = ""
+    complete_line = ""
+    # input_text = original_input_text.replace("\n","").replace("<BR>","<p></p>")
+    # Azure does not accept <BR> as line break but <p></p> increases the length, therefore use \n\n\n\n
+    input_text = original_input_text.replace("\n", "").replace("<BR>", "\n")
+    # import azure.cognitiveservices.speech as speechsdk
+    from azure.cognitiveservices.speech import AudioDataStream, SpeechConfig, SpeechSynthesizer, \
+        SpeechSynthesisOutputFormat
+    # , SpeechSynthesisEventArgs, SpeechSynthesisWordBoundaryEventArgs
+    # from azure.cognitiveservices.speech.audio import AudioOutputConfig
+    timing_file_name = mp3_output_filename.replace(".mp3", "_timing.txt")
+    # first offset is to remove the first string that contains Azure information
+    first_offset = 0
+
+    def tts_callback(self):
+        # print (self)
+        temp = 0
+
+    def show_tts_text(evt):
+        try:
+            global previous_word_boundry_offset, previous_word_audio_offset, first_offset
+            print(925, evt.text_offset)
+            # print (input_text[previous_word_boundry_offset : evt.text_offset],previous_word_boundry_offset,
+            # evt.text_offset, evt.audio_offset, evt.audio_offset - previous_word_audio_offset)
+            # use mp3_timing here... return it as json data
+            with open("/tmp/" + timing_file_name, 'a') as f:
+                temp_line = {"char_start": previous_word_boundry_offset - first_offset}
+                # first time
+                if previous_word_boundry_offset == 0:
+                    temp_line["char_end"] = 220
+                else:
+                    temp_line["char_end"] = evt.text_offset - first_offset
+                # if (line_counter == 0):
+                # print ("466 ", first_offset, evt.text_offset)
+                if first_offset == 0:
+                    first_offset = temp_line["char_end"]
+                temp_word = input_text[previous_word_boundry_offset: evt.text_offset]
+                temp_line["chars"] = temp_word.replace("\n", "<BR>")
+                temp_line["audio_start"] = previous_word_audio_offset
+                temp_line["audio_end"] = evt.audio_offset
+                if len(temp_word) > 0:
+                    f.write(json.dumps(temp_line))
+                    f.write("\n")
+
+            previous_word_boundry_offset = evt.text_offset
+            previous_word_audio_offset = evt.audio_offset
+        except ValueError as exc:
+            # This will be raised if the token is expired or any other
+            # verification checks fail.
+            error_message = str(exc)
+            print("line 479 ", error_message)
+        return ""
+
+    try:
+        # speech_key, service_region = "9b8ded5a42674ea59cac09faeff3b616", "eastus"
+        speech_key, service_region = "aae01d96cdce4194a17db9f5be956e11", "eastasia"
+        # speech_key, service_region = "d273b009107642f6ab9ea4e1727a3b9b", "eastasia"
+        speech_config = SpeechConfig(
+            subscription=speech_key, region=service_region)
+        speech_config.set_property_by_name(
+            "SpeechServiceResponse_Synthesis_WordBoundaryEnabled", "true")
+        if lang == "hk":
+            speech_config.speech_synthesis_language = "zh-HK"
+            speech_config.speech_synthesis_voice_name = "Microsoft Server Speech Text to Speech Voice (zh-HK, HiuMaanNeural)"
+            input_text = '<speak version="1.0" xmlns="https://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="zn-HK"><voice name="zh-HK-HiuMaanNeural"><mstts:express-as style="newscast"><prosody rate="-35.00%">' + \
+                         input_text + ' </prosody></mstts:express-as></voice></speak>'
+        elif lang == "tw":
+            speech_config.speech_synthesis_language = "zh-CN"
+            speech_config.speech_synthesis_voice_name = "Microsoft Server Speech Text to Speech Voice (zh-CN, XiaoxiaoNeural)"
+            input_text = '<speak version="1.0" xmlns="https://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="zh-CN"><voice name="zh-CN-XiaoxiaoNeural"><mstts:express-as style="newscast"><prosody rate="-45.00%">' + \
+                         input_text + '</prosody></mstts:express-as></voice></speak>'
+        elif lang == "ja":
+            speech_config.speech_synthesis_language = "ja-JP"
+            speech_config.speech_synthesis_voice_name = "Microsoft Server Speech Text to Speech Voice (ja-JP, NanamiNeural)"
+            input_text = '<speak version="1.0" xmlns="https://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="ja-JP"><voice name="ja-JP-NanamiNeural"><mstts:express-as style="newscast"><prosody rate="-25.00%">' + \
+                         input_text + '</prosody></mstts:express-as></voice></speak>'
+        elif lang == "en-US":
+            print("line 461")
+            speech_config.speech_synthesis_language = "en-US"
+            speech_config.speech_synthesis_voice_name = "Microsoft Server Speech Text to Speech Voice (en-US, en-US-AriaNeural)"
+            input_text = '<speak version="1.0" xmlns="https://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="en-US"><voice name="en-US-AriaNeural"><mstts:express-as style="customerservice"><prosody rate="-20.00%">' + \
+                         input_text + '</prosody></mstts:express-as></voice></speak>'
+
+        speech_config.set_speech_synthesis_output_format(SpeechSynthesisOutputFormat["Audio24Khz48KBitRateMonoMp3"])
+
+        synthesizer = SpeechSynthesizer(
+            speech_config=speech_config, audio_config=None)
+        # get the timing of speech per character
+        synthesizer.synthesis_word_boundary.connect(
+            lambda evt: show_tts_text(evt))
+        result = synthesizer.speak_ssml_async(input_text).get()
+        stream = AudioDataStream(result)
+        stream.save_to_wav_file(mp3_output_filename)
+
+        # save to firebase storage
+        upload_blob(mp3_output_filename)
+
+        # upload timing file
+        upload_blob(mp3_output_filename.replace(".mp3", "_timing.txt"))
+        # os.remove(storage_path+mp3_output_filename)
+        return result
+
+    except ValueError as exc:
+        # This will be raised if the token is expired or any other
+        # verification checks fail.
+        error_message = str(exc)
+        logging.info(error_message)
+        return "error tts"
