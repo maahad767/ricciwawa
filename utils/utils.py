@@ -1,3 +1,4 @@
+import datetime
 import json
 import logging
 import random
@@ -6,7 +7,9 @@ import requests
 import time
 import base64
 
-from google.cloud import texttospeech, speech, storage
+from google.cloud import texttospeech, speech, storage, datastore, translate
+
+datastore_client = datastore.Client()
 
 
 def text_to_speech(text, language_code="en-US", ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL):
@@ -125,12 +128,11 @@ def upload_blob(source_file_name):
     Created by: Kenneth Y.
     """
     bucket_name = "ricciwawa"
-    storage_path = "media/temp/"
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(source_file_name)
 
-    blob.upload_from_filename(storage_path + source_file_name)
+    blob.upload_from_filename(source_file_name)
 
 
 # create a random string for hash
@@ -173,11 +175,11 @@ def speech_tts_msft(lang, original_input_text, mp3_output_filename):
     def show_tts_text(evt):
         try:
             global previous_word_boundry_offset, previous_word_audio_offset, first_offset
-            print(925, evt.text_offset)
+            # print(925, evt.text_offset)
             # print (input_text[previous_word_boundry_offset : evt.text_offset],previous_word_boundry_offset,
             # evt.text_offset, evt.audio_offset, evt.audio_offset - previous_word_audio_offset)
             # use mp3_timing here... return it as json data
-            with open("/tmp/" + timing_file_name, 'a') as f:
+            with open(timing_file_name, 'a') as f:
                 temp_line = {"char_start": previous_word_boundry_offset - first_offset}
                 # first time
                 if previous_word_boundry_offset == 0:
@@ -252,7 +254,8 @@ def speech_tts_msft(lang, original_input_text, mp3_output_filename):
         # upload timing file
         upload_blob(mp3_output_filename.replace(".mp3", "_timing.txt"))
         # os.remove(storage_path+mp3_output_filename)
-        return result
+
+        return True
 
     except ValueError as exc:
         # This will be raised if the token is expired or any other
@@ -260,3 +263,214 @@ def speech_tts_msft(lang, original_input_text, mp3_output_filename):
         error_message = str(exc)
         logging.info(error_message)
         return "error tts"
+
+
+# translate to user prefered language
+# first check datastore, if it is not there, use Google translate
+def google_translate(text, source_language_code, target_language_code):
+    try:
+        query = datastore_client.query(kind='dictionary')
+        query.add_filter('trad', '=', text)
+        datastore_query_result = list(query.fetch(limit=2))
+        # has the translation from the datastore
+        if (len(datastore_query_result) > 0):
+            print("3677")
+        # use Google translate if not in datastore
+        else:
+            # The input text could be simplified or traditional
+            # loop twice to get the simplified and traditional versions
+            client = translate.TranslationServiceClient()
+            return_translated_text = ""
+            # Detail on supported types can be found here:
+            # https://cloud.google.com/translate/docs/supported-formats
+            response = client.translate_text(
+                parent="projects/ricciwawa/locations/global",
+                contents=[text],
+                mime_type="text/html",  # mime types: text/plain, text/html
+                source_language_code=source_language_code,
+                target_language_code=target_language_code
+            )
+            # Display the translation for each input text provided
+            for translation in response.translations:
+                # for some reaons, Google may add spaces
+                return_translated_text = return_translated_text + translation.translated_text
+            return return_translated_text.replace("> ", ">").replace(" < ", "<")
+    except ValueError as exc:
+        # This will be raised if the token is expired or any other
+        # verification checks fail.
+        error_message = str(exc)
+        logging.info(error_message)
+        return ""
+
+
+# This is to translate a list of text
+# it calls google translate one word by one word.  This could be time consumption
+def google_translate_list(text_list, source_language_code, target_language_code):
+    results = []
+    for text in text_list:
+        temp_result = google_translate(text, source_language_code, target_language_code)
+        results.append(temp_result)
+    return results
+
+
+def dictionary_lookup(trad_spaced_sentence, sim_spaced_sentence):
+    global temp_pinyin
+    try:
+        # pinyin is a list
+        # replace <BR> with <p> because will
+        all_words = trad_spaced_sentence.replace(
+            "<BR>", "<BR><p>").split("<p>")
+        all_words_sim = sim_spaced_sentence.replace(
+            "<BR>", "<BR><p>").split("<p>")
+
+        all_translated_words = []
+        word_counter = 0  # used to identify the simplified word matching the trad word
+        for word in all_words:
+            translated_word = {}
+            translated_word["word"] = word
+            translated_word["eng"] = []
+            translated_word["sim"] = []
+            translated_word["trad"] = []
+            translated_word["tagalog"] = []
+            translated_word["indonesian"] = []
+            translated_word["korean"] = []
+            translated_word["pinyin"] = []
+            if (word != "<BR>"):
+                word = word.strip()
+                datastore_query_result = dictionary_lookup_datastore(word)
+                counter = 0
+                # loop to find all the meaning
+                for items in datastore_query_result:
+                    counter += 1
+                    # may contain multipll meaning seperated by ,
+                    temp_eng = items["english"]
+                    temp_sim = items["sim"]
+                    temp_trad = items["trad"]
+                    temp_tagalog = items["tagalog"]
+                    temp_indonesian = items["indonesian"]
+                    temp_korean = items["korean"]
+                    temp_pinyin = items["pinyin"].split(" ")
+                    translated_word["eng"].append(temp_eng)
+                    translated_word["sim"].append(temp_sim)
+                    translated_word["trad"].append(temp_trad)
+                    translated_word["tagalog"].append(temp_tagalog)
+                    translated_word["indonesian"].append(temp_indonesian)
+                    translated_word["korean"].append(temp_korean)
+                    translated_word["pinyin"].append(temp_pinyin)
+                # cannot find such wording and the word length >1
+                if (counter == 0 and len(word) > 1):
+                    temp_sim = ""
+                    word_pinyin = []
+                    # single char could have multiple pinyins, word can only have one pinyin
+                    each_char_pinyin = []
+                    i = 0
+                    while i < len(word):
+                        # for each_char in word:
+                        each_char_pinyin = []  # it is a word, so only one pinyin
+                        each_char = word[i]
+                        next_char = ""
+                        last_char = ""
+                        skip_flag = False
+                        if (i + 1) < len(word):
+                            next_char = word[i + 1]
+                            two_chars_result = dictionary_lookup_datastore(
+                                each_char + next_char)
+                            if two_chars_result != []:
+                                print(two_chars_result[0]["pinyin"])
+                                each_char_pinyin.append(
+                                    two_chars_result[0]["pinyin"])
+                                skip_flag = True
+                                # jump one char ahead
+                                i = i + 1
+                        i = i + 1
+                        if skip_flag == False:
+                            temp_result = dictionary_lookup_datastore(
+                                each_char)
+                            # only use the first pinyin reported, could be an incorrect pinyin
+                            if temp_result != []:
+                                # each character may have multiple meanings/pinyin
+                                for each_temp_result in temp_result:
+                                    if len(temp_result[0]["sim"]) > 0:
+                                        # could have multiple meanings and multiple pinyins,
+                                        # if each_temp_result["pinyin"] is not a list, don't loop
+                                        if type(each_temp_result["pinyin"]) is list:
+                                            for each_pinyin in each_temp_result["pinyin"]:
+                                                # if not added before
+                                                if not (each_pinyin in each_char_pinyin):
+                                                    each_char_pinyin.append(
+                                                        each_pinyin)
+                                        else:
+                                            # if not a list, add directly
+                                            if not (each_temp_result["pinyin"] in each_char_pinyin):
+                                                each_char_pinyin.append(
+                                                    each_temp_result["pinyin"])
+                                    else:
+                                        # there is no pinyin, add space
+                                        temp_pinyin = "&nbsp;"
+                                if temp_result.count(",") > 0:
+                                    temp_pinyin = "(" + temp_pinyin + ")"
+                                # if no sim, add space
+                                if len(temp_result[0]["sim"]) > 0:
+                                    temp_sim = temp_result[0]["sim"][0]
+                                else:
+                                    temp_sim = each_char
+                        # a list of pinyin per word.  Each char has its own list of pinyin
+                        temp_sim = temp_sim.strip()
+                        # a char may have mutliple pinyins, join them by comma
+                        word_pinyin.append(",".join(each_char_pinyin))
+                    # if it is a word, make sure there is one element in word_pinyin
+                    if (len(word) > 1):
+                        new_word_pinyin = ""  # a string to hold pinyin
+                        for each_word_pinyin in word_pinyin:
+                            if (type(each_word_pinyin) is list):
+                                new_word_pinyin = new_word_pinyin + \
+                                                  " " + " ".join(each_word_pinyin)
+                            else:
+                                new_word_pinyin = new_word_pinyin + " " + each_word_pinyin
+                        word_pinyin = new_word_pinyin.strip().split(" ")
+                    word_sim = all_words_sim[word_counter]
+                    # translation from Google
+                    eng_meaning = google_translate(word, 'zh-TW', "en")
+                    id_meaning = google_translate(word, 'zh-TW', "id")
+                    tl_meaning = google_translate(word, 'zh-TW', "tl")
+                    ko_meaning = google_translate(word, 'zh-TW', "ko")
+                    now = datetime.datetime.now()
+                    date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+                    entity = datastore.Entity(
+                        key=datastore_client.key('dictionary'))
+                    entity.update({
+                        "trad": word,
+                        "sim": word_sim,
+                        "pinyin": word_pinyin,
+                        "english": eng_meaning,
+                        "indonesian": id_meaning,
+                        "tagalog": tl_meaning,
+                        "korean": ko_meaning,
+                        'timestamp': date_time,
+                    })
+                    # datastore_client.put(entity)
+                    translated_word["eng"].append(eng_meaning)
+                    translated_word["sim"].append(word_sim)
+                    translated_word["trad"].append(word)
+                    translated_word["tagalog"].append(tl_meaning)
+                    translated_word["indonesian"].append(id_meaning)
+                    translated_word["korean"].append(ko_meaning)
+                    translated_word["pinyin"].append(word_pinyin)
+            all_translated_words.append(translated_word)
+            word_counter = word_counter + 1
+        # create simplified Chinese for
+        return all_translated_words
+
+    except ValueError as exc:
+        print("error")
+        error_message = str(exc)
+        logging.info(error_message)
+        return "", ""
+
+
+def dictionary_lookup_datastore(input_text):
+    query = datastore_client.query(kind='dictionary')
+    query.add_filter('trad', '=', input_text)
+    datastore_query_result = list(query.fetch(limit=20))
+    return datastore_query_result
+

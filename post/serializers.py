@@ -1,17 +1,37 @@
+from attr.filters import exclude
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from account.fields import UsernameField
 from .models import (Post, Comment, LikePost, LikeComment, Subscription, Subscribe, Playlist, SavePlaylist, ViewPost,
                      Favourite, Follow, FavouriteVocabulary, ReportPost, IgnorePost)
+from .utils import upload_get_signed_up, download_get_signed_up
 
 
 class PostSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    likes = serializers.SerializerMethodField(read_only=True)
+    comments = serializers.SerializerMethodField(read_only=True)
+    attachment_upload_url = serializers.SerializerMethodField(read_only=True)
+    attachment_url = serializers.SerializerMethodField(read_only=True)
+
+    def get_likes(self, obj):
+        return obj.likepost_set.count()
+
+    def get_comments(self, obj):
+        return obj.comments.all().count()
+
+    def get_attachment_upload_url(self, obj):
+        if obj.attachment:
+            return upload_get_signed_up(obj.attachment)
+
+    def get_attachment_url(self, obj):
+        if obj.attachment:
+            return download_get_signed_up(obj.attachment)
 
     class Meta:
         model = Post
-        fields = '__all__'
+        exclude = []
 
 
 class CommentSerializer(serializers.ModelSerializer):

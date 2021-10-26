@@ -1,6 +1,6 @@
 from django.http import FileResponse
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
 from .serializers import TextToSpeechSerializer, SpeechToTextSerializer, PronunciationAssessmentSerializer
@@ -74,10 +74,13 @@ class Mp3TaskHandler(generics.GenericAPIView):
     Author: Kenneth Y.
     Just wrapped for django
     """
+    permission_classes = [AllowAny]
+
     def post(self, request, *args, **kwargs):
         lang = request.data.get("lang")
         input_text = request.data.get("mp3_text")
         mp3_output_filename = request.data.get("filename")
+        print(mp3_output_filename)
         # use google TTS for Cantonese - but turns out Google is only slightly better in words recognition
         # but poor in voice quality
         # if lang == "hk":
@@ -85,4 +88,4 @@ class Mp3TaskHandler(generics.GenericAPIView):
         # else:
         result = speech_tts_msft(lang, input_text, mp3_output_filename)
         # store the signed_mp3_url to datastore
-        return Response(result)
+        return Response({'successful': result})

@@ -1,3 +1,4 @@
+from datetime import datetime
 from hashlib import sha1
 
 from django.db.models.signals import post_save
@@ -9,14 +10,15 @@ from utils.utils import get_random_string
 
 
 @receiver(post_save, sender=Post)
-def add_audio_in_post(instance, created):
+def add_audio_in_post(instance, created, *args, **kwargs):
     """
     Integrated in Django,
     Created by Kenneth Y.
     """
     if not created:
         return
-    hashed_id = sha1(str.encode(get_random_string(10) + instance.created_at)).hexdigest()
+    date_time = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+    hashed_id = sha1(str.encode(get_random_string(10) + date_time)).hexdigest()
     trad_spaced_sentence = "\n".join(instance.text_simplified_chinese)
     sim_spaced_sentence = "\n".join(instance.text_traditional_chinese)
     instance.sim_spaced_datastore_text = ''.join([str(elem) for elem in sim_spaced_sentence])
@@ -25,9 +27,6 @@ def add_audio_in_post(instance, created):
         "<p>", "\n").replace("<BR>", "\n<BR>\n")
     sim_spaced_sentence = sim_spaced_sentence.replace(
         "<p>", "\n").replace("<BR>", "\n<BR>\n")
-    create_mp3_task("hk", trad_spaced_sentence, str(hashed_id))
-    create_mp3_task("tw", sim_spaced_sentence, str(hashed_id))
-
     # store file locations
     str_hashed_id = str(hashed_id)
     storage_prefix = "media/temp/"
@@ -35,5 +34,8 @@ def add_audio_in_post(instance, created):
     instance.timing_simplified_chinese = storage_prefix + str_hashed_id + "_tw" + "_timing.txt"
     instance.audio_traditional_chinese = storage_prefix + str_hashed_id + "_hk" + ".mp3"
     instance.timing_traditional_chinese = storage_prefix + str_hashed_id + "_hk" + "_timing.txt"
+
+    create_mp3_task("hk", trad_spaced_sentence, instance.audio_traditional_chinese)
+    create_mp3_task("tw", sim_spaced_sentence, instance.audio_simplified_chinese)
 
     instance.save()

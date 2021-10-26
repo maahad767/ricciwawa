@@ -50,14 +50,15 @@ class Post(models.Model):
     # store both spaced and not-spaced
     privacy = models.SmallIntegerField(choices=PRIVACY_CHOICES, default=1)
     attachment_type = models.SmallIntegerField(choices=ATTACHMENT_TYPE_CHOICES, default=0)
-    attachment = models.FileField(null=True, blank=True)
+    attachment = models.CharField(max_length=200, null=True, blank=True)
     text_chinese = models.TextField(null=True, blank=True)
     text_simplified_chinese = models.JSONField(null=True, blank=True)
     text_traditional_chinese = models.JSONField(null=True, blank=True)
-    audio_simplified_chinese = models.FilePathField(null=True, blank=True)
-    timing_simplified_chinese = models.FilePathField(null=True, blank=True)
-    audio_traditional_chinese = models.FilePathField(null=True, blank=True)
-    timing_traditional_chinese = models.FilePathField(null=True, blank=True)
+    audio_simplified_chinese = models.CharField(max_length=1000, null=True, blank=True)
+    timing_simplified_chinese = models.CharField(max_length=1000, null=True, blank=True)
+    audio_traditional_chinese = models.CharField(max_length=1000, null=True, blank=True)
+    timing_traditional_chinese = models.CharField(max_length=1000, null=True, blank=True)
+
     # no idea about these fields
     pin_yin_words = models.JSONField(null=True, blank=True)
     meaning_words = models.JSONField(null=True, blank=True)
@@ -74,16 +75,23 @@ class Post(models.Model):
     # expect different formats, which are similar but different
     # 6769, 6770: create mp3 for simplified chinese and traditional text_chinese
     # don't change
+    hashtags = models.JSONField(null=True, blank=True)
+
+    # below fields can be deleted or converted to json fields
+    text_on_post = models.CharField(max_length=500, null=True, blank=True)
+    text_position_x = models.IntegerField(null=True, blank=True)
+    text_position_y = models.IntegerField(null=True, blank=True)
+    sticker_url = models.URLField(null=True, blank=True)
+    sticker_position_x = models.IntegerField(null=True, blank=True)
+    sticker_position_y = models.IntegerField(null=True, blank=True)
+
+    # post creation and update datetime
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     # I'll create a utility function in a utils.py and call it from here
     # and will upload the created file to google cloud storage and
     # then will store the file location in a model field(will be created).
-
-    @property
-    def likes(self):
-        return self.users_liked.count()
 
 
 class Comment(models.Model):

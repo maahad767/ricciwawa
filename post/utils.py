@@ -1,9 +1,10 @@
 import json
-
 import datetime
 import time
 
-from google.cloud import tasks_v2
+from google.cloud import tasks_v2, storage
+
+from django.conf import settings
 
 
 # =========================================================
@@ -14,7 +15,7 @@ from google.cloud import tasks_v2
 # It calls Azure using background task to generate the MP3 files.  Background task is needed because it takes long time
 # We use Azure because its Mandarin audio quality is the best.
 # =========================================================
-def create_mp3_task(mp3_lang, mp3_text, hashed_id, time_delay=0):
+def create_mp3_task(mp3_lang, mp3_text, filename, time_delay=0):
     from google.protobuf import timestamp_pb2
     # Create a client.
     client = tasks_v2.CloudTasksClient()
@@ -23,10 +24,13 @@ def create_mp3_task(mp3_lang, mp3_text, hashed_id, time_delay=0):
     project = 'ricciwawa'
     queue = 'my-queue'
     location = 'asia-east2'
-    filename = hashed_id + "_" + mp3_lang + ".mp3"
     payload = {"lang": mp3_lang, "mp3_text": mp3_text, "filename": filename}
 
-    # Construct the fully qualified queue name.
+    if settings.DEBUG:
+        import requests
+        requests.post("http://127.0.0.1:8000/utils/mp3-task-handler/", data=payload)
+        return
+        # Construct the fully qualified queue name.
     parent = client.queue_path(project, location, queue)
 
     # Construct the request body.
@@ -63,3 +67,60 @@ def create_mp3_task(mp3_lang, mp3_text, hashed_id, time_delay=0):
         # Use the client to build and send the task.
         response = client.create_task(parent=parent, task=task)
 
+
+def upload_get_signed_up(filename):
+    """
+    generate a signed upload url
+
+    Reference:
+        https://stackoverflow.com/questions/30843450/how-to-create-google-cloud-storage-signed-urls-on-app-engine-python
+
+    Args:
+        filename (str): filename to store in google storage
+
+    Returns:
+        (str): returns signed url
+    """
+    """Generates a v4 signed URL for downloading a blob.
+
+    Note that this method requires a service account key file. You can not use
+    this if you are using Application Default Credentials from Google Compute
+    Engine or from the Google Cloud SDK.
+    """
+    bucket_name = 'ricciwawa'
+    blob_name = filename
+
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(blob_name)
+
+    url = blob.generate_signed_url(
+        version="v4",
+        expiration=datetime.timedelta(minutes=15),
+        method="PUT",
+        content_type="application/octet-stream",
+    )
+    # print(
+    #     "curl -X PUT -H 'Content-Type: application/octet-stream' "
+    #     "--upload-file mhb.py '{}'".format(url)
+    # )
+    return url
+
+
+def download_get_signed_up(filename):
+    """
+    Generates Signed Download URL
+    """
+    bucket_name = 'ricciwawa'
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(filename)
+
+    url = blob.generate_signed_url(
+        version="v4",
+        expiration=datetime.timedelta(minutes=30),
+        method="GET",
+    )
+
+    # print("curl '{}'".format(url))
+    return url
