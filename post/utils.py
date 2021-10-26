@@ -1,11 +1,11 @@
 import json
 import datetime
+import os
 import time
 
 from google.cloud import tasks_v2, storage
 
 from django.conf import settings
-
 
 # =========================================================
 # Creator: Kenneth Yip
@@ -28,7 +28,8 @@ def create_mp3_task(mp3_lang, mp3_text, filename, time_delay=0):
 
     if settings.DEBUG:
         import requests
-        requests.post("http://127.0.0.1:8000/utils/mp3-task-handler/", data=payload)
+        hostname = os.environ.get('HOSTNAME') or 'http://127.0.0.1:8000'
+        requests.post(hostname + "/utils/mp3-task-handler/", data=payload)
         return
         # Construct the fully qualified queue name.
     parent = client.queue_path(project, location, queue)
