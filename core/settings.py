@@ -87,34 +87,45 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
-DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ricciwawadb',
-        'USER': 'ricciwawadbuser',
-        'PASSWORD': 'abcdefgh123',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-    }
-}
+#
+# DATABASES = {
+#     # 'default': {
+#     #     'ENGINE': 'django.db.backends.sqlite3',
+#     #     'NAME': BASE_DIR / 'db.sqlite3',
+#     # }
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'ricciwawadb',
+#         'USER': 'ricciwawadbuser',
+#         'PASSWORD': 'abcdefgh123',
+#         'HOST': '127.0.0.1',
+#         'PORT': '5432',
+#     }
+# }
 
 # google sql
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'ricciwawadb',
+#         'USER': 'postgres',
+#         'PASSWORD': 'lkCLt2sKmODpoNEe',
+#         'HOST': '34.92.110.109',
+#         'PORT': '5432',
+#     }
+# }
+
+# heroku settings
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ricciwawadb',
-        'USER': 'postgres',
-        'PASSWORD': 'lkCLt2sKmODpoNEe',
-        'HOST': '34.92.110.109',
+        'NAME': 'd5jjjjmin2gn9l',
+        'USER': 'dgwctdmvezejch',
+        'PASSWORD': '076515a7bf51556d18599e1682b9ad4131503ecdbe534b5c635b8c51f0526a58',
+        'HOST': 'ec2-34-232-245-127.compute-1.amazonaws.com',
         'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
