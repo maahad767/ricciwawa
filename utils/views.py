@@ -5,7 +5,7 @@ from rest_framework.response import Response
 
 from .serializers import TextToSpeechSerializer, SpeechToTextSerializer, PronunciationAssessmentSerializer
 from . import utils
-from .utils import speech_tts_msft
+from .utils import speech_tts_msft, google_translate
 
 """
 The file contains View Classes for utility APIs such as Text To Speech, Speech To Text, etc. 
@@ -89,3 +89,28 @@ class Mp3TaskHandler(generics.GenericAPIView):
         result = speech_tts_msft(lang, input_text, mp3_output_filename)
         # store the signed_mp3_url to datastore
         return Response({'successful': result})
+
+
+class TranslateToChinese(generics.GenericAPIView):
+    """
+    Author: Kenneth Y.
+    Just wrapped for django
+    """
+    serializer_class = None
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        text = request.data.get("text")
+        translated_text = google_translate(text, "zh-TW", "en")
+        return Response({'data': translated_text})
+
+
+class TranslateSimplifiedToTraditional(generics.GenericAPIView):
+    serializer_class = None
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        text = request.data.get("text")
+        translated_text = google_translate(text, "zh-TW", "zh-CN")
+        return Response({'data': translated_text})
+
