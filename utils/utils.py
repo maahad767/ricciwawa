@@ -175,26 +175,27 @@ def speech_tts_msft(lang, original_input_text, mp3_output_filename):
     def show_tts_text(evt):
         try:
             global previous_word_boundry_offset, previous_word_audio_offset, first_offset
-            # print(925, evt.text_offset)
-            # print (input_text[previous_word_boundry_offset : evt.text_offset],previous_word_boundry_offset,
-            # evt.text_offset, evt.audio_offset, evt.audio_offset - previous_word_audio_offset)
+            print(925, evt.text_offset)
+            # print (input_text[previous_word_boundry_offset : evt.text_offset],previous_word_boundry_offset, evt.text_offset, evt.audio_offset, evt.audio_offset - previous_word_audio_offset)
             # use mp3_timing here... return it as json data
             with open(timing_file_name, 'a') as f:
-                temp_line = {"char_start": previous_word_boundry_offset - first_offset}
+                temp_line = {}
+                temp_line["char_start"] = previous_word_boundry_offset - \
+                                          first_offset
                 # first time
-                if previous_word_boundry_offset == 0:
+                if (previous_word_boundry_offset == 0):
                     temp_line["char_end"] = 220
                 else:
                     temp_line["char_end"] = evt.text_offset - first_offset
                 # if (line_counter == 0):
                 # print ("466 ", first_offset, evt.text_offset)
-                if first_offset == 0:
+                if (first_offset == 0):
                     first_offset = temp_line["char_end"]
                 temp_word = input_text[previous_word_boundry_offset: evt.text_offset]
                 temp_line["chars"] = temp_word.replace("\n", "<BR>")
                 temp_line["audio_start"] = previous_word_audio_offset
                 temp_line["audio_end"] = evt.audio_offset
-                if len(temp_word) > 0:
+                if (len(temp_word) > 0):
                     f.write(json.dumps(temp_line))
                     f.write("\n")
 
