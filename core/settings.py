@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # local apps
     'account',
     'post',
+    'web',
 
     # reusable local apps
     'firebase_auth',
@@ -209,7 +210,10 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'RICCIWAWA APIs',
     'DESCRIPTION': 'API for RICCIWAWA',
     'VERSION': '1.0.0',
-    'SWAGGER_UI_DIST': 'SIDECAR',
-    'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
-    'REDOC_DIST': 'SIDECAR',
+    "SWAGGER_UI_SETTINGS": {
+        "deepLinking": True,
+        "persistAuthorization": True,
+        "displayOperationId": True,
+    }
 }
+

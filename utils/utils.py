@@ -145,6 +145,12 @@ def get_random_string(length):
     return result_str
 
 
+############################################ Speech to Text MSFT ################################
+previous_word_boundry_offset = 0
+previous_word_audio_offset = 0
+line_break_cumulative = 0
+first_offset = 0
+complete_line = ""
 def speech_tts_msft(lang, original_input_text, mp3_output_filename):
     """
     A text to speech function using Azure APIs.
