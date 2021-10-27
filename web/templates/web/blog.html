@@ -1,0 +1,182 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <title>Ricciwawa</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{% static 'style.css' %}" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css">
+    <link rel="stylesheet" href="{% static 'intl-tel-input/intlTelInput.css' %}">
+    <!--OwlCarousel-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+</head>
+
+<body>
+    {% include 'web/header.html' %}
+	<div class="blogPage">
+		<div style="text-align: left;">
+			
+		</div>
+		<br>
+		
+		<div class="eachBlog">
+			<img src="{% static 'img/blog/001.JPG' %}">
+			<div class="info">
+				<img class="avatar" src="{% static 'icon/avatar.png' %}">
+				<p class="username">Ron Yu</p>
+				<p class="dateTime">June 17, 2021</p>
+				<button class="threeDots">⋮</button>
+				<button class="threeDotsWindow" onclick="navigator.share({title: 'Engagement, engagement, engagement - how to make online classes fun!', url: 'https://ricciwawa.com/blog/001'})">🔗Share Post</button>
+			</div>
+			<a href="{% url 'web:blog_single' '001' %}">
+			<h2 class="blogTitle">Engagement, engagement, engagement - how to make online classes fun!</h2>
+			<p class="blogPreview">According to a research, the teaching environment plays a huge role and with the right environment, students in an online group can be both more motived and engaged than in a physical group.</p>
+			</a>
+		</div>
+		
+		
+		
+		<div class="eachBlog">
+			<img src="{% static 'img/blog/002.JPG' %}">
+			<div class="info">
+				<img class="avatar" src="{% static 'icon/avatar.png' %}">
+				<p class="username">Ron Yu</p>
+				<p class="dateTime">June 22, 2021</p>
+				<button class="threeDots">⋮</button>
+				<button class="threeDotsWindow" onclick="navigator.share({title: 'Reimagining Education \(1\)', url: 'https://ricciwawa.com/blog/002'})">🔗Share Post</button>
+			</div>
+			<a href="{% url 'web:blog_single' '002' %}">
+			<h2 class="blogTitle">Reimagining Education (1)<br><br><br></h2>
+			<p class="blogPreview">Covid-19 forced many schools to go from physical to online classes and, given the current continuing sporadic disease outbreaks, it is probably safe to assume online education is here to stay. </p>
+			</a>
+		</div>
+		
+		
+		
+		<div class="eachBlog">
+			<img src="{% static 'img/blog/003.JPG' %}">
+			<div class="info">
+				<img class="avatar" src="{% static 'icon/avatar.png' %}">
+				<p class="username">Ron Yu</p>
+				<p class="dateTime">July 1, 2021</p>
+				<button class="threeDots">⋮</button>
+				<button class="threeDotsWindow" onclick="navigator.share({title: 'Reimagining Education \(2\)', url: 'https://ricciwawa.com/blog/003'})">🔗Share Post</button>
+			</div>
+			<a href="{% url 'web:blog_single' '003' %}">
+			<h2 class="blogTitle">Reimagining Education (2)<br><br><br></h2>
+			<p class="blogPreview">One of the challenges of online teaching is feedback. In a physical classroom, it is relatively easy for an instructor to assess whether students are engaged or not by simply looking at students – assuming the instructor can clearly see all the students. </p>
+			</a>
+		</div>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<div class="eachBlog">
+			<img src="{% static 'mg/blog/004.JPG' %}">
+			<div class="info">
+				<img class="avatar" src="{% static 'icon/avatar.png' %}">
+				<p class="username">Ron Yu</p>
+				<p class="dateTime">July 7, 2021</p>
+				<button class="threeDots">⋮</button>
+				<button class="threeDotsWindow" onclick="navigator.share({title: 'Why Chinese is so hard', url: 'https://ricciwawa.com/blog/004'})">🔗Share Post</button>
+			</div>
+			<a href="{% url 'web:blog_single' '004' %}">
+			<h2 class="blogTitle">Why Chinese is so hard<br><br><br></h2>
+			<p class="blogPreview">Learning a foreign language like Chinese requires motivation (such as passing the HSK3 test within three months). This can be made more challenging without good teaching materials that are compelling, and support. </p>
+			</a>
+		</div>
+		
+		
+		<div class="eachBlog">
+			<img src="{% static 'img/blog/005.JPG' %}">
+			<div class="info">
+				<img class="avatar" src="{% static 'icon/avatar.png' %}">
+				<p class="username">Ron Yu</p>
+				<p class="dateTime">July 15, 2021</p>
+				<button class="threeDots">⋮</button>
+				<button class="threeDotsWindow" onclick="navigator.share({title: 'How to be your students’ favourite teacher', url: 'https://ricciwawa.com/blog/005'})">🔗Share Post</button>
+			</div>
+			<a href="{% url 'web:blog_single' '005' %}">
+			<h2 class="blogTitle">How to be your students’ favourite teacher<br><br></h2>
+			<p class="blogPreview">Science and history have proven we learn best with stories, so go with the proven strategy. Create a story. The story need not be a masterpiece, but it should be relatable to your students. </p>
+			</a>
+		</div>
+		
+		
+		<div class="eachBlog">
+			<img src="{% static 'img/blog/006.PNG' %}">
+			<div class="info">
+				<img class="avatar" src="{% static 'icon/avatar.png' %}">
+				<p class="username">Ron Yu</p>
+				<p class="dateTime">July 21, 2021</p>
+				<button class="threeDots">⋮</button>
+				<button class="threeDotsWindow" onclick="navigator.share({title: 'How to make great teaching materials', url: 'https://ricciwawa.com/blog/006'})">🔗Share Post</button>
+			</div>
+			<a href="{% url 'web:blog_single' '006' %}">
+			<h2 class="blogTitle">How to make great teaching materials<br><br></h2>
+			<p class="blogPreview">For many teachers, the hardest part of creating materials for their students is getting started.  They worry about whether what they will create is good. </p>
+			</a>
+		</div>
+		
+		<div class="eachBlog">
+			<img src="{% static 'img/blog/007.jpeg' %}">
+			<div class="info">
+				<img class="avatar" src="{% static 'icon/avatar.png' %}">
+				<p class="username">Ron Yu</p>
+				<p class="dateTime">July 28, 2021</p>
+				<button class="threeDots">⋮</button>
+				<button class="threeDotsWindow" onclick="navigator.share({title: '3 ways to make your online class shine', url: 'https://ricciwawa.com/blog/007'})">🔗Share Post</button>
+			</div>
+			<a href="{% url 'web:blog_single' '007' %}">
+			<h2 class="blogTitle">3 ways to make your online class shine<br><br></h2>
+			<p class="blogPreview">When I taught primary school, the most important lesson I learned was from an older, experienced educator who taught me that making sure students are not distracted is the first thing you need to do – after all you cannot teach a class when students are running around. </p>
+			</a>
+		</div>
+		<br><br>
+		
+	</div>
+	
+	
+	<link rel="stylesheet" href="{% static 'blog-page.css' %}">
+	<script>
+		for (let i = 0; i < window.document.getElementsByClassName('threeDots').length; i++) {
+			window.document.getElementsByClassName('threeDots')[i].addEventListener("click", function() {
+				console.log(i + ' is clicked');
+				if(window.document.getElementsByClassName('threeDotsWindow')[i].style.display === 'inline-block') {
+					window.document.getElementsByClassName('threeDotsWindow')[i].style.display = 'none';
+				} else {
+					setTimeout(function() {
+						window.document.getElementsByClassName('threeDotsWindow')[i].style.display = 'inline-block';
+					}, 100)
+					
+				};
+			})
+		}
+		window.addEventListener('click', function() {
+			console.log('Window Clicked');
+			for (let i = 0; i < window.document.getElementsByClassName('threeDots').length; i++) {
+				if(window.document.getElementsByClassName('threeDotsWindow')[i].style.display === 'inline-block') {
+					window.document.getElementsByClassName('threeDotsWindow')[i].style.display = 'none';
+				}
+			}
+		})
+	</script>
+	
+	{% include 'web/footer.html' %}
+</body>
+</html>

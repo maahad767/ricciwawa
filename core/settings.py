@@ -164,8 +164,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+STATIC_ROOT = '/static/'
+MEDIA_ROOT = '/media/'
+
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -204,6 +209,8 @@ AUTH_USER_MODEL = 'account.User'
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 GS_BUCKET_NAME = 'ricciwawa'
 STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'  # Storage backend for static files
+STATIC_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/static/'
+MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/media/'
 
 # Schema Settings
 SPECTACULAR_SETTINGS = {
@@ -216,4 +223,3 @@ SPECTACULAR_SETTINGS = {
         "displayOperationId": True,
     }
 }
-

@@ -1,0 +1,62 @@
+{% load static %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #fef5f0!important;">
+    <div class="container-fluid" style="padding: 70px;padding-top: 7px;padding-bottom: 7px;">
+        <a class="navbar-brand" href="{% url 'web:home' %}" style="color: #ff640c;">
+            <img src="{% static 'img/logo.png' %}" alt="" width="45" height="45" style="margin-top:-5px" class="d-inline-block align-top"> <b style="font-weight: 400;font-size: larger;">RICCIWAWA</b>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="nav justify-content-center" style="width:70%">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'web:home' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'web:resources' %}">Library</a>
+                </li>
+				<li class="nav-item">
+                    <a class="nav-link" href="{% url 'web:blog' %}">Blog</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'web:contact' %}">Contact</a>
+                </li>
+            </ul>
+            <ul class="nav justify-content-end">
+                <div class="dropdown" style="left: -10px;">
+                    <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        Eng
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item lang-en lang-select" href="#btn_eng" id="btn_eng" data-lang="en">Eng</a></li>
+                        <li><a class="dropdown-item lang-es lang-select" href="#btn_trad" id="btn_trad" data-lang="zh-TW">繁</a></li>
+                        <li><a class="dropdown-item lang-es lang-select" href="#btn_sim" id="btn_sim" data-lang="zh-CN">简</a></li>
+                    </ul>
+                </div>
+                <li class="nav-item">
+                    <button type="button" class="download-btn" onclick="if(navigator.vendor === 'Apple Computer, Inc.'){window.open('https://apple.com');}else{window.open('https://play.google.com/store/apps/details?id=com.makebell.ricciwawa');}">Download</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<style>
+@media not screen and (min-width: 992px) {
+	#navbarSupportedContent > ul > li {
+		width: 100%;
+		text-align: center;
+		padding-top: 20px;
+	}
+	#navbarSupportedContent > ul {
+		width: 100% !important;
+	}
+	.dropdown {
+		left: 0px !important;
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+		padding-top: 20px;
+	}
+}
+</style>

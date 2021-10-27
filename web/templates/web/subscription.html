@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sibscription</title>
+    <link rel="stylesheet" href="/static/subscription.css">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css">
+    <link rel="stylesheet" href="/static/intl/build/css/intlTelInput.css">
+
+</head>
+
+<body>
+    <!-- MultiStep Form -->
+    <div class="container">
+        <div class="d-flex justify-content-center">
+            <div class="col-md-12 col-md-offset-3">
+                <form id="msform">
+                    <span class="right-close-icon" data-bs-dismiss="modal"><i class="fas fa-times"></i></span>
+                    <!-- fieldsets -->
+                    <fieldset>
+                        <h2 class="h2">Subscribe</h2>
+                        <p style="text-align: left;">Yes! Send me exclusive, personalized content my children will love and ask for more
+                            <br>I am interested in:</p>
+                        <div class="d-flex justify-content-start">
+                            <input type="checkbox" class="btn-check" id="btn-check" autocomplete="off" />
+                            <label class="lable" for="btn-check">Fable Stories</label>
+                            <input type="checkbox" class="btn-check" id="btn-check2" autocomplete="off" />
+                            <label class="lable" for="btn-check2" style="padding:10px 43px;">Andersen's Fairytales</label>
+                        </div>
+                        <div class="d-flex justify-content-start">
+                            <input type="checkbox" class="btn-check" id="btn-check3" autocomplete="off" />
+                            <label class="lable" for="btn-check3">Criminal Case of the Century</label>
+
+                            <input type="checkbox" class="btn-check" id="btn-check4" autocomplete="off" />
+                            <label class="lable" for="btn-check4" style="padding: 10px 37px;">Sports</label>
+                        </div>
+                        <div class="d-flex justify-content-start">
+                            <input type="checkbox" class="btn-check" id="btn-check5" autocomplete="off" />
+                            <label class="lable" for="btn-check5">Children's literature</label>
+
+                            <input type="checkbox" class="btn-check" id="btn-check6" autocomplete="off" />
+                            <label class="lable" for="btn-check6" style="padding: 10px 32px;">Drama & Movies</label>
+                        </div>
+                        <div class="d-flex justify-content-start">
+                            <input type="checkbox" class="btn-check" id="btn-check7" autocomplete="off" />
+                            <label class="lable" for="btn-check7" style="padding: 10px 36px;">History</label>
+
+                            <input type="checkbox" class="btn-check" id="btn-check8" autocomplete="off" />
+                            <label class="lable" for="btn-check8" style="padding: 10px 55px;">Words for the Soul</label>
+                        </div>
+                        <input type="button" name="next" class="next action-button input" value="Next" />
+                    </fieldset>
+                    <fieldset>
+                        <h2 class="h2">Subscribe</h2>
+                        <span class="previous action-button-previous" name="previous" value="Previous"><i class="fas fa-chevron-left"></i></span>
+                        <p style="text-align:left;">By subscribing, you will receive one exclusive Chinese story of your interest every day
+                            <br>My telephone number is:</p>
+
+                        <input type="tel" id="phone" placeholder="5123 4567">
+                        <p class="text-muted small-text" style="font-size:14px; padding-top: 9px; cursor:pointer;">or subscribe with Email <i class="fas fa-chevron-down"></i></p>
+                        <input type="text" name="email" class="input email" placeholder="Enter your email here" />
+                        <input type="submit" name="submit" class="submit action-button input" value="Subscribe" />
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /.MultiStep Form -->
+
+    <script src="/static/jquery.easing.min.js"></script>
+    <script src="/static/intl/build/js/intlTelInput.js"></script>
+    <script>
+        var input = document.querySelector("#phone");
+        window.intlTelInput(input, {
+            utilsScript: "/static/intl/build/js/utils.js?1613236686837",
+            preferredCountries: ["hk"]
+        });
+        /*
+        $("button").click(function() {
+            var favorite = [];
+            $.each($("input[class='btn-check']:checked"), function() {
+                favorite.push($(this).val());
+            });
+            alert("My are: " + favorite.join(", "));
+        });
+        $(".btn-check").on("click", function() {
+            //$(this).next(".lable").toggleClass("dropdown-togglea");
+        })
+        */
+        $(".small-text").one("click", function() {
+            $(this).text("or");
+            $(".email").toggle("slow");
+        });
+        $(".right-close-icon").on("click", function() {
+            //$("#msform").fadeOut("slow");
+        });
+    </script>
+    <script>
+        //jQuery time
+        var current_fs, next_fs, previous_fs; //fieldsets
+        var left, opacity, scale; //fieldset properties which we will animate
+        var animating; //flag to prevent quick multi-click glitches
+
+        $(".next").click(function() {
+            if (animating) return false;
+            animating = true;
+
+            current_fs = $(this).parent();
+            next_fs = $(this).parent().next();
+
+            //activate next step on progressbar using the index of next_fs
+            $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+
+            //show the next fieldset
+            next_fs.show();
+            //hide the current fieldset with style
+            current_fs.animate({
+                opacity: 0
+            }, {
+                step: function(now, mx) {
+                    //as the opacity of current_fs reduces to 0 - stored in "now"
+                    //1. scale current_fs down to 80%
+                    scale = 1 - (1 - now) * 0.2;
+                    //2. bring next_fs from the right(50%)
+                    left = (now * 50) + "%";
+                    //3. increase opacity of next_fs to 1 as it moves in
+                    opacity = 1 - now;
+                    current_fs.css({
+                        'transform': 'scale(' + scale + ')',
+                        'position': 'absolute'
+                    });
+                    next_fs.css({
+                        'left': left,
+                        'opacity': opacity
+                    });
+                },
+                duration: 800,
+                complete: function() {
+                    current_fs.hide();
+                    animating = false;
+                },
+                //this comes from the custom easing plugin
+                easing: 'easeInOutBack'
+            });
+        });
+
+        $(".previous").click(function() {
+            if (animating) return false;
+            animating = true;
+
+            current_fs = $(this).parent();
+            previous_fs = $(this).parent().prev();
+
+            //de-activate current step on progressbar
+            $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+
+            //show the previous fieldset
+            previous_fs.show();
+            //hide the current fieldset with style
+            current_fs.animate({
+                opacity: 0
+            }, {
+                step: function(now, mx) {
+                    //as the opacity of current_fs reduces to 0 - stored in "now"
+                    //1. scale previous_fs from 80% to 100%
+                    scale = 0.8 + (1 - now) * 0.2;
+                    //2. take current_fs to the right(50%) - from 0%
+                    left = ((1 - now) * 50) + "%";
+                    //3. increase opacity of previous_fs to 1 as it moves in
+                    opacity = 1 - now;
+                    current_fs.css({
+                        'left': left
+                    });
+                    previous_fs.css({
+                        'transform': 'scale(' + scale + ')',
+                        'opacity': opacity
+                    });
+                },
+                duration: 800,
+                complete: function() {
+                    current_fs.hide();
+                    animating = false;
+                },
+                //this comes from the custom easing plugin
+                easing: 'easeInOutBack'
+            });
+        });
+
+        $(".submit").click(function() {
+            return false;
+        })
+    </script>
+</body>
+
+</html>

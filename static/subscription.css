@@ -1,0 +1,220 @@
+/*custom font*/
+
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
+
+/*basic reset*/
+
+
+/*form styles*/
+
+#msform {
+    text-align: center;
+    position: relative;
+    margin-top: 30px;
+}
+
+.right-close-icon {
+    position: absolute;
+    z-index: 9;
+    right: 80px;
+    font-size: 25px;
+    top: 18px;
+    cursor: pointer;
+}
+
+#msform fieldset {
+    background: white;
+    border: 0 none;
+    border-radius: 0px;
+    box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+    padding: 20px 30px;
+    box-sizing: border-box;
+    width: 80%;
+    margin: 0 10%;
+    position: relative;
+    border-radius: 15px;
+}
+
+
+/*Hide all except first fieldset*/
+
+#msform fieldset:not(:first-of-type) {
+    display: none;
+}
+
+
+/*inputs*/
+
+.lable,
+.input {
+    margin: 10px 10px 10px 2px;
+    padding: 10px 20px;
+    background-color: #dadada;
+    color: black;
+    border: none;
+    font-weight: bold;
+    border-radius: 14px;
+    display: inline-block;
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.btn-check:active+.lable,
+.btn-check:checked+.lable,
+.lable.active,
+.lable:active,
+.show>.lable.dropdown-togglea {
+    color: #fff;
+    background-color: #0a58ca;
+    border-color: #0a53be;
+}
+
+#msform .input,
+#msform textarea {
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 14px;
+    margin-bottom: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: montserrat;
+    color: #2C3E50;
+    font-size: 13px;
+}
+
+#msform .input:focus,
+#msform textarea:focus {
+    outline: none !important;
+    outline-style: none !important;
+    box-shadow: none !important;
+    border-color: transparent !important;
+}
+
+
+/*buttons*/
+
+#msform .action-button {
+    width: 100px;
+    background: #fe5f03;
+    font-weight: bold;
+    color: white;
+    border: 0 none;
+    border-radius: 25px;
+    cursor: pointer;
+    padding: 10px 5px;
+    margin: 10px 5px;
+}
+
+#msform .action-button:hover,
+#msform .action-button:focus {
+    box-shadow: 0 0 0 2px white, 0 0 0 3px #fe5f03;
+    border: none;
+}
+
+#msform .action-button-previous {
+    position: absolute;
+    width: 30px;
+    top: 0px;
+    left: 0px;
+    font-size: 25px;
+    border: 0 none;
+    border-radius: 25px;
+    cursor: pointer;
+    padding: 10px 5px;
+    margin: 10px 5px;
+}
+
+#msform #phone {
+    width: 385px;
+    height: 48px;
+    border: none;
+    background-color: #dadada;
+    border-radius: 14px;
+}
+
+#msform #phone:hover,
+#msform #phone:active,
+#msform #phone:focus {
+    outline: none !important;
+    outline-style: none !important;
+    box-shadow: none !important;
+    border-color: transparent !important;
+}
+
+#msform .email {
+    display: none;
+}
+
+
+/*headings*/
+
+.fs-subtitle {
+    font-weight: normal;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+
+/*progressbar*/
+
+#progressbar {
+    margin-bottom: 30px;
+    overflow: hidden;
+    /*CSS counters to number the steps*/
+    counter-reset: step;
+}
+
+#progressbar li {
+    list-style-type: none;
+    color: white;
+    text-transform: uppercase;
+    font-size: 9px;
+    width: 33.33%;
+    float: left;
+    position: relative;
+    letter-spacing: 1px;
+}
+
+#progressbar li:before {
+    content: counter(step);
+    counter-increment: step;
+    width: 24px;
+    height: 24px;
+    line-height: 26px;
+    display: block;
+    font-size: 12px;
+    color: #333;
+    background: white;
+    border-radius: 25px;
+    margin: 0 auto 10px auto;
+}
+
+
+/*progressbar connectors*/
+
+#progressbar li:after {
+    content: '';
+    width: 100%;
+    height: 2px;
+    background: white;
+    position: absolute;
+    left: -50%;
+    top: 9px;
+    z-index: -1;
+    /*put it behind the numbers*/
+}
+
+#progressbar li:first-child:after {
+    /*connector not needed before the first step*/
+    content: none;
+}

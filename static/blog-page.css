@@ -1,0 +1,135 @@
+div.blogPage {
+	margin-left: auto;
+	margin-right: auto;
+	max-width: 890px;
+	text-align: center;
+	background-color: rgb(238, 238, 247);
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+div.blogPage > .eachBlog {
+	position: relative;
+	background-color: white;
+	margin: 15px;
+	border: 0.5px solid #ff6005;
+	display: inline-block;
+	max-width: 45%;
+	min-height: 500px;
+}
+
+div.blogPage > .eachBlog > img {
+	-moz-force-broken-image-icon: 1;
+	display: inline;
+	width: 100%;
+	height: 300px;
+	text-align: justify;
+	object-fit: cover;
+}
+
+div.blogPage > .eachBlog > .info {
+	position: relative;
+	padding-top: 28px;
+	height: 3em;
+}
+
+div.blogPage > .eachBlog > .info > .avatar {
+	position: absolute;
+	left: 30px;
+	width: 34px;
+}
+
+div.blogPage > .eachBlog > .info > p.username {
+	position: absolute;
+	left: 70px;
+	font-size: 12px;
+	background-color: lemon;
+	text-align: justify;
+}
+
+div.blogPage > .eachBlog > .info > p.dateTime {
+	position: absolute;
+	left: 70px;
+	top: 3.7em;
+	font-size: 12px;
+}
+
+div.blogPage > .eachBlog > .info > button.threeDots {
+	border:none;
+	background-color: white;
+	position: absolute;
+	right: 28px;
+	top: 2em;
+	font-weight: 900;
+}
+
+div.blogPage > .eachBlog > .info > button.threeDotsWindow {
+	position: absolute;
+	top: 4em;
+	right: 45px;
+	z-index: 1;
+	background-color: white;
+	display: none;
+	border: none;
+	padding: 10px;
+	box-shadow: 5px 5px 15px grey;
+	
+	
+}
+
+div.blogPage > .eachBlog > a > .blogTitle {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	padding-left: 28px;
+	padding-right: 28px;
+	padding-top: 28px;
+	font-size: 20px;
+	text-align:-moz-left;
+	text-align: left;
+	text-align-last: left;
+}
+
+div.blogPage > .eachBlog > a > .blogPreview {
+	padding-left: 28px;
+	padding-right: 28px;
+	margin-bottom: 50px;
+	font-size: 18px;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;	
+	text-align: left;
+	text-align-last: left;
+}
+
+@media not all and (min-width: 800px) {
+	div.blogPage {
+		background-color: white;
+	}
+	
+	div.blogPage > .eachBlog {
+		margin: 0px;
+		border: 0px;
+		display: block;
+		max-width: 100%;
+		min-height: auto;
+	}
+	div.blogPage > .eachBlog > img {
+		-moz-force-broken-image-icon: 1;
+		width: 100%;
+		height: auto;
+	}
+	div.blogPage > .eachBlog > a .blogTitle {
+		-webkit-line-clamp: 10;
+	}
+	div.blogPage > .eachBlog > a > .blogTitle > br {
+		display: none;
+	}
+}

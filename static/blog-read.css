@@ -1,0 +1,118 @@
+body > center > div.blog-reading-page-outter {
+	margin-left: auto;
+	margin-right: auto;
+	max-width: 890px;
+	background-color: rgb(238, 238, 247);
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+#blog-reading-page {
+	position: relative;
+	display: inline-block;
+	width: 90%;
+	background-color: white;
+	border: 0.5px solid #ff6005;
+	padding: 30px;
+}
+
+#avatar {
+	position: absolute;
+	left: 50px;
+	width: 34px;
+}
+
+#info-text {
+	position: absolute;
+	left: 100px;
+	top: 35px;
+	display: inline;
+	text-align: left;
+}
+
+.threeDots {
+	border:none;
+	background-color: white;
+	position: absolute;
+	right: 28px;
+	top: 2em;
+	font-weight: 900;
+}
+
+#title {
+	text-align: left;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+#image {
+	width: 95%;
+}
+
+br.wide {
+	display: none;
+}
+
+#full-text {
+	text-align: left;
+	padding: 20px;
+}
+
+.threeDotsWindow {
+	position: absolute;
+	display: none;
+	top: 3em;
+	right: 45px;
+	z-index: 1;
+	background-color: white;
+	display: auto;
+	border: none;
+	padding: 10px;
+	box-shadow: 5px 5px 15px grey;
+}
+
+@media not all and (min-width: 800px) {
+	#blog-reading-page {
+		position: relative;
+		display: inline-block;
+		width: 100%;
+		background-color: white;
+		border: 0px;
+		padding: 0px;
+	}
+	#info-text {
+		position: absolute;
+		left: 70px;
+		top: 5px;
+		display: inline;
+	}
+	#image {
+		width: 100%;
+	}
+	#avatar {
+		position: absoluter;
+		left: 20px;
+		top: 10px;
+	}
+	#title {
+		text-align: left;
+		padding-left: 20px;
+		padding-right: 20px;
+		padding-top: 20px;
+	}
+	
+	.threeDots {
+		border:none;
+		background-color: transparent;
+		position: absolute;
+		right: 1em;
+		top: 1em;
+		font-weight: 900;
+	}
+	br.wide{
+		display: block;
+	}	
+}

@@ -1,3 +1,4 @@
+from django.views import generic
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 
@@ -10,6 +11,10 @@ from .models import Subscription, Playlist, Post, Comment, FavouriteVocabulary
 from .serializers import SubscriptionSerializer, PlaylistSerializer, PostSerializer, CommentSerializer, \
     LikePostSerializer, ViewPostSerializer, FollowSerializer, FavouriteSerializer, FavouriteVocabularySerializer, \
     SavePlaylistSerializer, SubscribeSerializer, ReportPostSerializer, IgnorePostSerializer
+
+
+class WebHome(generic.RedirectView):
+    pattern_name = 'web:home'
 
 
 class NewsfeedView(generics.ListAPIView):

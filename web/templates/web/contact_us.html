@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+    <link href="{% static 'style.css' %}" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css">
+    <link rel="stylesheet" href="{% static 'intl-tel-input/intlTelInput.css' %}">
+    <!--OwlCarousel-->
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+</head>
+
+<body>
+    {% include 'web/header.html' %}
+    <div class="container contact_us-container">
+        <div class="row">
+            <div class="col-sm">
+                <h5 class="col1-sm-header">More Info</h5>
+                <h1 class="h1"><br>ABOUT RICCIWAWA</h1>
+                <p class="eng"><br> We created Ricciwawa with one goal in mind - to make Chinese learning fun, easy and tailored for all. 
+                    <br><br>If there is anyway we can do better, let us know and we will follow up with you as soon as possible.
+                </p>
+				
+				<p class="chinese_tw"><br> 我們在創立Ricciwawa時懷抱著一個堅定的信念 - 讓學習中文變得簡單，有趣和個性化。 
+                    <br><br>如果有可以改進或者做的更好的地方，請務必告訴我們。 我們會儘快跟進。
+                </p>
+				
+				<p class="chinese_cn"><br> 我们在创立Ricciwawa时懷抱着一个坚定的信念 - 让学习中文变得简单，有趣和个性化。
+                    <br><br>如果有可以改进或者做的更好的地方，请务必告诉我们。我们会尽快跟进。
+                </p>
+            </div>
+            <div class="col-sm">
+                <h2 class="h2">CONTACT US!</h2>
+                <div class="row g-3">
+                    <div class="col">
+                        <label for="form-control">Enter Your Name*</label>
+                        <input type="text" id="form-name"  class="form-control" placeholder="Name" aria-label="Name" required>
+                    </div>
+                    <div class="col">
+                        <label for="form-control">Enter Your Email*</label>
+                        <input type="email" id="form-email" class="form-control" placeholder="Email" aria-label="Email" required>
+                    </div>
+                    <div class="col-12">
+                        <label for="form-control">Enter Your Message*</label>
+                        <textarea class="form-control" placeholder="Message" id="floatingTextarea2" style="height: 100px"></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="sendMesage();" id="submit-button">Contact Us Now!</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+	<script>
+		function sendMesage() {
+			document.getElementById("submit-button").style.display = 'none';
+			let name = String(document.getElementById("form-name").value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+			let email = String(document.getElementById("form-email").value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+			let message = String(document.getElementById("floatingTextarea2").value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+			let xhttp = new XMLHttpRequest;
+			xhttp.onreadystatechange = function() {
+				if(xhttp.readyState === 4 && xhttp.status === 200) {
+					alert('Message sent successfully. Ricciwawa will contact you shortly.');
+					document.getElementById("submit-button").style.display = 'block';
+					
+				};
+			};
+			xhttp.open('POST', window.location.origin + '/contact_us_form_data?' + "name=" + encodeURIComponent(name) + '&email=' + encodeURIComponent(email) + '&message=' + encodeURIComponent(message));
+			xhttp.send();
+		}
+		
+		window.onhashchange = function() {
+			if(window.location.hash == "#btn_sim"){
+				$('.eng').hide()
+				$('.chinese_tw').hide()
+				$('.chinese_cn').show()
+			}
+			if(window.location.hash == "#btn_trad"){
+				$('.eng').hide()
+				$('.chinese_tw').show()
+				$('.chinese_cn').hide()
+			}
+			if(window.location.hash == "#btn_eng"){
+				$('.eng').show()
+				$('.chinese_tw').hide()
+				$('.chinese_cn').hide()
+			}
+		}
+	</script>
+
+    {% include 'web/footer.html' %}
+</body>
+
+</html>

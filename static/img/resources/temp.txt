@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    
+    <meta property="og:title" content="Ricciwawa - Helping teachers 鸡妈妈有三只小鸡宝宝，一只只 Mother chicken has three baby chickens, all of which are lively and cute. Among the three little chickens, one is a little rooster, and two are little hens. One of the two little hens is called Xiao Hua and the other is called Xiao Huang. The little cock is tall 
+鸡妈妈
+有
+三只
+小鸡宝宝
+，
+一只只
+ Mother chicken has three baby chickens, all of which are lively and cute. Among the three little chickens, one is a little rooster, and two are little hens. One of" /><meta property="og:url" content="https://www.ricciwawa.com/?sc=aHhuZnEwMjEwMTYyOTE1YXJwZ2U" /><meta property="og:site_name" content="Ricciwawa" /><meta property="og:type" content="Learning.Education" /><meta property="og:image" content="https://live.staticflickr.com/778/20560507786_2019c2febb_b.jpg" /><meta property="og:description" content="
+鸡妈妈
+有
+三只
+小鸡宝宝
+，
+一只只
+... 
+Mother chicken has three baby chickens, all of which are lively and cute. Among the three little chickens, one is a little rooster, and two are little hens. One of..."/>
+    
+
+    <link rel="icon" href="../../../../favicon.ico">
+
+    <title>Ricciwawa Ricci娃娃</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link type="text/css" rel="stylesheet" href="/static/dropzone.css">
+    <link tyle="text/css" rel="stylesheet" href="/static/comment.css">
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/g/bootstrap.material-design@0.5.9(css/ripples.min.css+css/bootstrap-material-design.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css">
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100&family=Noto+Sans+TC&display=swap');
+    
+    /* Sticky footer styles
+    -------------------------------------------------- */
+
+    html {
+    position: relative;
+    min-height: 100%;
+    }
+    body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+    }
+    .footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    line-height: 60px; /* Vertically center the text there */
+    background-color: #f5f5f5;
+    }
+
+
+    /* Custom page CSS
+    -------------------------------------------------- */
+    /* Not required for template or sticky footer method. */
+
+    body > .container {
+    padding: 60px 15px 0;
+    }
+
+    .footer > .container {
+    padding-right: 15px;
+    padding-left: 15px;
+    }
+
+    br {
+        line-height: 80%;
+        margin: 5px 0;
+     }
+
+    code {
+    font-size: 80%;
+    }
+    .box {
+        display: flex;
+        float: left;
+        flex-direction: column;
+        min-height: 10vh;
+        max-width: 150px;
+        max-height: 300px;
+        min-height: 60px
+    }
+    .box2 {
+        float: left;
+        max-width: 150px;
+        height: 300px;
+        margin: 1em;
+        padding: 0 0 0 0;
+        margin: 2px 2px 2px 2px;
+        font-size: 80%;
+        text-align: center;
+    }
+    .explain {
+        padding: 0 0 0 0;
+        margin: 2px 2px 2px 2px;
+        text-align: center;
+        max-width: 140px;
+    }
+    .svg_character {
+        padding: 0 0 0 0;
+        margin: 2px 2px 2px 2px;
+        //height: 100%;
+        //height: 90px;
+    }        
+    .c-path {
+        fill: black; //there is a difference between mobile safari/chrome and their desktop version
+    }      
+    .audio_buttons {
+        padding: 0 0px 0 0px;
+        display: none;
+    }
+    .after-box {
+    clear: left;
+    height: 15px;
+    }
+    .div_cartoon {
+        clear: left;
+    }
+    .load_modal_image {
+        float: left;
+    }
+    .span_char {
+        display: inline-block;
+        width: 1em;
+        font-size: xx-large;
+        padding-bottom: 30px;
+        vertical-align: top;
+        text-align:center;
+    }
+    .span_p_char {
+        margin-top:-8px;
+        font-size: small;
+        margin-bottom: -8px;
+    }
+    .class_normal_text {
+        padding: 0 0 0 0;
+        margin: 0 0 0 0;
+        font-size: xx-large;
+        font-family: 'Noto Sans TC', sans-serif;
+        font-family: 'Noto Serif SC', sans-serif;
+    }
+    @media print  
+    {
+        div{
+            page-break-inside: avoid;
+        }
+        .fixed-top
+        {
+        display:none;
+        }
+    } 
+    .image_upload-area{
+        width: 70%;
+        height: 150px;
+        border: 2px solid lightgray;
+        border-radius: 3px;
+        margin: 0 auto;
+        text-align: center;
+        overflow: auto;
+    }
+
+    .image_upload-area:hover{
+        cursor: pointer;
+    }
+
+    .image_upload-area h1{
+        text-align: center;
+        font-weight: normal;
+        font-family: sans-serif;
+        line-height: 50px;
+        color: darkslategray;
+    }
+
+    #input_image_file_b{
+        display: none;
+    }
+    img {  
+        position: relative;
+    }
+
+    /* style this to fit your needs */
+    /* and remove [alt] to apply to all images*/
+    img[alt]:after {  
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #fff;
+        font-family: 'Helvetica';
+        font-weight: 300;
+        line-height: 2;  
+        text-align: center;
+        content: attr(alt);
+    }
+
+    .nav-bar-color{
+        background-color: #FFA500;
+    }
+
+    .class_pin_yin {
+        display: block;
+        vertical-align: bottom;
+        padding: 0 0 0 0;
+        margin: 0 0 -10px 0;
+    }
+
+    .class_sim_png {
+        width: 38px;
+        padding: 8px 0 8px 0 ;
+        font-size:30px;
+    }
+
+    .class_trad_png {
+        width: 38px;
+        padding: 8px 0 8px 0 ;
+        font-size:30px;
+    }
+
+    .class_div_sim{
+        vertical-align: bottom;
+    }
+
+    .class_div_trad{
+        vertical-align: bottom;
+    }
+
+
+
+    #presentation {
+  width: 480px;
+  height: 120px;
+  padding: 20px;
+  margin: auto;
+  background: #FFF;
+  margin-top: 10px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  transition: all 0.3s;
+  border-radius: 3px;
+}
+
+#presentation:hover {
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  transition: all 0.3s;
+  transform: translateZ(10px);
+}
+
+#floating-subscription_button_b {
+  width: 100px;
+  height: 65px;
+  background: white;
+  position: relative;
+  top: 0px;
+  right: 30px;
+  cursor: pointer;
+  text-align: center;
+  padding:0px 0 0px 0;
+  box-shadow: 0px 2px 5px #666;
+
+}
+
+.plus {
+  color: white;
+  position: absolute;
+  top: 0;
+  display: block;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+  line-height: 55px;
+  font-size: 38px;
+  font-family: 'Roboto';
+  font-weight: 300;
+  animation: plus-out 0.3s;
+  transition: all 0.3s;
+}
+
+#container-subscription_floating {
+  position: relative;
+  width: 70px;
+  height: 70px;
+  top: 10px;
+  right: 5px;
+  z-index: 50px;
+}
+
+#container-floating {
+  position: relative;
+  width: 70px;
+  height: 70px;
+  bottom: 60px;
+  right: 5px;
+  z-index: 50px;
+}
+
+#container-floating:hover {
+  height: 400px;
+  width: 90px;
+  padding: 5x;
+}
+
+#container-floating:hover .plus {
+  animation: plus-in 0.15s linear;
+  animation-fill-mode: forwards;
+}
+
+.edit {
+  position: absolute;
+  top: 0;
+  display: block;
+  bottom: 0;
+  left: 0;
+  display: block;
+  right: 0;
+  padding: 0;
+  opacity: 0;
+  margin: auto;
+  line-height: 65px;
+  transform: rotateZ(-70deg);
+  transition: all 0.3s;
+  animation: edit-out 0.3s;
+}
+
+#container-floating:hover .edit {
+  animation: edit-in 0.2s;
+  animation-delay: 0.1s;
+  animation-fill-mode: forwards;
+}
+
+.three_dots {
+  max-width: 40px;
+  width: 8%;
+  cursor: pointer;
+  position: absolute;
+  top:3px;
+  right:3px;
+}
+
+#div_audio {
+    margin: 0px auto 0px auto;
+    top: 3px;
+    padding: 0 0 0 0;
+    overflow: hidden;
+    width:80%;
+    max-width: 600px;
+}
+@keyframes edit-in {
+  from {
+    opacity: 0;
+    transform: rotateZ(-70deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotateZ(0deg);
+  }
+}
+
+@keyframes edit-out {
+  from {
+    opacity: 1;
+    transform: rotateZ(0deg);
+  }
+  to {
+    opacity: 0;
+    transform: rotateZ(-70deg);
+  }
+}
+
+@keyframes plus-in {
+  from {
+    opacity: 1;
+    transform: rotateZ(0deg);
+  }
+  to {
+    opacity: 0;
+    transform: rotateZ(180deg);
+  }
+}
+
+@keyframes plus-out {
+  from {
+    opacity: 0;
+    transform: rotateZ(180deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotateZ(0deg);
+  }
+}
+
+.nds {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  position: fixed;
+  z-index: 300;
+  transform: scale(0);
+  cursor: pointer;
+}
+
+.nd1 {
+  background: gray;
+  right: 40px;
+  bottom: 120px;
+  right:5px;
+ /*  animation-delay: 0.2s;
+  animation: bounce-out-nds 0.3s linear;*/
+  animation-fill-mode: forwards;
+  } 
+
+.nd3 {
+  background: #3c80f6;
+  right: 40px;
+  bottom: 180px;
+  right:5px;
+ /*  animation-delay: 0.15s;
+  animation: bounce-out-nds 0.15s linear;*/
+  animation-fill-mode: forwards; 
+}
+
+.nd4 {
+  background: #ba68c8;
+  right: 40px;
+  bottom: 240px;
+  right:5px;
+  /* animation-delay: 0.1s;
+  animation: bounce-out-nds 0.1s linear;*/
+  animation-fill-mode: forwards; 
+}
+
+.nd5 {
+  background-image: url('https://lh3.googleusercontent.com/-X-aQXHatDQY/Uy86XLOyEdI/AAAAAAAAAF0/TBEZvkCnLVE/w140-h140-p/fb3a11ae-1fb4-4c31-b2b9-bf0cfa835c27');
+  background-size: 100%;
+  right: 40px;
+  bottom: 300px;
+  animation-delay: 0.08s;
+  animation: bounce-out-nds 0.1s linear;
+  animation-fill-mode: forwards;
+}
+/* floating */
+@keyframes bounce-nds {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes bounce-out-nds {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+
+#container-floating:checked {  
+  margin-top:0;
+  opacity:1;
+}
+
+#container-floating:hover .nds {
+  animation: bounce-nds 0.1s linear;
+  animation-fill-mode: forwards;
+}
+
+#container-floating:hover .nd3 {
+  animation-delay: 0.08s;
+}
+
+#container-floating:hover .nd4 {
+  animation-delay: 0.15s;
+}
+
+#container-floating:hover .nd5 {
+  animation-delay: 0.2s;
+}
+
+.class_meaning {
+    display: none;
+}
+
+.letter {
+  font-size: 23px;
+  font-family: 'Roboto';
+  color: white;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0;
+  top: 0;
+  bottom: 0;
+  text-align: center;
+  line-height: 40px;
+}
+
+.reminder {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  top: 0;
+  bottom: 0;
+  line-height: 40px;
+}
+
+.profile {
+  border-radius: 50%;
+  width: 40px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  right: 20px;
+}
+
+.fa:focus {outline:none}
+/* floating */
+
+* {
+  box-sizing: border-box;
+}
+
+/* Create three equal columns that floats next to each other */
+.column {
+  float: left;
+  padding: 0 0 0 0;
+  text-align: center;
+  vertical-align: middle;
+  /*margin-right: -10px;*/
+  /*margin-left: -10px;*/
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+
+}
+
+
+.form-switch {
+  display: inline-block;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  width:100%;
+}
+
+.form-switch i {
+  position: relative;
+  display: inline-block;
+  margin-right: .5rem;
+  width: 46px;
+  height: 26px;
+  background-color: #26bd76;
+  border-radius: 23px;
+  vertical-align: text-bottom;
+  transition: all 0.3s linear;
+}
+
+.form-switch i::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 42px;
+  height: 22px;
+  background-color: #26bd76;
+  border-radius: 11px;
+  transform: translate3d(2px, 2px, 0) scale3d(1, 1, 1);
+  transition: all 0.25s linear;
+}
+
+.form-switch i::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 22px;
+  height: 22px;
+  background-color: #fff;
+  border-radius: 11px;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.24);
+  transform: translate3d(2px, 2px, 0);
+  transition: all 0.2s ease-in-out;
+}
+
+.form-switch:active i::after {
+  width: 28px;
+  transform: translate3d(2px, 2px, 0);
+}
+
+.form-switch:active input:checked + i::after { transform: translate3d(16px, 2px, 0); }
+
+.form-switch input { display: none; }
+
+.form-switch input:checked + i { background-color: #00c4ff; }
+
+.form-switch input:checked + i::before { transform: translate3d(18px, 2px, 0) scale3d(0, 0, 0); }
+
+.form-switch input:checked + i::after { transform: translate3d(22px, 2px, 0); }
+
+</style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.7.0/firebase-ui-auth.css">
+    
+     
+    <!-- Custom styles for this template -->
+   <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+  <!-- Insert these scripts at the bottom of the HTML, but before you use any Firebase services -->
+
+  <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-app.js"></script>
+
+  <!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
+  <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-analytics.js"></script>
+
+  <!-- Add Firebase products that you want to use -->
+  <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/ui/4.7.0/firebase-ui-auth.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+  //https://firebase.google.com/docs/auth/web/google-signin#customizing-the-redirect-domain-for-google-sign-in
+  var firebaseConfig = {
+    apiKey: "AIzaSyAMC3CeECe7u8UuOGYObBXPSrKRGSm3Yto",
+    authDomain: "ricciwawa.firebaseapp.com", //"auth.custom.ricciwawa.com", //
+    databaseURL: "https://ricciwawa.firebaseio.com",
+    projectId: "ricciwawa",
+    storageBucket: "ricciwawa.appspot.com",
+    messagingSenderId: "474689186133",
+    appId: "1:474689186133:web:305efcec12f62dd80427dc",
+    measurementId: "G-MH9M99L8Y2"
+  };
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+
+  var ui = new firebaseui.auth.AuthUI(firebase.auth());
+  ui.start('#firebaseui-auth-container', {
+  signInOptions: [
+    // List of OAuth providers supported.
+    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+    firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+    firebase.auth.EmailAuthProvider.PROVIDER_ID,
+    firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+      {
+        provider: 'apple.com',
+      },
+],
+  // Other config options...
+});
+
+// Initialize Firebase-ui
+</script>
+
+  </head>
+
+  <body>
+    <nav class="navbar fixed-top navbar-light nav-bar-color" id="navbar_first" style="padding: 0 0 0 0;justify-content:space-evenly">
+        <img src="/static/img/ricciwawa_logo.svg" style="left:3px;width:50px;padding: 0 0 0 0;">
+        <button type="button" id="floating-subscription_button"  data-toggle="modal" data-target="#modal_subscription"  data-placement="left" style="width:68px;padding: 0 0 0 0;background-color: orange;border:none;">
+            <p style="font-size:1em;padding:0 0 0 0;margin:0 0 0 0;">訂閱</p>
+            <p style="font-size: small;padding:0 0 0 0;margin:-4px 0 0 0">Subscribe</p>
+        </button>
+        <div style="font-size: xx-large;color:orange;width:10px;">&#9776;</div>
+        <div id="btn_three_dots" class="three_dots navbar-nav" style="font-size: xx-large;"><p style="padding: 0 0 0 0;margin: 0 0 0 7px;">&#9776;</p></div>
+    </nav>
+    <nav class="navbar fixed-top navbar-light nav-bar-color" id="nav_setting_bar" style="justify-content:space-evenly;margin:50px 0 0 0;padding: 0 0 0 0;">
+        <button type="button" class="btn btn-toggle" data-toggle="button" aria-pressed="false" autocomplete="off" style="width:110px;text-align: left;padding:10px 0 0 20px;">
+            <div class="handle"></div>
+            <label class="form-switch">
+                <div class="row">
+                    <div class="column">
+                        <p style="font-size:1em;padding:0 0 0 0;margin:0 3px 0 0;">正</p>
+                        <p style="font-size: small;padding:0 0 0 0;margin:-4px 0 0 0">Trad</p>
+                    </div>
+                    <div class="column" style="width:50px;">
+                        <input id="conf_t_or_s" type="checkbox" checked>
+                        <i></i>
+                    </div>
+                    <div class="column">
+                        <p style="font-size:1em;padding:0 0 0 0;margin:0 0 0 -2px;">简</p>
+                        <p style="font-size: small;padding:0 0 0 0;margin:-4px 0 0 -2px">Sim</p>
+                    </div>
+                </div>
+            </label>
+        </button>
+        <button type="button" class="btn btn-toggle" data-toggle="button" aria-pressed="false" autocomplete="off" style="width:180px;text-align: left;display:none;">
+            <div class="handle"></div>
+            <label class="form-switch">
+                <div class="row">
+                    <div class="column">
+                        <p style="font-size: 1em;padding:0 0 0 0;margin:0 0 0 0;">粵</p>
+                        <p style="font-size: x-small;padding:0 0 0 0;margin:-4px 0 0 0">Cantonese</p>
+                    </div>
+                    <div class="column" style="width:50px;">
+                        <input id="conf_dialect" type="checkbox">
+                        <i></i>
+                    </div>
+                    <div class="column">
+                        <p style="font-size:1em;padding:0 0 0 0;margin:0 0 0 0;">普</p>
+                        <p style="font-size: x-small;padding:0 0 0 0;margin:-4px 0 0 0">Mandarin</p>
+                    </div>
+                </div>
+            </label>
+        </button> 
+        <div class="check_pin_yin" style="padding: 0 0 0 0;margin:0 0 0 0 ;display:inline-block;width:50px;">
+            <div class="column" style="padding:5px 0 0 5px;">
+                <input class="form-check-input" type="checkbox" value="" id="conf_pin_yin" style="margin-left: -1rem;" checked>
+            </div>
+            <div class="column">
+                <label class="form-check-label" for="conf_pin_yin">
+                    <p style="font-size:1em;padding:0 0 0 0;margin:0 0 0 0;">拼音</p>
+                    <p style="font-size: small;padding:0 0 0 0;margin:-4px 0 0 0">Pinyin</p>
+                </label>
+            </div>                           
+        </div>    
+        <div class="check_radical" style="padding: 0 0 0 0;margin:0 0 0 0 ;display:inline-block;width:50px;">
+            <div class="column" style="padding:5px 0 0 5px;">
+                <input class="form-check-input" type="checkbox" value="" id="conf_radical" style="margin-left: -0.8rem;">
+            </div>
+            <div class="column">
+                <label class="form-check-label" for="conf_radical">
+                    <p style="font-size:1em;padding:0 0 0 0;margin:0 0 0 0;">部首</p>
+                    <p style="font-size: small;padding:0 0 0 0;margin:-4px 0 0 0">Radical</p>
+                </label>
+            </div>                           
+        </div>
+    </nav>
+    <!-- Begin page content -->
+    <nav class="navbar fixed-bottom navbar-light nav-bar-color" style="height:60px;">
+        <!--end floating-->           
+        <div id="div_audio" style="margin: 0 auto 0 auto;padding-bottom:5px;display:none;height:54px;overflow:hidden;">
+            <!--<input id="language_selection" type="checkbox" checked data-toggle="toggle" data-onstyle="success" data-offstyle="danger" data-on="C" data-off="M" data-width="5" data-height="40" style="padding-left:0px;padding-right:0px;display:inline;">-->
+
+            <audio id="trad_audio_text" style="display:inline;vertical-align:middle;height:45px;width:210px;overflow:hidden;width:100%;" controls>
+                <source type="audio/mp3">
+                Your browser does not support the audio element.
+            </audio>   
+            <!--hide mandarin at the beginning-->
+            <audio id="sim_audio_text" style="display:none;vertical-align:middle;height:45px;width:210px;" controls>
+            <source type="audio/mp3">
+            Your browser does not support the audio element.
+            </audio>
+        </div>
+    </nav>
+
+    <div id="container_wrapper" class="container" style="padding-top:10px;padding-left: 0px;padding-right: 0px;">
+      <section class="section_class" id="container_nav_link_1" style="display: none;">
+
+         <div class="mt-3">
+            <h3>Ricciwawa Learning Companion Ricci娃娃 好幫手</h3>
+         </div>
+
+         <div id="firebaseui-auth-container"></div>
+
+        <button id="sign-out" hidden=true>Sign Out</button>
+
+        <div id="login-info" hidden=true>
+        <h2>Login info:</h2>
+        </div>
+
+      </section>
+      <section class="section_class" id="container_nav_link_2" style="display:none;">
+
+         <div class="mt-3">
+            <h3>Take or choose a picture</h3>
+         </div>
+         <form enctype="multipart/form-data" method="post" id="OCRphotoform">
+            (1) First press the "Choose File" to take a photo of the text or select a photo,<BR>(2) Then press the "Submit Photo" button.
+            <div><input type="file" id="input_image_file" name="input_image_file"/></div>
+            <div><input type="button" value="Submit Photo" id="btn_submit" onclick="uploadFile()" disabled="disabled"></div>
+            <div id="result"></div>
+         </form>
+      </section>
+      <!-- ================================================================================================= -->
+      <!-- Text -->
+      <section class="section_class" id="container_nav_link_0"  style="display:block;">
+        <div class="row entry_story_group" style="display: none;">
+            <div class="col-sm-12 col-lg-8">
+                <span style="display:inline">輸入故事編號 </span>Enter the story code of the story you or your friend created:<br>
+            </div>
+        </div>   
+        <div class="row entry_story_group" style="display: none;">
+            <div class="col-sm-12 col-lg-6">
+                 <input type="text" class="class_input_article_code form-control" rows="1"  name="input_article_code"  id="input_article_code">                  
+                 <input type="button" value='Enter' id="enter_story_code" onclick="code_entered('enter','');">
+                 <input type="button" value='Edit' id="edit_story_code" onclick="code_entered('edit','');">
+                 <input type="button" value='CSV' id="csv_story_code" onclick="code_entered('csv','');">
+            </div>
+        </div>
+        <div class="row entry_story_group">
+            <div class="col-sm-12 col-lg-10">
+                <BR>
+                <span style="display:inline">輸入故事 </span>Enter a story:
+            </div>
+        </div>
+        <div class="row entry_story_group">
+            <div class="col-sm-12 col-lg-10">
+                <!-- <form method="post" enctype="multipart/form-data" id="create_svg_audio"></form>
+                    <textarea class="form-control" style="width:90%;font-size:x-large;" rows="6"  name="inputtext"  id="inputtext"></textarea>
+                    <BR>
+                    Link to an image:    
+                    <input type="text" class="class_input_article_code form-control" rows="1"  name="image_link" id="image_link">
+                    <!--
+                    <div class="row" style="display: block;">
+                        <input type="file" name="input_image_file_b" id="input_image_file_b">
+                        <div class="image_upload-area" id="div_image_upload-area" style="display:block;">
+                            <h3>Optional Drag and Drop file an image here<br/>Or<br/>Click to select file</h3>
+                        </div>
+                        <div id="div_show_upload_image">
+                            <img id="show_upload_image" src="#" style="max-width:300px;max-height: 500px; margin-left: auto; margin-right: auto;display: block;" alt="" /> 
+                        </div>
+                    </div>
+                    
+                    <form  class="dropzone"  id="my-awesome-dropzone"></form>
+
+                    <BR>
+                        <input type="button" value='Process' id="create_svg_audio_submit" onclick="create_svg_audio();">
+                        &nbsp;&nbsp;
+                        <input type="button" value='Clear' id="clear_button">  
+    
+                </form>
+              -->     
+                <form method="POST" action="/upload" id="create_svg_audio" enctype="multipart/form-data">
+                    <textarea class="form-control" style="width:90%;font-size:x-large;" rows="6"  name="inputtext"  id="inputtext"></textarea>
+                    <input type="hidden" id="lang" name="lang" value="en">
+                    <BR>
+                    Title:    
+                    <input type="text" class="class_input_article_code form-control" rows="1"  name="story_title" id="story_title">
+                    <BR>    
+                    Author:    
+                    <input type="text" class="class_input_article_code form-control" rows="1"  name="story_author" id="story_author">
+                    <BR>    
+                    Source:    
+                    <input type="text" class="class_input_article_code form-control" rows="1"  name="story_source" id="story_source">
+                    <BR>                                                        
+                    Tags:    
+                    <input type="text" class="class_input_article_code form-control" rows="1"  name="stooy_tags" id="story_tags">
+                    <BR>
+                    Category:    
+                    <input type="text" class="class_input_article_code form-control" rows="1"  name="story_category" id="story_category">
+                    <BR>
+                    Difficulty:    
+                    <input type="text" class="class_input_article_code form-control" rows="1"  name="story_difficulty" id="story_difficulty">
+                    <BR>            
+                    Link to an image:    
+                    <input type="text" class="class_input_article_code form-control" rows="1"  name="image_link" id="image_link">
+                    <BR>
+    
+                    <div class="row" style="display: block;">
+                        <input type="file" name="input_image_file_b" id="input_image_file_b">
+                        <!-- Drag and Drop container-->
+                        <div class="image_upload-area" id="div_image_upload-area" style="display:none;">
+                            <h3>Optional Drag and Drop file an image here<br/>Or<br/>Click to select file</h3>
+                        </div>
+                    </div>                      
+                    <BR>
+                    <input type="button" value='Process' id="create_svg_audio_submit" onclick="create_svg_audio();">
+                    &nbsp;&nbsp;
+                    <input type="button" value='Clear' id="clear_button">  
+    
+                </form>
+                    &nbsp;&nbsp;
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-lg-12" style="display:none;">   
+                
+                <form action="https://ricciwawa_mp3.storage.googleapis.com/upload_file?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=ricciwawa%40appspot.gserviceaccount.com%2F20210124%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20210124T115233Z&X-Goog-Expires=604800&X-Goog-SignedHeaders=host&x-goog-signature=9613897ebfa5db07d1c2c85735722f1ec4a69c813a254cb030e524e20f621ed1cc3aae5fd47721bb0864dc69a76db297485a18f379dc6e37e74a8c8f63e7acc45ec86603af62250526c94eaf7e696638c96d7dbab0d720736bd77a9d169cd7334e7d7d779c1bb7b6272d434083a4379979540c62be9608a85611caf19df720cef1ead02da399e9f3b0c642a0ef28c742a2ce6e7a216ed4d7317fb417ac2d3383ac1b666d1ec31904e8cb4b5894e829b54a29d6f1ff794a3900b8917f44dc4a352782f899009bb473ae985fc8fe92cedf8ce5a41ba74bed35019610033d657a81bb639f8d101015aa5edfac6afefc490872007024f7a5860ff380a6598b98b0c7" id="imageUploadForm" >
+       
+                    <input type="file" name="file"/>
+
+                    <input type="submit" value='Upload File' id="button_upload_img">
+                </form>
+            
+                <form id="form2"  method='POST' enctype='multipart/form-data'>                                  
+                    <input type="file" name="file" id="form2_file"/>
+                    <input type='submit' value='Upload File' id="btn_image_upload"/><br />
+
+                </form>                
+            </div>
+        </div>
+        <div class="row" style="width:100%;padding:0 0 0 0;margin: 120px 0 0 0;">
+            <div class="col-sm-12 col-lg-12" style="width:100%;padding:0 0 0 0;">    
+                <div id="text_analysis" style="display:none;padding-top: 10px;padding-left:2px;padding-right: 2px;">
+                    <div id="div_public_article_code" style="display:none;padding-top:10px;padding-bottom:20px;">The public story link is:
+                        <span id="span_public_article_code"></span>
+                        <input type="button" value='Copy' id="copy_story_code" onclick="public_code_copy('span_public_article_code');">
+                        <input type="button" value='Edit' onclick="code_entered('edit','span_public_article_code');">                     
+                        <input type="button" value='CSV' id="download_csv">                     
+                    </div>
+                    <div id="div_story_img" style="display:none;text-align: center;padding:0 0 0 10px; margin-bottom: 20px;">
+                        <img referrerPolicy="no-referrer" id="story_img" style="max-width: 80%;max-height: 500px;"></img>
+                    </div>
+                    <div id="div_story_video_youtube" style="display:none;text-align: center;padding:0 0 0 10px; margin-bottom: 20px;">
+                    </div>
+
+                    
+                    <div id="text_analysis_text" style="padding: 0 0 0 0;"></div>
+                    <div id="processed_text_analysis_text"></div>
+                    
+                        <div id="translated_text" style="padding-top:10px;padding-bottom:20px;"></div>
+
+                    
+
+                </div>     
+            </div>
+        </div>
+      </section>
+      <section class="section_class" id="container_nav_link_3" style="display:none;">
+         <!--<BR><input type="checkbox" name="notes" id="notes" checked>Notes<BR>  -->
+         <div style="width:100%;" id="svg_output">
+
+         </div>          
+         
+      </section>
+   
+      <section class="section_class" id="container_nav_link_4" style="display:none;">
+        
+        <div class="mt-3">
+           <div style="width:90%;height:80%;padding:10px 0 10px 0" id="ocr_image"><img style="width:100%;" id="img_ocr_image"></img></div>
+           <div style="width:90%;height:10%;padding:10px 0 10px 0" id="audio_div">
+              <audio id="trad_audio" style="height:50px;width:150px;display:block" controls>
+                  <source type="audio/mp3">
+                  Your browser does not support the audio element.
+              </audio>   
+              <audio id="sim_audio" style="height:50px;width:150px;display:block" controls>
+                <source type="audio/mp3">
+                Your browser does not support the audio element.
+              </audio>                 
+           </div>
+        </div>     
+        <!--<BR><input type="checkbox" name="notes" id="notes" checked>Notes<BR>  -->
+        <div style="width:100%;" id="svg_output">
+
+        </div>          
+     </section>    
+     
+         
+    </div>
+
+
+    <!-- Modal configure options-->
+    <div class="modal hide" id="confoptions" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="loadingmodal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body" style="font-size: small;">
+                    <h5 class="modal-title">設定 Settings</h5>
+                    <button type="button" class="btn btn-lg btn-toggle" data-toggle="button" aria-pressed="false" autocomplete="off" style="width:100%;text-align: left;height:70px;">
+                        <div class="handle"></div>
+                        <label class="form-switch">
+                            <div class="row">
+                                <div class="column"><div>部首 Show radical</div></div>
+                                <div class="column" style="width:18%;">                                    
+                                    <input id="conf_radical" type="checkbox">
+                                    <i id="i_radical"></i>
+                                </div>
+                                <div class="column">No 不用</div>
+                            </div>
+                        </label>
+                    </button> 
+                    <button type="button" class="btn btn-lg btn-toggle" data-toggle="button" aria-pressed="false" autocomplete="off" style="width:100%;text-align: left;height:70px;">
+                        <div class="handle"></div>
+                        <label class="form-switch">
+                            <div class="row">
+                                <div class="column"><div>拼音 Show pinyin</div></div>
+                                <div class="column" style="width:18%;">                                    
+                                    <input id="conf_pin_yin" type="checkbox">
+                                    <i id="i_radical"></i>
+                                </div>
+                                <div class="column">No 不用</div>
+                            </div>
+                        </label>
+                    </button>                    
+                    <HR>
+                    <h5><a onclick="subscription_button_click()" href="javascript:void(0);" id="subscribe_link">訂閱/订阅 Subscribe</a></h5>
+                </div>                                          
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>         
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+   <div class="modal hide" id="saveModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="loadingmodal" aria-hidden="true">
+     <div class="modal-dialog" role="document">
+       <div class="modal-content">
+         <div class="modal-body">
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         </div>         
+       </div>
+     </div>
+   </div>
+   
+   <!-- Modal -->
+   <div class="modal hide" id="myModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="loadingmodal" aria-hidden="true">
+     <div class="modal-dialog" role="document">
+       <div class="modal-content">
+         <div class="modal-body">
+           Working hard ...
+           <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+          
+         </div>
+       </div>
+     </div>
+   </div>
+   <!--
+   <div id="warning-message">
+       this website is only viewable in landscape mode
+   </div>
+   -->
+    <!-- Modal -->
+<!-- Modal -->
+<div class="modal fade" id="modal_subscription" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="loadingmodal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+            <iframe src="/subscription" width="100%" height="650px" frameborder="0" allowtransparency="true"></iframe>  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>        
+    <script src="https://cdn.jsdelivr.net/g/bootstrap.material-design@0.5.9(js/material.min.js+js/ripples.min.js"></script>
+    <script type="text/javascript" src="/static/dropzone.js"></script>
+    <script src="/static/v4/learning.js"></script>
+    <script src="/static/v4/comment.js"></script>
+    <!-- Plugin JavaScript -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>  -->
+    <!-- Theme JavaScript -->
+    <!--image upload js-->
+
+    <!--Comment section-->
+    <!--
+    <div class="comment-section" style="display:none;">
+        <form class="form_comment_post" id="form_comment_post">
+            <textarea name="comment" id="comment"></textarea>
+            <input type="hidden" id="comment_id" name="comment_id" value="">
+            <input type="hidden" id="parent_comment_id" name="parent_comment_id" value="">
+            <input type="hidden" id="comment_sequence" name="comment_sequence" value="">
+            <input type="hidden" id="like" name="like" value="0">
+            <input type="hidden" id="dislike" name="dislike" value="0">
+            <button name="submit" class="comment-btn" id="comment_btn">Comment</button>
+        </form>
+        <ul class="user-comment-section" id="user-comment-section">
+            
+        </ul>
+
+    </div>
+
+
+    <script>
+        const queryString = window.location.search;
+        if (queryString != "") {
+            $(".comment-section").hide()
+        }
+    </script>
+
+    <!--Comment script-->
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".user-comment-section .reply-button").click(function() {
+                $(".admin-content .reply-message-box").toggleClass("reply-click", 1500);
+            })
+            $(function() {
+                $(".comment-section .user-comment-section .love i").click(function() {
+                    $(this).next("span").toggleClass("press", 1500);
+                    $(this).toggleClass("press", 1500);
+                });
+            });
+
+            $(function() {
+                $(".user-comment-box .details .details-icon").click(function() {
+                    $(this).next(".admin-content").toggleClass("ative-class", 1500);
+                    $(this).toggleClass("ative-class", 1500);
+                });
+            });
+
+            $(".details .admin-content .reply-message").on("click", function() {
+                $(".user-comment-box .details .admin-content .reply-message-box").toggleClass("reply-click", 1500);
+
+            })
+
+            //add insert live
+            $(document).on("click", ".user-comment-section .love i", function() {
+
+                //addtoplay list ajax
+                //var singer_name = "<?php echo $singer_name; ?>";
+                //var singer_table = "<?php echo $singer_table; ?>";
+                var singer_song = $(this).attr('song');
+            })
+        });
+    </script>
+
+    <!--end comment system-->
+    
+  </body>
+</html>
+<!--- check https://github.com/GoogleCloudPlatform/python-docs-samples/blob/master/appengine/standard/firebase/firenotes/frontend/index.html -->
+<!-- https://github.com/firebase/firebaseui-web -->
