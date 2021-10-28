@@ -14,6 +14,8 @@ def add_audio_in_post(instance, created, *args, **kwargs):
     """
     Integrated in Django,
     Created by Kenneth Y.
+    Instance is an object of a model class.
+    Will be transferred to Google task for MP3 creation.
     """
     if not created:
         return
