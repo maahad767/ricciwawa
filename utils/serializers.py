@@ -25,3 +25,21 @@ class PronunciationAssessmentSerializer(serializers.Serializer):
     reference_text = serializers.CharField(required=True)
     speech_file = serializers.FileField(allow_empty_file=False, required=True)
     language_code = serializers.CharField(required=False)
+
+###################
+# refactor needed #
+###################
+class Mp3TaskHandlerSerializer(serializers.Serializer):
+    language_code = serializers.CharField(max_length=50)
+    text = serializers.CharField(max_length=5000)
+    output_filename = serializers.CharField(max_length=200)
+
+
+class TranslateToChineseSerializer(serializers.Serializer):
+    text = serializers.CharField(max_length=5000)
+
+
+class TranslateSimplifiedToTraditionalSerializer(serializers.Serializer):
+    text = serializers.CharField(max_length=5000)
+
+

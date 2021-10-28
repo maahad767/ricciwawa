@@ -3,7 +3,8 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
-from .serializers import TextToSpeechSerializer, SpeechToTextSerializer, PronunciationAssessmentSerializer
+from .serializers import TextToSpeechSerializer, SpeechToTextSerializer, PronunciationAssessmentSerializer, \
+    Mp3TaskHandlerSerializer, TranslateToChineseSerializer, TranslateSimplifiedToTraditionalSerializer
 from . import utils
 from .utils import speech_tts_msft, google_translate
 
@@ -75,20 +76,15 @@ class Mp3TaskHandler(generics.GenericAPIView):
     Just wrapped for django
     """
     permission_classes = [AllowAny]
+    serializer_class = Mp3TaskHandlerSerializer
 
     def post(self, request, *args, **kwargs):
-        lang = request.data.get("lang")
-        input_text = request.data.get("mp3_text")
-        mp3_output_filename = request.data.get("filename")
-        print(mp3_output_filename)
-        # use google TTS for Cantonese - but turns out Google is only slightly better in words recognition
-        # but poor in voice quality
-        # if lang == "hk":
-        #    result = speech_tts_google (lang, input_text, mp3_output_filename)
-        # else:
-        result = speech_tts_msft(lang, input_text, mp3_output_filename)
-        # store the signed_mp3_url to datastore
-        return Response({'successful': result})
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            data = serializer.data
+            speech_tts_msft(data['language_code'], data['text'], data['output_filename'])
+            return Response({'success': True})
+        return Response({'success': False})
 
 
 class TranslateToChinese(generics.GenericAPIView):
@@ -96,7 +92,7 @@ class TranslateToChinese(generics.GenericAPIView):
     Author: Kenneth Y.
     Just wrapped for django
     """
-    serializer_class = None
+    serializer_class = TranslateToChineseSerializer
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
@@ -106,11 +102,10 @@ class TranslateToChinese(generics.GenericAPIView):
 
 
 class TranslateSimplifiedToTraditional(generics.GenericAPIView):
-    serializer_class = None
+    serializer_class = TranslateSimplifiedToTraditionalSerializer
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
         text = request.data.get("text")
         translated_text = google_translate(text, "zh-TW", "zh-CN")
         return Response({'data': translated_text})
-

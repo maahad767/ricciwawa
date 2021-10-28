@@ -10,6 +10,6 @@ urlpatterns = [
     path('pronunciation-assessmet/', views.PronunciationAssessmentView.as_view(), name='pronunciation_assessment'),
     path('mp3-task-handler/', views.Mp3TaskHandler.as_view(), name='mp3_task_handler'),
     path('translate-chinese/', views.TranslateToChinese.as_view(), name='translate_chinese'),
-    path('translate-simplified-to-traditional', views.TranslateSimplifiedToTraditional.as_view(),
+    path('translate-simplified-to-traditional/', views.TranslateSimplifiedToTraditional.as_view(),
          name='translate_simplified_to_traditional'),
 ]
