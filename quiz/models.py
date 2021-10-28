@@ -46,5 +46,21 @@ class AttemptQuiz(models.Model):
 
 class AttemptQuestion(models.Model):
     quiz_attempt = models.ForeignKey(AttemptQuiz, on_delete=models.CASCADE)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
 
+    class Meta:
+        abstract = True
+
+
+class AttemptMultipleChoiceQuestion(AttemptQuestion):
+    question = models.ForeignKey(MultipleChoiceQuestion, on_delete=models.CASCADE)
+
+
+class AttemptChoice(models.Model):
+    question_attempt = models.ForeignKey(AttemptMultipleChoiceQuestion, on_delete=models.CASCADE)
+    choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
+    is_selected = models.BooleanField(default=False)
+
+
+class AttemptInputAnswerQuestion(AttemptQuestion):
+    question = models.ForeignKey(InputAnswerQuestion, on_delete=models.CASCADE)
+    user_answer = models.TextField()
