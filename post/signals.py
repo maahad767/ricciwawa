@@ -20,7 +20,7 @@ def add_audio_in_post(instance, created, *args, **kwargs):
     date_time = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
     hashed_id = sha1(str.encode(get_random_string(10) + date_time)).hexdigest()
     str_hashed_id = str(hashed_id)
-    storage_prefix = "media/temp/"
+    storage_prefix = ""
 
     if instance.text_simplified_chinese:
         sim_spaced_sentence = "\n".join(instance.text_simplified_chinese)
