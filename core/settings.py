@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # local apps
     'account',
     'post',
+    'quiz',
     'web',
 
     # reusable local apps
