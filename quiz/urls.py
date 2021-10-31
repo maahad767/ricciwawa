@@ -3,6 +3,8 @@ from rest_framework.routers import SimpleRouter
 from quiz.views import QuizViewset, MultipleChoiceQuestionViewset, ChoiceViewset, \
     AttemptMultipleChoiceQuestionViewset, AttemptQuizViewset, AttemptInputAnswerQuestionViewset, AttemptChoiceViewset
 
+app_name = 'quiz'
+
 router = SimpleRouter()
 
 router.register(r'quiz', QuizViewset, basename='quiz')

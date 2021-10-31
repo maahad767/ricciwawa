@@ -25,6 +25,7 @@ urlpatterns = [
     path('utils/', include('utils.urls', namespace='utils')),
     path('', include('post.urls', namespace='post')),
     path('web/', include('web.urls', namespace='web')),
+    path('quiz/', include('quiz.urls', namespace='quiz')),
 ]
 
 urlpatterns += [

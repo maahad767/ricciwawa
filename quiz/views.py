@@ -1,9 +1,18 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated
 
 from .models import Quiz
 from .serializers import QuizSerializer, MultipleChoiceQuestionSerializer, ChoiceSerializer, \
-    InputAnswerQuestionSerializer, AttemptQuizSerializer, AttemptInputAnswerQuestionSerializer, AttemptChoiceSerializer
+    InputAnswerQuestionSerializer, AttemptQuizSerializer, AttemptInputAnswerQuestionSerializer, AttemptChoiceSerializer, \
+    FullQuizSerializer
+
+
+class FullQuiz(generics.GenericAPIView):
+    serializer_class = FullQuizSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        pass
 
 
 class QuizViewset(viewsets.ModelViewSet):

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from .models import Quiz, MultipleChoiceQuestion, Choice, InputAnswerQuestion, AttemptQuiz, \
-    AttemptMultipleChoiceQuestion, AttemptInputAnswerQuestion, AttemptChoice
+from .models import Quiz, MultipleChoiceQuestion, Choice, InputAnswerQuestion, QuizAttempt, \
+    MultipleChoiceQuestionAttempt, InputAnswerQuestionAttempt, ChoiceAttempt
 
 
 class QuizSerializer(serializers.ModelSerializer):
@@ -35,26 +35,34 @@ class ChoiceSerializer(serializers.ModelSerializer):
 class AttemptQuizSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = AttemptQuiz
+        model = QuizAttempt
         fields = '__all__'
 
 
 class AttemptMultipleChoiceQuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = AttemptMultipleChoiceQuestion
+        model = MultipleChoiceQuestionAttempt
         fields = '__all__'
 
 
 class AttemptInputAnswerQuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = AttemptInputAnswerQuestion
+        model = InputAnswerQuestionAttempt
         fields = '__all__'
 
 
 class AttemptChoiceSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = AttemptChoice
+        model = ChoiceAttempt
+        fields = '__all__'
+
+
+class FullQuizSerializer(serializers.ModelSerializer):
+    questions = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = Quiz
         fields = '__all__'

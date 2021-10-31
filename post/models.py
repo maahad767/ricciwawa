@@ -62,7 +62,7 @@ class Post(models.Model):
     # no idea about these fields
     pin_yin_words = models.JSONField(null=True, blank=True)
     meaning_words = models.JSONField(null=True, blank=True)
-    english_meaning_article = models.JSONField(null=True, blank=True)
+    english_meaning_article = models.TextField(null=True, blank=True)
     story_difficulty = models.CharField(max_length=500, null=True, blank=True)
     story_tags = models.JSONField(null=True, blank=True)
     story_category = models.CharField(max_length=500, null=True, blank=True)

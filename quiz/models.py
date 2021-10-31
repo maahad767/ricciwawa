@@ -17,8 +17,8 @@ class Question(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     title = models.CharField(max_length=256)
     question = models.TextField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    position = models.PositiveSmallIntegerField(null=True)
+    points = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
         abstract = True
@@ -30,37 +30,45 @@ class MultipleChoiceQuestion(Question):
 
 class Choice(models.Model):
     question = models.ForeignKey(MultipleChoiceQuestion, on_delete=models.CASCADE)
+    position = models.PositiveSmallIntegerField(null=True, blank=True)
     choice_text = models.TextField(null=True)
     is_correct_choice = models.BooleanField(default=False)
+    explanation = models.TextField(null=True, blank=True)
+    attachment = models.JSONField(null=True, blank=True)
 
 
 class InputAnswerQuestion(Question):
     answer = models.TextField()
+    attachment = models.JSONField(null=True, blank=True)
+    explanation = models.TextField(null=True, blank=True)
 
 
-class AttemptQuiz(models.Model):
+class QuizAttempt(models.Model):
     examinee = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
-    # total score
+    is_first_attempt = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
-class AttemptQuestion(models.Model):
-    quiz_attempt = models.ForeignKey(AttemptQuiz, on_delete=models.CASCADE)
+class QuestionAttempt(models.Model):
+    quiz_attempt = models.ForeignKey(QuizAttempt, on_delete=models.CASCADE)
+    points_achieved = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
         abstract = True
 
 
-class AttemptMultipleChoiceQuestion(AttemptQuestion):
+class MultipleChoiceQuestionAttempt(QuestionAttempt):
     question = models.ForeignKey(MultipleChoiceQuestion, on_delete=models.CASCADE)
 
 
-class AttemptChoice(models.Model):
-    question_attempt = models.ForeignKey(AttemptMultipleChoiceQuestion, on_delete=models.CASCADE)
+class ChoiceAttempt(models.Model):
+    question_attempt = models.ForeignKey(MultipleChoiceQuestionAttempt, on_delete=models.CASCADE)
     choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
     is_selected = models.BooleanField(default=False)
 
 
-class AttemptInputAnswerQuestion(AttemptQuestion):
+class InputAnswerQuestionAttempt(QuestionAttempt):
     question = models.ForeignKey(InputAnswerQuestion, on_delete=models.CASCADE)
     user_answer = models.TextField()
