@@ -14,7 +14,11 @@ class Quiz(models.Model):
 
 
 class Question(models.Model):
-    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+    quiz = models.ForeignKey(Quiz,
+                             on_delete=models.CASCADE,
+                             related_name="%(app_label)s_%(class)s_related",
+                             related_query_name="%(app_label)s_%(class)ss",
+                             )
     title = models.CharField(max_length=256)
     question = models.TextField(null=True, blank=True)
     position = models.PositiveSmallIntegerField(null=True)
@@ -29,7 +33,7 @@ class MultipleChoiceQuestion(Question):
 
 
 class Choice(models.Model):
-    question = models.ForeignKey(MultipleChoiceQuestion, on_delete=models.CASCADE)
+    question = models.ForeignKey(MultipleChoiceQuestion, on_delete=models.CASCADE, related_name='choices')
     position = models.PositiveSmallIntegerField(null=True, blank=True)
     choice_text = models.TextField(null=True)
     is_correct_choice = models.BooleanField(default=False)
@@ -44,7 +48,11 @@ class InputAnswerQuestion(Question):
 
 
 class QuizAttempt(models.Model):
-    examinee = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    examinee = models.ForeignKey(get_user_model(),
+                                 on_delete=models.CASCADE,
+                                 related_name="%(app_label)s_%(class)s_related",
+                                 related_query_name="%(app_label)s_%(class)ss",
+                                 )
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     is_first_attempt = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -64,7 +72,8 @@ class MultipleChoiceQuestionAttempt(QuestionAttempt):
 
 
 class ChoiceAttempt(models.Model):
-    question_attempt = models.ForeignKey(MultipleChoiceQuestionAttempt, on_delete=models.CASCADE)
+    question_attempt = models.ForeignKey(MultipleChoiceQuestionAttempt, on_delete=models.CASCADE,
+                                         related_name='choice_attempts')
     choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
     is_selected = models.BooleanField(default=False)
 
