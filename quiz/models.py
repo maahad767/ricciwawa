@@ -48,11 +48,7 @@ class InputAnswerQuestion(Question):
 
 
 class QuizAttempt(models.Model):
-    examinee = models.ForeignKey(get_user_model(),
-                                 on_delete=models.CASCADE,
-                                 related_name="%(app_label)s_%(class)s_related",
-                                 related_query_name="%(app_label)s_%(class)ss",
-                                 )
+    examinee = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     is_first_attempt = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -60,7 +56,11 @@ class QuizAttempt(models.Model):
 
 
 class QuestionAttempt(models.Model):
-    quiz_attempt = models.ForeignKey(QuizAttempt, on_delete=models.CASCADE)
+    quiz_attempt = models.ForeignKey(QuizAttempt,
+                                     on_delete=models.CASCADE,
+                                     related_name="%(app_label)s_%(class)s_related",
+                                     related_query_name="%(app_label)s_%(class)ss",
+                                     )
     points_achieved = models.PositiveSmallIntegerField(default=0)
 
     class Meta:

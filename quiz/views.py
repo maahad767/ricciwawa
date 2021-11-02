@@ -1,9 +1,7 @@
-from rest_framework import viewsets, generics
-from rest_framework.generics import get_object_or_404
+from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
-from .models import Quiz
+from .models import Quiz, QuizAttempt
 from .serializers import QuizSerializer, MultipleChoiceQuestionSerializer, ChoiceSerializer, \
     InputAnswerQuestionSerializer, AttemptQuizSerializer, AttemptInputAnswerQuestionSerializer, AttemptChoiceSerializer
 
@@ -45,7 +43,7 @@ class AttemptQuizViewset(viewsets.ModelViewSet):
     serializer_class = AttemptQuizSerializer
 
     def get_queryset(self):
-        pass
+        return QuizAttempt.objects.filter(examinee=self.request.user)
 
 
 class AttemptInputAnswerQuestionViewset(viewsets.ModelViewSet):

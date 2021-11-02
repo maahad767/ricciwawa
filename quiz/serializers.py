@@ -6,7 +6,6 @@ from .models import Quiz, MultipleChoiceQuestion, Choice, InputAnswerQuestion, Q
 
 
 class ChoiceSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Choice
         exclude = []
@@ -23,7 +22,6 @@ class MultipleChoiceQuestionSerializer(serializers.ModelSerializer):
 
 
 class InputAnswerQuestionSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = InputAnswerQuestion
         exclude = []
@@ -58,13 +56,13 @@ class QuizSerializer(WritableNestedModelSerializer):
 
 
 class AttemptChoiceSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = ChoiceAttempt
         fields = '__all__'
 
 
 class AttemptMultipleChoiceQuestionSerializer(serializers.ModelSerializer):
+    choice_attempts = AttemptChoiceSerializer(many=True)
 
     class Meta:
         model = MultipleChoiceQuestionAttempt
@@ -72,17 +70,16 @@ class AttemptMultipleChoiceQuestionSerializer(serializers.ModelSerializer):
 
 
 class AttemptInputAnswerQuestionSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = InputAnswerQuestionAttempt
         fields = '__all__'
 
 
 class AttemptQuizSerializer(serializers.ModelSerializer):
-    mcq_attempts = MultipleChoiceQuestionSerializer(source='quiz_multiplechoicequestion_related',
-                                                    default=None, many=True)
-    iaq_attempts = InputAnswerQuestionSerializer(source='quiz_inputanswerquestion_related',
-                                                 default=None, many=True)
+    mcq_attempts = AttemptMultipleChoiceQuestionSerializer(source='quiz_multiplechoicequestionattempt_related',
+                                                           default=None, many=True)
+    iaq_attempts = AttemptInputAnswerQuestionSerializer(source='quiz_inputanswerquestionattempt_related',
+                                                        default=None, many=True)
 
     class Meta:
         model = QuizAttempt

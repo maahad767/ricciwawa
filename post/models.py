@@ -37,6 +37,8 @@ class Playlist(models.Model):
 class Post(models.Model):
     """
     Model for storing Post/Story contents.
+    privacy: 0-private, 1-public
+    attachment_type: 0-none, 1-image, 2-audio, 3-video
     """
     PRIVACY_CHOICES = [(0, 'private'), (1, 'public')]
     ATTACHMENT_TYPE_CHOICES = [(0, 'none'), (1, 'image'), (2, 'audio'), (3, 'video')]
@@ -46,6 +48,7 @@ class Post(models.Model):
     playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=512)
     text = models.TextField(null=True)
+    image = models.ImageField(null=True, blank=True)
     language = models.CharField(max_length=20, default='en')
     # store both spaced and not-spaced
     privacy = models.SmallIntegerField(choices=PRIVACY_CHOICES, default=1)
