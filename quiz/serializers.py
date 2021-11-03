@@ -2,7 +2,7 @@ from rest_framework import serializers
 from drf_writable_nested import WritableNestedModelSerializer
 
 from .models import Quiz, MultipleChoiceQuestion, Choice, InputAnswerQuestion, QuizAttempt, \
-    MultipleChoiceQuestionAttempt, InputAnswerQuestionAttempt, ChoiceAttempt
+    MultipleChoiceQuestionAttempt, InputAnswerQuestionAttempt
 
 
 class ChoiceSerializer(serializers.ModelSerializer):
@@ -55,14 +55,7 @@ class QuizSerializer(WritableNestedModelSerializer):
         exclude = []
 
 
-class AttemptChoiceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ChoiceAttempt
-        fields = '__all__'
-
-
 class AttemptMultipleChoiceQuestionSerializer(serializers.ModelSerializer):
-    choice_attempts = AttemptChoiceSerializer(many=True)
 
     class Meta:
         model = MultipleChoiceQuestionAttempt
@@ -76,10 +69,20 @@ class AttemptInputAnswerQuestionSerializer(serializers.ModelSerializer):
 
 
 class AttemptQuizSerializer(serializers.ModelSerializer):
+    examinee = serializers.HiddenField(default=serializers.CurrentUserDefault())
     mcq_attempts = AttemptMultipleChoiceQuestionSerializer(source='quiz_multiplechoicequestionattempt_related',
                                                            default=None, many=True)
     iaq_attempts = AttemptInputAnswerQuestionSerializer(source='quiz_inputanswerquestionattempt_related',
                                                         default=None, many=True)
+
+    def create(self, validated_data):
+        # create multiple choice question quiz attempts
+        # create input answer question quiz attempts
+        # create a quiz attempt
+        mcq_attempts = validated_data.pop('quiz_multiplechoicequestionattempt_related')
+        iaq_attempts = validated_data.pop('quiz_inputanswerquestionattempt_related')
+        quiz_attempt = QuizAttempt.objects.create(**validated_data)
+
 
     class Meta:
         model = QuizAttempt

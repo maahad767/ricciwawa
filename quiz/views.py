@@ -1,9 +1,10 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
-from .models import Quiz, QuizAttempt
+from .models import Quiz, QuizAttempt, MultipleChoiceQuestionAttempt, MultipleChoiceQuestion, InputAnswerQuestion, \
+    Choice, InputAnswerQuestionAttempt
 from .serializers import QuizSerializer, MultipleChoiceQuestionSerializer, ChoiceSerializer, \
-    InputAnswerQuestionSerializer, AttemptQuizSerializer, AttemptInputAnswerQuestionSerializer, AttemptChoiceSerializer
+    InputAnswerQuestionSerializer, AttemptQuizSerializer, AttemptInputAnswerQuestionSerializer
 
 
 class QuizViewset(viewsets.ModelViewSet):
@@ -19,7 +20,7 @@ class MultipleChoiceQuestionViewset(viewsets.ModelViewSet):
     serializer_class = MultipleChoiceQuestionSerializer
 
     def get_queryset(self):
-        pass
+        MultipleChoiceQuestion.objects.filter(creator=self.request.user)
 
 
 class InputAnswerQuestionViewset(viewsets.ModelViewSet):
@@ -27,7 +28,7 @@ class InputAnswerQuestionViewset(viewsets.ModelViewSet):
     serializer_class = InputAnswerQuestionSerializer
 
     def get_queryset(self):
-        pass
+        return InputAnswerQuestion.objects.filter(creator=self.request.user)
 
 
 class ChoiceViewset(viewsets.ModelViewSet):
@@ -35,7 +36,7 @@ class ChoiceViewset(viewsets.ModelViewSet):
     serializer_class = ChoiceSerializer
 
     def get_queryset(self):
-        pass
+        return Choice.objects.filter(creator=self.request.user)
 
 
 class AttemptQuizViewset(viewsets.ModelViewSet):
@@ -51,7 +52,7 @@ class AttemptInputAnswerQuestionViewset(viewsets.ModelViewSet):
     serializer_class = AttemptInputAnswerQuestionSerializer
 
     def get_queryset(self):
-        pass
+        return InputAnswerQuestionAttempt.objects.filter(examinee=self.request.user)
 
 
 class AttemptMultipleChoiceQuestionViewset(viewsets.ModelViewSet):
@@ -59,12 +60,4 @@ class AttemptMultipleChoiceQuestionViewset(viewsets.ModelViewSet):
     serializer_class = MultipleChoiceQuestionSerializer
 
     def get_queryset(self):
-        pass
-
-
-class AttemptChoiceViewset(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
-    serializer_class = AttemptChoiceSerializer
-
-    def get_queryset(self):
-        pass
+        return MultipleChoiceQuestionAttempt.objects.filter(examinee=self.request.user)

@@ -69,13 +69,7 @@ class QuestionAttempt(models.Model):
 
 class MultipleChoiceQuestionAttempt(QuestionAttempt):
     question = models.ForeignKey(MultipleChoiceQuestion, on_delete=models.CASCADE)
-
-
-class ChoiceAttempt(models.Model):
-    question_attempt = models.ForeignKey(MultipleChoiceQuestionAttempt, on_delete=models.CASCADE,
-                                         related_name='choice_attempts')
-    choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
-    is_selected = models.BooleanField(default=False)
+    selected_choices = models.ManyToManyField(Choice, related_name='selected_choices')
 
 
 class InputAnswerQuestionAttempt(QuestionAttempt):

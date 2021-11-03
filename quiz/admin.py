@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import Quiz, MultipleChoiceQuestion, InputAnswerQuestion, Choice, QuizAttempt, \
-    MultipleChoiceQuestionAttempt, ChoiceAttempt, InputAnswerQuestionAttempt
+    MultipleChoiceQuestionAttempt, InputAnswerQuestionAttempt
 
 
 @admin.register(Quiz)
@@ -36,9 +36,4 @@ class AttemptInputAnswerQuestionAdmin(admin.ModelAdmin):
 
 @admin.register(MultipleChoiceQuestionAttempt)
 class AttemptMultipleChoiceQuestionAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(ChoiceAttempt)
-class AttemptChoiceAdmin(admin.ModelAdmin):
     pass
