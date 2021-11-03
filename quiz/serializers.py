@@ -60,12 +60,14 @@ class AttemptMultipleChoiceQuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = MultipleChoiceQuestionAttempt
         fields = '__all__'
+        read_only_fields = ['quiz_attempt', 'points_achieved']
 
 
 class AttemptInputAnswerQuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = InputAnswerQuestionAttempt
         fields = '__all__'
+        read_only_fields = ['quiz_attempt', 'points_achieved']
 
 
 class AttemptQuizSerializer(serializers.ModelSerializer):
@@ -76,13 +78,19 @@ class AttemptQuizSerializer(serializers.ModelSerializer):
                                                         default=None, many=True)
 
     def create(self, validated_data):
-        # create multiple choice question quiz attempts
-        # create input answer question quiz attempts
-        # create a quiz attempt
         mcq_attempts = validated_data.pop('quiz_multiplechoicequestionattempt_related')
         iaq_attempts = validated_data.pop('quiz_inputanswerquestionattempt_related')
         quiz_attempt = QuizAttempt.objects.create(**validated_data)
 
+        for mcq_attempt in mcq_attempts:
+            mcq_attempt['quiz_attempt'] = quiz_attempt
+            selected_choices = mcq_attempt.pop('selected_choices')
+            mcq_attempt = MultipleChoiceQuestionAttempt.objects.create(**mcq_attempt)
+            mcq_attempt.selected_choices.set(selected_choices)
+
+        iaq_attempts_instance = [InputAnswerQuestionAttempt(**item, quiz_attempt=quiz_attempt) for item in iaq_attempts]
+        InputAnswerQuestionAttempt.objects.bulk_create(iaq_attempts_instance)
+        return quiz_attempt
 
     class Meta:
         model = QuizAttempt
