@@ -52,6 +52,10 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 
 class PlaylistSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    stories = serializers.SerializerMethodField(read_only=True)
+
+    def get_stories(self, obj):
+        return obj.posts.all().count()
 
     class Meta:
         model = Playlist
