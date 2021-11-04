@@ -37,6 +37,8 @@ class NewsfeedView(generics.ListAPIView):
 class GetContentsListView(generics.ListAPIView):
     """
     Returns posts for a specific playlist or subscription.
+    For Playlist's Posts : /contents/playlist/<playlist_id>/
+    For Subscription's Posts : /contents/subscription/<subscription_id>/
     """
     serializer_class = PostSerializer
 
