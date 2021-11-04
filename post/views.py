@@ -34,6 +34,22 @@ class NewsfeedView(generics.ListAPIView):
             return Post.objects.filter(privacy=1)
 
 
+class GetContentsListView(generics.ListAPIView):
+    """
+    Returns posts for a specific playlist or subscription.
+    """
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        content_type = self.kwargs['content_type']
+        content_id = self.kwargs['id']
+        if content_type == 'playlist':
+            return Post.objects.filter(playlist=content_id, subscription__isnull=True)
+        elif content_type == 'subscription':
+            return Post.objects.filter(subscription=content_id)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
 class SubscriptionViewset(viewsets.ModelViewSet):
     serializer_class = SubscriptionSerializer
     permission_classes = [AllowAny]
