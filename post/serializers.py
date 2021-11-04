@@ -9,7 +9,8 @@ from .utils import upload_get_signed_up, download_get_signed_up
 
 
 class PostSerializer(serializers.ModelSerializer):
-    owner = serializers.ReadOnlyField(default=serializers.CurrentUserDefault())
+    owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    author = serializers.CharField(source='owner.username', read_only=True)
     likes = serializers.SerializerMethodField(read_only=True)
     comments = serializers.SerializerMethodField(read_only=True)
     attachment_upload_url = serializers.SerializerMethodField(read_only=True)

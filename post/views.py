@@ -41,6 +41,7 @@ class GetContentsListView(generics.ListAPIView):
     For Subscription's Posts : /contents/subscription/<subscription_id>/
     """
     serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         content_type = self.kwargs['content_type']
