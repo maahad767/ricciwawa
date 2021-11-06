@@ -63,7 +63,6 @@ class Post(models.Model):
     audio_traditional_chinese = models.CharField(max_length=1000, null=True, blank=True)
     timing_traditional_chinese = models.CharField(max_length=1000, null=True, blank=True)
 
-    # no idea about these fields
     pin_yin_words = models.JSONField(null=True, blank=True)
     meaning_words = models.JSONField(null=True, blank=True)
     english_meaning_article = models.TextField(null=True, blank=True)

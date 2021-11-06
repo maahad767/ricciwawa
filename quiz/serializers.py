@@ -6,6 +6,18 @@ from .models import Quiz, MultipleChoiceQuestion, Choice, InputAnswerQuestion, Q
 
 
 class ChoiceSerializer(serializers.ModelSerializer):
+    selection_percentage = serializers.SerializerMethodField(read_only=True)
+    users_selected = serializers.SerializerMethodField(read_only=True)
+
+    def get_selection_percentage(self, instance):
+        total = instance.question.get_total_attempts
+        if total == 0:
+            return 0
+        return instance.get_total_questions_selected_choice / total * 100
+
+    def get_users_selected(self, instance):
+        return instance.get_users_selected
+
     class Meta:
         model = Choice
         exclude = []
@@ -34,6 +46,10 @@ class QuizSerializer(WritableNestedModelSerializer):
                                                     default=None, many=True)
     ia_questions = InputAnswerQuestionSerializer(source='quiz_inputanswerquestion_related',
                                                  default=None, many=True)
+    total_points = serializers.SerializerMethodField(read_only=True)
+
+    def get_total_points(self, instance):
+        return instance.total_points
 
     def create(self, validated_data):
         mc_questions = validated_data.pop('quiz_multiplechoicequestion_related')
@@ -76,6 +92,19 @@ class AttemptQuizSerializer(serializers.ModelSerializer):
                                                            default=None, many=True)
     iaq_attempts = AttemptInputAnswerQuestionSerializer(source='quiz_inputanswerquestionattempt_related',
                                                         default=None, many=True)
+    total_points_achieved = serializers.SerializerMethodField(read_only=True)
+    accuracy_percentage = serializers.SerializerMethodField(read_only=True)
+
+    def get_total_points_achieved(self, instance):
+        return instance.total_points_achieved
+
+    def get_accuracy_percentage(self, instance):
+        total_points_possible = instance.quiz.total_points
+        total_points_achieved = instance.total_points_achieved
+
+        if total_points_possible:
+            return round((total_points_achieved / total_points_possible) * 100, 2)
+        return 0
 
     def create(self, validated_data):
         mcq_attempts = validated_data.pop('quiz_multiplechoicequestionattempt_related')
@@ -95,3 +124,32 @@ class AttemptQuizSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuizAttempt
         fields = '__all__'
+
+
+class ChoiceExamineeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Choice
+        exclude = []
+        read_only_fields = ['question']
+
+
+class MultipleChoiceQuestionExamineeSerializer(serializers.ModelSerializer):
+    choices = ChoiceExamineeSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = MultipleChoiceQuestionAttempt
+        exclude = []
+        read_only_fields = ['quiz']
+
+
+class QuizExamineeSerializer(serializers.ModelSerializer):
+    creator = serializers.CharField(source='creator.username', read_only=True)
+    mc_questions = MultipleChoiceQuestionExamineeSerializer(source='quiz_multiplechoicequestion_related',
+                                                            default=None, many=True)
+    ia_questions = InputAnswerQuestionSerializer(source='quiz_inputanswerquestion_related',
+                                                 default=None, many=True)
+
+    class Meta:
+        model = Quiz
+        exclude = []

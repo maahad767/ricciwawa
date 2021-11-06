@@ -1,10 +1,19 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated
 
 from .models import Quiz, QuizAttempt, MultipleChoiceQuestionAttempt, MultipleChoiceQuestion, InputAnswerQuestion, \
     Choice, InputAnswerQuestionAttempt
 from .serializers import QuizSerializer, MultipleChoiceQuestionSerializer, ChoiceSerializer, \
     InputAnswerQuestionSerializer, AttemptQuizSerializer, AttemptInputAnswerQuestionSerializer
+
+
+class QuizExamineeView(generics.RetrieveAPIView):
+
+    permission_classes = (IsAuthenticated,)
+    serializer_class = QuizSerializer
+
+    def get_object(self):
+        return Quiz.objects.filter(post__id=self.kwargs['post_id']).first()
 
 
 class QuizViewset(viewsets.ModelViewSet):

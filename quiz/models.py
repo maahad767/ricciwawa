@@ -12,6 +12,12 @@ class Quiz(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    @property
+    def total_points(self):
+        mcq_marks = self.quiz_multiplechoicequestion_related.aggregate(models.Sum('points'))['points__sum'] or 0
+        iaq_marks = self.quiz_inputanswerquestion_related.aggregate(models.Sum('points'))['points__sum'] or 0
+        return mcq_marks + iaq_marks
+
 
 class Question(models.Model):
     quiz = models.ForeignKey(Quiz,
@@ -31,6 +37,10 @@ class Question(models.Model):
 class MultipleChoiceQuestion(Question):
     has_multiple_correct_choices = models.BooleanField(default=False)
 
+    @property
+    def get_total_attempts(self):
+        return self.multiplechoicequestionattempt_set.count()
+
 
 class Choice(models.Model):
     question = models.ForeignKey(MultipleChoiceQuestion, on_delete=models.CASCADE, related_name='choices')
@@ -40,11 +50,23 @@ class Choice(models.Model):
     explanation = models.TextField(null=True, blank=True)
     attachment = models.JSONField(null=True, blank=True)
 
+    @property
+    def get_total_questions_selected_choice(self):
+        return self.questions_selected_choices.count()
+
+    @property
+    def get_users_selected(self):
+        return self.questions_selected_choices.values_list('quiz_attempt__examinee__username', flat=True)
+
 
 class InputAnswerQuestion(Question):
     answer = models.TextField()
     attachment = models.JSONField(null=True, blank=True)
     explanation = models.TextField(null=True, blank=True)
+
+    @property
+    def get_question_attempts(self):
+        return self.inputanswerquestionattempt_set.count()
 
 
 class QuizAttempt(models.Model):
@@ -54,6 +76,14 @@ class QuizAttempt(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    @property
+    def total_points_achieved(self):
+        mcq_marks = self.quiz_multiplechoicequestionattempt_related.aggregate(
+            models.Sum('points_achieved'))['points_achieved__sum'] or 0
+        iaq_marks = self.quiz_inputanswerquestionattempt_related.aggregate(models.Sum('points_achieved'))[
+            'points_achieved__sum'] or 0
+        return mcq_marks + iaq_marks
+
 
 class QuestionAttempt(models.Model):
     quiz_attempt = models.ForeignKey(QuizAttempt,
@@ -61,7 +91,7 @@ class QuestionAttempt(models.Model):
                                      related_name="%(app_label)s_%(class)s_related",
                                      related_query_name="%(app_label)s_%(class)ss",
                                      )
-    points_achieved = models.PositiveSmallIntegerField(default=0)
+    points_achieved = models.PositiveSmallIntegerField(null=True, blank=True)
 
     class Meta:
         abstract = True
@@ -69,7 +99,7 @@ class QuestionAttempt(models.Model):
 
 class MultipleChoiceQuestionAttempt(QuestionAttempt):
     question = models.ForeignKey(MultipleChoiceQuestion, on_delete=models.CASCADE)
-    selected_choices = models.ManyToManyField(Choice, related_name='selected_choices')
+    selected_choices = models.ManyToManyField(Choice, related_name='questions_selected_choices')
 
 
 class InputAnswerQuestionAttempt(QuestionAttempt):
