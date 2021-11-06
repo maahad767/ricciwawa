@@ -47,6 +47,7 @@ class Post(models.Model):
     subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE, null=True, blank=True)
     playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=512)
+    description = models.TextField(null=True, blank=True)
     text = models.TextField(null=True)
     image = models.ImageField(null=True, blank=True)
     language = models.CharField(max_length=20, default='en')
