@@ -60,7 +60,7 @@ class PlaylistSerializer(serializers.ModelSerializer):
     stories = serializers.SerializerMethodField(read_only=True)
 
     def get_stories(self, obj):
-        return obj.posts.all().count()
+        return obj.post_set.all().count()
 
     class Meta:
         model = Playlist
