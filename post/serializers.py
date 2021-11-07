@@ -45,6 +45,10 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class SubscriptionSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    subscribers = serializers.SerializerMethodField(read_only=True)
+
+    def get_subscribers(self, obj):
+        return obj.subscribe_set.count()
 
     class Meta:
         model = Subscription

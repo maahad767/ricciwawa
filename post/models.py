@@ -12,6 +12,7 @@ class Subscription(models.Model):
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
+    thumbnail = models.ImageField(upload_to='subscription_thumbnails/', null=True, blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     state = models.SmallIntegerField(choices=STATE_CHOICES, default=1)
     created_at = models.DateTimeField(auto_now_add=True)
