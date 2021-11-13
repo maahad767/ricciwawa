@@ -19,6 +19,18 @@ class Subscription(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
+class Category(models.Model):
+    """
+    Model for Subscription Categories
+    """
+    subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    description = models.TextField(null=True, blank=True)
+    thumbnail = models.ImageField(upload_to='category_thumbnails/', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
 class Playlist(models.Model):
     """
     Model for playlist
@@ -29,6 +41,7 @@ class Playlist(models.Model):
     description = models.TextField(null=True, blank=True)
     subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE,
                                      related_name='posts', null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
     thumbnail = models.ImageField(null=True, blank=True)
     privacy = models.SmallIntegerField(choices=PRIVACY_CHOICES, default=1)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -46,6 +59,7 @@ class Post(models.Model):
 
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE, null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
     playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=512)
     description = models.TextField(null=True, blank=True)

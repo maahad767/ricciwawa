@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from account.fields import UsernameField
-from .models import (Post, Comment, LikePost, LikeComment, Subscription, Subscribe, Playlist, SavePlaylist, ViewPost,
+from .models import (Post, Comment, LikePost, LikeComment, Subscription, Category, Subscribe, Playlist, SavePlaylist, ViewPost,
                      Favourite, Follow, FavouriteVocabulary, ReportPost, IgnorePost)
 from .utils import upload_get_signed_up, download_get_signed_up
 
@@ -35,6 +35,13 @@ class PostSerializer(serializers.ModelSerializer):
         exclude = []
 
 
+class UploadPostImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Post
+        fields = ('image',)
+
+
 class CommentSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
@@ -52,6 +59,13 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Subscription
+        fields = '__all__'
+
+
+class CategorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Category
         fields = '__all__'
 
 

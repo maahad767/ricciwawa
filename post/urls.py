@@ -4,7 +4,7 @@ from rest_framework import routers
 from post.views import SubscriptionViewset, PlaylistViewset, PostViewset, CommentViewset, NewsfeedView, \
     FavouriteVocabularyViewset, LikePostView, UnlikePostView, ViewPostView, FollowView, AddFavouriteView, \
     RemoveFavouriteView, SavePlaylistView, UnsavePlaylistView, SubscribeView, UnfollowView, IgnorePostView, \
-    UnignorePostView, UserPostListView, WebHome, GetContentsListView
+    UnignorePostView, UserPostListView, WebHome, GetContentsListView, CategoryViewset, UploadPostImageView
 
 """
 Router is used to route ViewSets. 
@@ -20,6 +20,7 @@ router.register(r'playlists', PlaylistViewset, basename='post')
 router.register(r'posts', PostViewset, basename='post')
 router.register(r'comments', CommentViewset, basename='post')
 router.register(r'fav-vocabs', FavouriteVocabularyViewset, basename='post')
+router.register(r'category', CategoryViewset, basename='category')
 
 urlpatterns = [
     path('', WebHome.as_view()),
@@ -39,4 +40,7 @@ urlpatterns = [
     path('unsubscribe-plan/<int:pk>/', SubscribeView.as_view()),
     path('ignore-post/<int:pk>/', IgnorePostView.as_view()),
     path('unignore-post/<int:pk>/', UnignorePostView.as_view()),
+
+    # temporary url
+    path('post/upload-image/<post_id>', UploadPostImageView.as_view())
  ] + router.urls

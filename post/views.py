@@ -7,10 +7,10 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
 from account.models import IgnoreBlockUser
-from .models import Subscription, Playlist, Post, Comment, FavouriteVocabulary
+from .models import Subscription, Playlist, Post, Comment, FavouriteVocabulary, Category
 from .serializers import SubscriptionSerializer, PlaylistSerializer, PostSerializer, CommentSerializer, \
     LikePostSerializer, ViewPostSerializer, FollowSerializer, FavouriteSerializer, FavouriteVocabularySerializer, \
-    SavePlaylistSerializer, SubscribeSerializer, ReportPostSerializer, IgnorePostSerializer
+    SavePlaylistSerializer, SubscribeSerializer, ReportPostSerializer, IgnorePostSerializer, UploadPostImageSerializer
 
 
 class WebHome(generic.RedirectView):
@@ -59,6 +59,14 @@ class SubscriptionViewset(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Subscription.objects.filter(owner=self.request.user)
+
+
+class CategoryViewset(viewsets.ModelViewSet):
+    serializer_class = PlaylistSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Category.objects.filter(owner=self.request.user)
 
 
 class PlaylistViewset(viewsets.ModelViewSet):
@@ -190,3 +198,12 @@ class IgnorePostView(generics.CreateAPIView):
 class UnignorePostView(generics.DestroyAPIView):
     serializer_class = IgnorePostSerializer
     permission_classes = [IsAuthenticated]
+
+
+# Temporary APIs
+class UploadPostImageView(generics.UpdateAPIView):
+    serializer_class = UploadPostImageSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return Post.objects.get(id=self.kwargs['post_id'])
