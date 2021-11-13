@@ -1,4 +1,3 @@
-from attr.filters import exclude
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
@@ -71,6 +70,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class PlaylistSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    author = serializers.CharField(source='owner.username', read_only=True)
     stories = serializers.SerializerMethodField(read_only=True)
 
     def get_stories(self, obj):

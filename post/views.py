@@ -47,10 +47,14 @@ class GetContentsListView(generics.ListAPIView):
         content_type = self.kwargs['content_type']
         content_id = self.kwargs['id']
         if content_type == 'playlist':
-            return Post.objects.filter(playlist=content_id, subscription__isnull=True)
+            print(content_type)
+            print(content_id)
+            contents = Post.objects.filter(playlist=content_id, subscription__isnull=True)
+            return contents
         elif content_type == 'subscription':
             return Post.objects.filter(subscription=content_id)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Post.objects.none()
 
 
 class SubscriptionViewset(viewsets.ModelViewSet):
