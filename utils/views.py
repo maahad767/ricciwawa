@@ -113,6 +113,13 @@ class TranslateSimplifiedToTraditional(generics.GenericAPIView):
 
 
 class UIDToIdTokenView(generics.GenericAPIView):
+    """
+    This view is used to convert a UID to an ID Token.
+    You must be logged in as an Admin User to use this API.
+    So, you can only use Browsable API to call this API.
+    This is to make sure that the Admin can only call this API, for security purpose.
+    """
+
     serializer_class = UIDToIdTokenSerializer
     permission_classes = [IsAdminUser]
 
