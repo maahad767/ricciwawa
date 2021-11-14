@@ -1,15 +1,21 @@
 import datetime
 import json
 import logging
+import os
 import random
 import string
+
+import firebase_admin
 import requests
 import time
 import base64
 
+from firebase_admin import credentials, auth
 from google.cloud import texttospeech, speech, storage, datastore, translate
 
 datastore_client = datastore.Client()
+# cred = credentials.Certificate(os.environ.get('SERVICE_ACCOUNT_KEY', 'ricciwawa-6e11b342c999.json'))
+# default_app = firebase_admin.initialize_app(cred)
 
 
 def text_to_speech(text, language_code="en-US", ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL):
@@ -480,4 +486,19 @@ def dictionary_lookup_datastore(input_text):
     query.add_filter('trad', '=', input_text)
     datastore_query_result = list(query.fetch(limit=20))
     return datastore_query_result
+
+
+def uid_to_id_token(uid):
+    """Get the ID token for the given UID."""
+
+    custom_token = auth.create_custom_token(uid)
+    url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=AIzaSyAMC3CeECe7u8UuOGYObBXPSrKRGSm3Yto'
+    body = {
+        "token": custom_token,
+        "returnSecureToken": True
+    }
+    response = requests.post(url, data=body).json()
+    # print(response)
+    return response['idToken']
+
 

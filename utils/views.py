@@ -1,10 +1,11 @@
 from django.http import FileResponse
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from rest_framework.response import Response
 
 from .serializers import TextToSpeechSerializer, SpeechToTextSerializer, PronunciationAssessmentSerializer, \
-    Mp3TaskHandlerSerializer, TranslateToChineseSerializer, TranslateSimplifiedToTraditionalSerializer
+    Mp3TaskHandlerSerializer, TranslateToChineseSerializer, TranslateSimplifiedToTraditionalSerializer, \
+    UIDToIdTokenSerializer
 from . import utils
 from .utils import speech_tts_msft, google_translate
 
@@ -109,3 +110,16 @@ class TranslateSimplifiedToTraditional(generics.GenericAPIView):
         text = request.data.get("text")
         translated_text = google_translate(text, "zh-TW", "zh-CN")
         return Response({'data': translated_text})
+
+
+class UIDToIdTokenView(generics.GenericAPIView):
+    serializer_class = UIDToIdTokenSerializer
+    permission_classes = [IsAdminUser]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            data = serializer.data
+            id_token = utils.uid_to_id_token(data['uid'])
+            return Response({'id_token': id_token})
+        return Response(serializer.errors)

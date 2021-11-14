@@ -42,4 +42,7 @@ class TranslateToChineseSerializer(serializers.Serializer):
 class TranslateSimplifiedToTraditionalSerializer(serializers.Serializer):
     text = serializers.CharField(max_length=5000)
 
+###################
 
+class UIDToIdTokenSerializer(serializers.Serializer):
+    uid = serializers.CharField(max_length=200)

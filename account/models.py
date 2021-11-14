@@ -14,6 +14,10 @@ class User(AbstractUser):
 class ReportUser(models.Model):
     """
     Model for tracking and storing user reports (to other users).
+    status = (
+        (0, 'pending'),
+        (1, 'reviewed'),
+    )
     """
     STATUS = (
         (0, 'pending'),
@@ -35,6 +39,10 @@ class ReportUser(models.Model):
 class IgnoreBlockUser(models.Model):
     """
     Model of blocking/ignoring a user, the information will be used to filter out posts from blocked/ignored users.
+    _type = (
+        (0, 'ignored'),
+        (1, 'blocked'),
+    )
     """
     TYPES = (
         (0, 'ignored'),
