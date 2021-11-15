@@ -10,7 +10,8 @@ from account.models import IgnoreBlockUser
 from .models import Subscription, Playlist, Post, Comment, FavouriteVocabulary, Category
 from .serializers import SubscriptionSerializer, PlaylistSerializer, PostSerializer, CommentSerializer, \
     LikePostSerializer, ViewPostSerializer, FollowSerializer, FavouriteSerializer, FavouriteVocabularySerializer, \
-    SavePlaylistSerializer, SubscribeSerializer, ReportPostSerializer, IgnorePostSerializer, UploadPostImageSerializer
+    SavePlaylistSerializer, SubscribeSerializer, ReportPostSerializer, IgnorePostSerializer, UploadPostImageSerializer, \
+    AddPostsToSubscriptionSerializer, AddPostsToPlaylistSerializer, AddPostsToCategorySerializer
 
 
 class WebHome(generic.RedirectView):
@@ -49,15 +50,20 @@ class GetContentsListView(generics.ListAPIView):
         if content_type == 'playlist':
             print(content_type)
             print(content_id)
-            contents = Post.objects.filter(playlist=content_id, subscription__isnull=True)
+            contents = Post.objects.filter(playlist=content_id)
             return contents
         elif content_type == 'subscription':
             return Post.objects.filter(subscription=content_id)
+        elif content_type == 'category':
+            return Post.objects.filter(category=content_id)
         else:
             return Post.objects.none()
 
 
 class SubscriptionViewset(viewsets.ModelViewSet):
+    """
+    states: (0, 'closed'), (1, 'open')
+    """
     serializer_class = SubscriptionSerializer
     permission_classes = [AllowAny]
 
@@ -211,3 +217,45 @@ class UploadPostImageView(generics.UpdateAPIView):
 
     def get_object(self):
         return Post.objects.get(id=self.kwargs['post_id'])
+
+
+class AddPostsToSubscriptionsView(generics.GenericAPIView):
+    serializer_class = AddPostsToSubscriptionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AddPostsToPlaylistView(generics.GenericAPIView):
+    serializer_class = AddPostsToPlaylistSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AddPostsToCategoryView(generics.GenericAPIView):
+    serializer_class = AddPostsToCategorySerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

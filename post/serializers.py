@@ -1,3 +1,4 @@
+import serial as serial
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
@@ -14,6 +15,7 @@ class PostSerializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField(read_only=True)
     attachment_upload_url = serializers.SerializerMethodField(read_only=True)
     attachment_url = serializers.SerializerMethodField(read_only=True)
+    is_liked = serializers.SerializerMethodField(read_only=True)
 
     def get_likes(self, obj):
         return obj.likepost_set.count()
@@ -28,6 +30,12 @@ class PostSerializer(serializers.ModelSerializer):
     def get_attachment_url(self, obj):
         if obj.attachment:
             return download_get_signed_up(obj.attachment)
+
+    def get_is_liked(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            return LikePost.objects.filter(post=obj, liker=user).exists()
+        return False
 
     class Meta:
         model = Post
@@ -160,3 +168,39 @@ class ReportPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReportPost
         fields = '__all__'
+
+
+class AddPostsToSubscriptionSerializer(serializers.Serializer):
+    subscription = serializers.PrimaryKeyRelatedField(queryset=Subscription.objects.all())
+    posts = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all(), many=True)
+
+    def save(self):
+        subscription = self.validated_data['subscription']
+        posts = self.validated_data['posts']
+        for post in posts:
+            post.subscription = subscription
+            post.save()
+
+
+class AddPostsToPlaylistSerializer(serializers.Serializer):
+    playlist = serializers.PrimaryKeyRelatedField(queryset=Playlist.objects.all())
+    posts = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all(), many=True)
+
+    def save(self):
+        playlist = self.validated_data['playlist']
+        posts = self.validated_data['posts']
+        for post in posts:
+            post.playlist = playlist
+            post.save()
+
+
+class AddPostsToCategorySerializer(serializers.Serializer):
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
+    posts = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all(), many=True)
+
+    def save(self):
+        category = self.validated_data['category']
+        posts = self.validated_data['posts']
+        for post in posts:
+            post.category = category
+            post.save()
