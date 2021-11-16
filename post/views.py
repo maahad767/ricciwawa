@@ -48,8 +48,6 @@ class GetContentsListView(generics.ListAPIView):
         content_type = self.kwargs['content_type']
         content_id = self.kwargs['id']
         if content_type == 'playlist':
-            print(content_type)
-            print(content_id)
             contents = Post.objects.filter(playlist=content_id)
             return contents
         elif content_type == 'subscription':
@@ -88,6 +86,9 @@ class PlaylistViewset(viewsets.ModelViewSet):
 
 
 class PostViewset(viewsets.ModelViewSet):
+    """
+    privacy = (0, 'private'), (1, 'public')
+    """
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
 
@@ -97,11 +98,18 @@ class PostViewset(viewsets.ModelViewSet):
 
 class UserPostListView(generics.ListAPIView):
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         owner = self.request.user
         user = get_user_model().objects.get(username=self.kwargs['username'])
+
+        if not owner.is_authenticated:
+            return Post.objects.filter(owner=user, privacy=1)
+
+        # if the user is logged in, then it returns both the public and subscribed plan's posts.
+        # if the user is blocked by the user or blocked by the profile owner,
+        # then it returns HTTP_400_BAD_REQUEST response,
         self_blocked_ignored_users = IgnoreBlockUser.objects.filter(to=user, by=owner).first()
         if self_blocked_ignored_users:
             response = {
@@ -259,3 +267,19 @@ class AddPostsToCategoryView(generics.GenericAPIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetCommentsByParentIDView(generics.ListAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        return Comment.objects.filter(parent__id=self.kwargs['parent_id'])
+
+
+class GetCommentsByPostIDView(generics.ListAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        return Comment.objects.filter(post__id=self.kwargs['post_id'])
