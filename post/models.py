@@ -149,6 +149,14 @@ class ViewPost(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
 
+class SharePost(models.Model):
+    """
+    Model to track shares in a post
+    """
+    sharer = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+
+
 class Follow(models.Model):
     """
     Model for Follow a User

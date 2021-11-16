@@ -1,12 +1,13 @@
 from django.urls import path
 from rest_framework import routers
 
+from post.models import SharePost
 from post.views import SubscriptionViewset, PlaylistViewset, PostViewset, CommentViewset, NewsfeedView, \
     FavouriteVocabularyViewset, LikePostView, UnlikePostView, ViewPostView, FollowView, AddFavouriteView, \
     RemoveFavouriteView, SavePlaylistView, UnsavePlaylistView, SubscribeView, UnfollowView, IgnorePostView, \
     UnignorePostView, UserPostListView, WebHome, GetContentsListView, CategoryViewset, UploadPostImageView, \
     AddPostsToSubscriptionsView, AddPostsToPlaylistView, AddPostsToCategoryView, GetCommentsByPostIDView, \
-    GetCommentsByParentIDView
+    GetCommentsByParentIDView, SharePostView
 
 """
 Router is used to route ViewSets. 
@@ -31,6 +32,7 @@ urlpatterns = [
     path('user-posts/<str:username>', UserPostListView.as_view()),
     path('like-post/', LikePostView.as_view()),
     path('unlike-post/<int:pk>/', UnlikePostView.as_view()),
+    path('share-post/', SharePostView.as_view()),
     path('mark-post-viewd/', ViewPostView.as_view()),
     path('follow-user/', FollowView.as_view()),
     path('unfollow-user/<int:pk>/', UnfollowView.as_view()),

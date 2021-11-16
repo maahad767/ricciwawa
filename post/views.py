@@ -11,7 +11,7 @@ from .models import Subscription, Playlist, Post, Comment, FavouriteVocabulary, 
 from .serializers import SubscriptionSerializer, PlaylistSerializer, PostSerializer, CommentSerializer, \
     LikePostSerializer, ViewPostSerializer, FollowSerializer, FavouriteSerializer, FavouriteVocabularySerializer, \
     SavePlaylistSerializer, SubscribeSerializer, ReportPostSerializer, IgnorePostSerializer, UploadPostImageSerializer, \
-    AddPostsToSubscriptionSerializer, AddPostsToPlaylistSerializer, AddPostsToCategorySerializer
+    AddPostsToSubscriptionSerializer, AddPostsToPlaylistSerializer, AddPostsToCategorySerializer, SharePostSerializer
 
 
 class WebHome(generic.RedirectView):
@@ -160,6 +160,14 @@ class ViewPostView(generics.CreateAPIView):
     View/Controller class for adding views to a post.
     """
     serializer_class = ViewPostSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class SharePostView(generics.CreateAPIView):
+    """
+    Creates a share to count how many share a post has.
+    """
+    serializer_class = SharePostSerializer
     permission_classes = [IsAuthenticated]
 
 

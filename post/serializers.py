@@ -3,8 +3,9 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from account.fields import UsernameField
-from .models import (Post, Comment, LikePost, LikeComment, Subscription, Category, Subscribe, Playlist, SavePlaylist, ViewPost,
-                     Favourite, Follow, FavouriteVocabulary, ReportPost, IgnorePost)
+from .models import (Post, Comment, LikePost, LikeComment, Subscription, Category, Subscribe, Playlist, SavePlaylist,
+                     ViewPost,
+                     Favourite, Follow, FavouriteVocabulary, ReportPost, IgnorePost, SharePost)
 from .utils import upload_get_signed_up, download_get_signed_up
 
 
@@ -16,6 +17,7 @@ class PostSerializer(serializers.ModelSerializer):
     attachment_upload_url = serializers.SerializerMethodField(read_only=True)
     attachment_url = serializers.SerializerMethodField(read_only=True)
     is_liked = serializers.SerializerMethodField(read_only=True)
+    shares = serializers.SerializerMethodField(read_only=True)
 
     def get_likes(self, obj):
         return obj.likepost_set.count()
@@ -36,6 +38,9 @@ class PostSerializer(serializers.ModelSerializer):
         if user.is_authenticated:
             return LikePost.objects.filter(post=obj, liker=user).exists()
         return False
+
+    def get_shares(self, obj):
+        return obj.sharepost_set.all().count()
 
     class Meta:
         model = Post
@@ -122,6 +127,14 @@ class ViewPostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ViewPost
+        fields = '__all__'
+
+
+class SharePostSerializer(serializers.ModelSerializer):
+    sharer = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = SharePost
         fields = '__all__'
 
 
