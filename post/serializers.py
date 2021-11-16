@@ -51,6 +51,18 @@ class UploadPostImageSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    author = serializers.CharField(source='owner.username', read_only=True)
+    likes = serializers.SerializerMethodField(read_only=True)
+    is_liked = serializers.SerializerMethodField(read_only=True)
+
+    def get_likes(self, obj):
+        return obj.likecomment_set.count()
+
+    def get_is_liked(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            return LikeComment.objects.filter(comment=obj, liker=user).exists()
+        return False
 
     class Meta:
         model = Comment
