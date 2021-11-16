@@ -27,11 +27,13 @@ class NewsfeedView(generics.ListAPIView):
     serializer_class = PostSerializer
 
     def get_queryset(self):
-        if self.request.user.is_authenticated:
-            return Post.objects.filter(Q(privacy=1)
-                                       | (Q(privacy=0) &
-                                          Q(subscription__in=self.request.user.subscriptions.all().values(
-                                              'subscription'))))
+        myself = self.request.user
+        if myself.is_authenticated:
+            my_subscriptions = myself.subscriptions.all().values('subscription')
+            my_blocked_lists = myself.ignore_blocked_users.all().values('user')
+            my_ignored_posts = myself.ignoredpost_set.all().values('ignored_post')
+            return Post.objects.filter(Q(privacy=1) | (Q(privacy=0) & Q(subscription__in=my_subscriptions)))\
+                .filter(~Q(owner__in=my_blocked_lists)).filter(~Q(id__in=my_ignored_posts))
         else:
             return Post.objects.filter(privacy=1)
 
