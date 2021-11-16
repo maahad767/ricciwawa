@@ -39,6 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # 3rd party apps
+    'rest_framework',
+    'django_elasticsearch_dsl',
+    'drf_spectacular',
+    'drf_spectacular_sidecar',
+    'djstripe',
+
     # local apps
     'account',
     'post',
@@ -48,12 +55,6 @@ INSTALLED_APPS = [
     # reusable local apps
     'firebase_auth',
     'utils',
-
-    # 3rd party apps
-    'rest_framework',
-    'django_elasticsearch_dsl',
-    'drf_spectacular',
-    'drf_spectacular_sidecar',
 ]
 
 MIDDLEWARE = [
@@ -223,3 +224,10 @@ SPECTACULAR_SETTINGS = {
         "displayOperationId": True,
     }
 }
+
+# STRIPE_LIVE_SECRET_KEY = os.environ.get("STRIPE_LIVE_SECRET_KEY", "<your secret key>")
+STRIPE_TEST_SECRET_KEY = os.environ.get("STRIPE_TEST_SECRET_KEY", "sk_test_51FW4RBD9iHs4oFDOa4CqRyDgXFB4fkrdWMJxJRlbjtsLfvf5t7uLEss9ebDvIMeG3YNgmZ6bz0C93s6MA8psOqE8000TWde3mg")
+STRIPE_LIVE_MODE = False  # Change to True in production
+DJSTRIPE_WEBHOOK_SECRET = "whsec_eY8QU7v9ffSqRcF41HT3dlmxJ7RpdN0Z"  # Get it from the section in the Stripe dashboard where you added the webhook endpoint
+DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
+DJSTRIPE_USE_NATIVE_JSONFIELD = True

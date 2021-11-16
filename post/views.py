@@ -10,8 +10,9 @@ from account.models import IgnoreBlockUser
 from .models import Subscription, Playlist, Post, Comment, FavouriteVocabulary, Category
 from .serializers import SubscriptionSerializer, PlaylistSerializer, PostSerializer, CommentSerializer, \
     LikePostSerializer, ViewPostSerializer, FollowSerializer, FavouriteSerializer, FavouriteVocabularySerializer, \
-    SavePlaylistSerializer, SubscribeSerializer, ReportPostSerializer, IgnorePostSerializer, UploadPostImageSerializer, \
-    AddPostsToSubscriptionSerializer, AddPostsToPlaylistSerializer, AddPostsToCategorySerializer, SharePostSerializer
+    SavePlaylistSerializer, SubscribeSerializer, ReportPostSerializer, IgnorePostSerializer, \
+    UploadPostImageSerializer, AddPostsToSubscriptionSerializer, AddPostsToPlaylistSerializer, \
+    AddPostsToCategorySerializer, SharePostSerializer, UserInfoSerializer
 
 
 class WebHome(generic.RedirectView):
@@ -291,3 +292,27 @@ class GetCommentsByPostIDView(generics.ListAPIView):
 
     def get_queryset(self):
         return Comment.objects.filter(post__id=self.kwargs['post_id'])
+
+
+class GetSubscriptionsByUserView(generics.ListAPIView):
+    serializer_class = SubscriptionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Subscription.objects.filter(owner__id=self.kwargs['username'])
+
+
+class GetPlaylistsByUserView(generics.ListAPIView):
+    serializer_class = PlaylistSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Playlist.objects.filter(owner__id=self.kwargs['username'])
+
+
+class GetUserInfoView(generics.RetrieveAPIView):
+    serializer_class = UserInfoSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return get_user_model().objects.get(username=self.kwargs['username'])

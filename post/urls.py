@@ -7,7 +7,7 @@ from post.views import SubscriptionViewset, PlaylistViewset, PostViewset, Commen
     RemoveFavouriteView, SavePlaylistView, UnsavePlaylistView, SubscribeView, UnfollowView, IgnorePostView, \
     UnignorePostView, UserPostListView, WebHome, GetContentsListView, CategoryViewset, UploadPostImageView, \
     AddPostsToSubscriptionsView, AddPostsToPlaylistView, AddPostsToCategoryView, GetCommentsByPostIDView, \
-    GetCommentsByParentIDView, SharePostView
+    GetCommentsByParentIDView, SharePostView, GetUserInfoView, GetSubscriptionsByUserView, GetPlaylistsByUserView
 
 """
 Router is used to route ViewSets. 
@@ -55,5 +55,13 @@ urlpatterns = [
 
     # get comments by post_id
     path('get-comments/post/<post_id>', GetCommentsByPostIDView.as_view()),
-    path('get-comments/parent/<parent_id>/', GetCommentsByParentIDView.as_view())
+    path('get-comments/parent/<parent_id>/', GetCommentsByParentIDView.as_view()),
+
+    # get user info
+    path('get-user-info/<str:username>', GetUserInfoView.as_view()),
+    # get subscriptions by username
+    # path('get-subscriptions/<str:username>', SubscriptionViewset.as_view({'get': 'get_subscriptions'})),
+    path('get-subscriptions-by-user/<str:username>/', GetSubscriptionsByUserView.as_view()),
+    # get playlists by username
+    path('get-playlists-by-user/<str:username>/', GetPlaylistsByUserView.as_view()),
  ] + router.urls

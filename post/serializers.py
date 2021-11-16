@@ -1,4 +1,3 @@
-import serial as serial
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
@@ -77,9 +76,18 @@ class CommentSerializer(serializers.ModelSerializer):
 class SubscriptionSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     subscribers = serializers.SerializerMethodField(read_only=True)
+    posts = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all(), many=True, write_only=True, required=False)
 
     def get_subscribers(self, obj):
         return obj.subscribe_set.count()
+
+    def create(self, validated_data):
+        posts = validated_data.pop('posts') if 'posts' in validated_data else []
+        subscription = super(SubscriptionSerializer, self).create(validated_data)
+        for post in posts:
+            post.subscription = subscription
+
+        return subscription
 
     class Meta:
         model = Subscription
@@ -87,6 +95,15 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    posts = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all(), many=True, write_only=True, required=False)
+
+    def create(self, validated_data):
+        posts = validated_data.pop('posts') if 'posts' in validated_data else []
+        category = super(CategorySerializer, self).create(validated_data)
+        for post in posts:
+            post.category = category
+
+        return category
 
     class Meta:
         model = Category
@@ -97,9 +114,18 @@ class PlaylistSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     author = serializers.CharField(source='owner.username', read_only=True)
     stories = serializers.SerializerMethodField(read_only=True)
+    posts = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all(), many=True, write_only=True, required=False)
 
     def get_stories(self, obj):
         return obj.post_set.all().count()
+
+    def create(self, validated_data):
+        posts = validated_data.pop('posts') if 'posts' in validated_data else []
+        playlist = super(PlaylistSerializer, self).create(validated_data)
+        for post in posts:
+            post.playlist = playlist
+
+        return playlist
 
     class Meta:
         model = Playlist
@@ -229,3 +255,18 @@ class AddPostsToCategorySerializer(serializers.Serializer):
         for post in posts:
             post.category = category
             post.save()
+
+
+class UserInfoSerializer(serializers.ModelSerializer):
+    is_followed = serializers.SerializerMethodField()
+
+    def get_is_followed(self, obj):
+        followed_user = self.context['request'].query_params.get('username', None)
+        if not followed_user:
+            return False
+        return obj.following.filter(followed_user=followed_user).exists()
+
+    class Meta:
+        model = get_user_model()
+        fields = ['username']
+        read_only_fields = ['username']

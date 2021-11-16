@@ -161,8 +161,8 @@ class Follow(models.Model):
     """
     Model for Follow a User
     """
-    followed_user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='following')
-    followed_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='followers')
+    followed_user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='followers')
+    followed_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='following')
 
 
 class Favourite(models.Model):
