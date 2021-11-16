@@ -299,7 +299,7 @@ class GetSubscriptionsByUserView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Subscription.objects.filter(owner__id=self.kwargs['username'])
+        return Subscription.objects.filter(owner__username=self.kwargs['username'])
 
 
 class GetPlaylistsByUserView(generics.ListAPIView):
@@ -307,7 +307,7 @@ class GetPlaylistsByUserView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Playlist.objects.filter(owner__id=self.kwargs['username'])
+        return Playlist.objects.filter(owner__username=self.kwargs['username'])
 
 
 class GetUserInfoView(generics.RetrieveAPIView):

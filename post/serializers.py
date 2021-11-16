@@ -268,5 +268,5 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ['username']
+        fields = ['username', 'is_followed']
         read_only_fields = ['username']
