@@ -36,7 +36,7 @@ class IgnoreBlockUserListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return self.request.user.ignore_block_users.all()
+        return self.request.user.ignore_blocked_users.all()
 
 
 class IgnoreBlockUserDestroyView(generics.DestroyAPIView):
