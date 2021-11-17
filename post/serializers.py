@@ -17,6 +17,10 @@ class PostSerializer(serializers.ModelSerializer):
     attachment_url = serializers.SerializerMethodField(read_only=True)
     is_liked = serializers.SerializerMethodField(read_only=True)
     shares = serializers.SerializerMethodField(read_only=True)
+    audio_simplified_chinese_url = serializers.SerializerMethodField(read_only=True)
+    audio_traditional_chinese_url = serializers.SerializerMethodField(read_only=True)
+    timing_simplified_chinese_url = serializers.SerializerMethodField(read_only=True)
+    timing_traditional_chinese_url = serializers.SerializerMethodField(read_only=True)
 
     def get_likes(self, obj):
         return obj.likepost_set.count()
@@ -31,6 +35,22 @@ class PostSerializer(serializers.ModelSerializer):
     def get_attachment_url(self, obj):
         if obj.attachment:
             return download_get_signed_up(obj.attachment)
+
+    def get_audio_simplified_chinese_url(self, obj):
+        if obj.audio_simplified_chinese:
+            return download_get_signed_up(obj.audio_simplified_chinese)
+
+    def get_audio_traditional_chinese_url(self, obj):
+        if obj.audio_traditional_chinese:
+            return download_get_signed_up(obj.audio_traditional_chinese)
+
+    def get_timing_simplified_chinese_url(self, obj):
+        if obj.timing_simplified_chinese:
+            return download_get_signed_up(obj.timing_simplified_chinese)
+
+    def get_timing_traditional_chinese_url(self, obj):
+        if obj.timing_traditional_chinese:
+            return download_get_signed_up(obj.timing_traditional_chinese)
 
     def get_is_liked(self, obj):
         user = self.context['request'].user
