@@ -30,8 +30,8 @@ class NewsfeedView(generics.ListAPIView):
         myself = self.request.user
         if myself.is_authenticated:
             my_subscriptions = myself.subscriptions.all().values('subscription')
-            my_blocked_lists = myself.ignore_blocked_users.all().values('user')
-            my_ignored_posts = myself.ignoredpost_set.all().values('ignored_post')
+            my_blocked_lists = myself.ignore_blocked_users.all().values('to_id')
+            my_ignored_posts = myself.ignorepost_set.all().values('ignored_post')
             return Post.objects.filter(Q(privacy=1) | (Q(privacy=0) & Q(subscription__in=my_subscriptions)))\
                 .filter(~Q(owner__in=my_blocked_lists)).filter(~Q(id__in=my_ignored_posts))
         else:
@@ -51,12 +51,11 @@ class GetContentsListView(generics.ListAPIView):
         content_type = self.kwargs['content_type']
         content_id = self.kwargs['id']
         if content_type == 'playlist':
-            contents = Post.objects.filter(playlist=content_id)
-            return contents
+            return Post.objects.filter(playlist__id=content_id)
         elif content_type == 'subscription':
-            return Post.objects.filter(subscription=content_id)
+            return Post.objects.filter(subscription__id=content_id)
         elif content_type == 'category':
-            return Post.objects.filter(category=content_id)
+            return Post.objects.filter(category__id=content_id)
         else:
             return Post.objects.none()
 
