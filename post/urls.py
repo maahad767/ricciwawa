@@ -7,7 +7,8 @@ from post.views import SubscriptionViewset, PlaylistViewset, PostViewset, Commen
     RemoveFavouriteView, SavePlaylistView, UnsavePlaylistView, SubscribeView, UnfollowView, IgnorePostView, \
     UnignorePostView, UserPostListView, WebHome, GetContentsListView, CategoryViewset, UploadPostImageView, \
     AddPostsToSubscriptionsView, AddPostsToPlaylistView, AddPostsToCategoryView, GetCommentsByPostIDView, \
-    GetCommentsByParentIDView, SharePostView, GetUserInfoView, GetSubscriptionsByUserView, GetPlaylistsByUserView
+    GetCommentsByParentIDView, SharePostView, GetUserInfoView, GetSubscriptionsByUserView, GetPlaylistsByUserView, \
+    NotificationViewset
 
 """
 Router is used to route ViewSets. 
@@ -24,6 +25,7 @@ router.register(r'posts', PostViewset, basename='post')
 router.register(r'comments', CommentViewset, basename='post')
 router.register(r'fav-vocabs', FavouriteVocabularyViewset, basename='post')
 router.register(r'category', CategoryViewset, basename='category')
+router.register(r'notification', NotificationViewset, basename='notification')
 
 urlpatterns = [
     path('', WebHome.as_view()),

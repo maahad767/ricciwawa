@@ -4,7 +4,7 @@ from rest_framework import serializers
 from account.fields import UsernameField
 from .models import (Post, Comment, LikePost, LikeComment, Subscription, Category, Subscribe, Playlist, SavePlaylist,
                      ViewPost,
-                     Favourite, Follow, FavouriteVocabulary, ReportPost, IgnorePost, SharePost)
+                     Favourite, Follow, FavouriteVocabulary, ReportPost, IgnorePost, SharePost, Notification)
 from .utils import upload_get_signed_up, download_get_signed_up
 
 
@@ -93,9 +93,24 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class SubscribeSerializer(serializers.ModelSerializer):
+    subscriber = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    subscribed_by = serializers.CharField(source='subscriber.username', read_only=True)
+
+    class Meta:
+        model = Subscribe
+        fields = '__all__'
+        read_only_fields = ['is_approved']
+        extra_kwargs = {
+            'subscription': {'write_only': True}
+        }
+
+
 class SubscriptionSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     subscribers = serializers.SerializerMethodField(read_only=True)
+    # subscribe_set = SubscribeSerializer(many=True, read_only=True)
+    subscriber_list = SubscribeSerializer(source='subscribe_set', many=True, read_only=True)
     posts = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all(), many=True, write_only=True, required=False)
 
     def get_subscribers(self, obj):
@@ -195,15 +210,6 @@ class SavePlaylistSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SubscribeSerializer(serializers.ModelSerializer):
-    subscriber = serializers.HiddenField(default=serializers.CurrentUserDefault())
-
-    class Meta:
-        model = Subscribe
-        fields = '__all__'
-        read_only_fields = ['is_approved']
-
-
 class FollowSerializer(serializers.ModelSerializer):
     followed_user = UsernameField(queryset=get_user_model().objects.all())
     followed_by = serializers.HiddenField(default=serializers.CurrentUserDefault())
@@ -293,3 +299,12 @@ class UserInfoSerializer(serializers.ModelSerializer):
         model = get_user_model()
         fields = ['username', 'is_followed']
         read_only_fields = ['username']
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    from_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    to_user = serializers.CharField(source='to_user.username')
+
+    class Meta:
+        model = Notification
+        fields = '__all__'

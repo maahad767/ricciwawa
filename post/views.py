@@ -7,12 +7,12 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
 from account.models import IgnoreBlockUser
-from .models import Subscription, Playlist, Post, Comment, FavouriteVocabulary, Category
+from .models import Subscription, Playlist, Post, Comment, FavouriteVocabulary, Category, Notification
 from .serializers import SubscriptionSerializer, PlaylistSerializer, PostSerializer, CommentSerializer, \
     LikePostSerializer, ViewPostSerializer, FollowSerializer, FavouriteSerializer, FavouriteVocabularySerializer, \
     SavePlaylistSerializer, SubscribeSerializer, ReportPostSerializer, IgnorePostSerializer, \
     UploadPostImageSerializer, AddPostsToSubscriptionSerializer, AddPostsToPlaylistSerializer, \
-    AddPostsToCategorySerializer, SharePostSerializer, UserInfoSerializer
+    AddPostsToCategorySerializer, SharePostSerializer, UserInfoSerializer, NotificationSerializer
 
 
 class WebHome(generic.RedirectView):
@@ -317,3 +317,14 @@ class GetUserInfoView(generics.RetrieveAPIView):
 
     def get_object(self):
         return get_user_model().objects.get(username=self.kwargs['username'])
+
+
+class NotificationViewset(viewsets.ModelViewSet):
+    """
+    Use only Create Notification(method POST) and Get Notification(method GET, returns list)
+    """
+    serializer_class = NotificationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return self.request.user.notifications_received.all()

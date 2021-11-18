@@ -58,9 +58,9 @@ class Post(models.Model):
     ATTACHMENT_TYPE_CHOICES = [(0, 'none'), (1, 'image'), (2, 'audio'), (3, 'video')]
 
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE, null=True, blank=True)
+    subscription = models.ForeignKey(Subscription, on_delete=models.SET_NULL, null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
-    playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE, null=True, blank=True)
+    playlist = models.ForeignKey(Playlist, on_delete=models.SET_NULL, null=True, blank=True)
     title = models.CharField(max_length=512)
     description = models.TextField(null=True, blank=True)
     text = models.TextField(null=True)
@@ -223,8 +223,10 @@ class Notification(models.Model):
     """
     Model to send notification and store them
     """
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    content = models.TextField()
+    from_user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='notifications_sent')
+    to_user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='notifications_received')
+    content = models.TextField(null=True, blank=True)
+    notification_type = models.CharField(max_length=200, null=True, blank=True)
     attachment = models.FileField(null=True, blank=True)
     is_seen = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
