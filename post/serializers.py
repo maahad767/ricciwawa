@@ -303,7 +303,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
 class NotificationSerializer(serializers.ModelSerializer):
     from_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    to_user = serializers.CharField(source='to_user.username')
+    to_user = UsernameField(queryset=get_user_model().objects.all())
 
     class Meta:
         model = Notification
