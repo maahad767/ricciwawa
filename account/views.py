@@ -45,3 +45,6 @@ class IgnoreBlockUserDestroyView(generics.DestroyAPIView):
     """
     serializer_class = IgnoreBlockUserSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user.ignore_blocked_users.filter(username=self.kwargs['username']).first()
