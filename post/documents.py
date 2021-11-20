@@ -18,10 +18,9 @@ class PostDocument(Document):
 
         # The fields of the model you want to be indexed in Elasticsearch
         fields = [
-            'name',
-            'color',
+            'title',
             'description',
-            'type',
+            'text',
         ]
 
         # Ignore auto updating of Elasticsearch when a model is saved
