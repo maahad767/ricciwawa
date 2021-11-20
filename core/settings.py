@@ -197,7 +197,7 @@ REST_FRAMEWORK = {
 # ElasticSearch Configurations
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': 'localhost:9200'
+        'hosts': 'https://ricciwawa.ent.asia-east1.gcp.elastic-cloud.com'
     },
 }
 

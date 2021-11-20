@@ -21,4 +21,4 @@ class IgnoreBlockUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IgnoreBlockUser
-        fields = ['to', 'by', '_type']
+        fields = ['id', 'to', 'by', '_type']
