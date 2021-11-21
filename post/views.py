@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
 from account.models import IgnoreBlockUser
-from .models import Subscription, Playlist, Post, Comment, FavouriteVocabulary, Category
+from .models import Subscription, Playlist, Post, Comment, FavouriteVocabulary, Category, LikePost, Follow
 from .serializers import SubscriptionSerializer, PlaylistSerializer, PostSerializer, CommentSerializer, \
     LikePostSerializer, ViewPostSerializer, FollowSerializer, FavouriteSerializer, FavouriteVocabularySerializer, \
     SavePlaylistSerializer, SubscribeSerializer, ReportPostSerializer, IgnorePostSerializer, \
@@ -157,6 +157,11 @@ class UnlikePostView(generics.DestroyAPIView):
     serializer_class = LikePostSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_object(self):
+        post_id = self.kwargs['post_id']
+        user = self.request.user
+        return LikePost.objects.get(post__id=post_id, liker=user)
+
 
 class ViewPostView(generics.CreateAPIView):
     """
@@ -182,6 +187,11 @@ class FollowView(generics.CreateAPIView):
 class UnfollowView(generics.DestroyAPIView):
     serializer_class = FollowSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        user_id = self.kwargs['username']
+        follower = self.request.user
+        return Follow.objects.get(followed_by=follower, followed_user__username=user_id)
 
 
 class AddFavouriteView(generics.CreateAPIView):
@@ -298,7 +308,7 @@ class GetCommentsByPostIDView(generics.ListAPIView):
 
 class GetSubscriptionsByUserView(generics.ListAPIView):
     serializer_class = SubscriptionSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         return Subscription.objects.filter(owner__username=self.kwargs['username'])
@@ -306,7 +316,7 @@ class GetSubscriptionsByUserView(generics.ListAPIView):
 
 class GetPlaylistsByUserView(generics.ListAPIView):
     serializer_class = PlaylistSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         return Playlist.objects.filter(owner__username=self.kwargs['username'])
@@ -314,7 +324,7 @@ class GetPlaylistsByUserView(generics.ListAPIView):
 
 class GetUserInfoView(generics.RetrieveAPIView):
     serializer_class = UserInfoSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get_object(self):
         return get_user_model().objects.get(username=self.kwargs['username'])
