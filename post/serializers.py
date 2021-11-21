@@ -259,6 +259,7 @@ class AddPostsToSubscriptionSerializer(serializers.Serializer):
         posts = self.validated_data['posts']
         for post in posts:
             post.subscription = subscription
+            post.privacy = 0
             post.save()
 
 
