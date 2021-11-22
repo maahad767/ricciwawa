@@ -24,6 +24,8 @@ class NewsfeedView(generics.ListAPIView):
     """
     Returns posts for newsfeed. If the user is logged in, then it returns both the public and subscribed plan's posts.
     If the user is not logged in, then it returns only public posts.
+    privacy: 0-private, 1-public
+    attachment_type: 0-none, 1-image, 2-audio, 3-video
     """
     serializer_class = PostSerializer
 
@@ -45,6 +47,8 @@ class GetContentsListView(generics.ListAPIView):
     Returns posts for a specific playlist or subscription.
     For Playlist's Posts : /contents/playlist/<playlist_id>/
     For Subscription's Posts : /contents/subscription/<subscription_id>/
+    privacy: 0-private, 1-public
+    attachment_type: 0-none, 1-image, 2-audio, 3-video
     """
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
@@ -92,6 +96,7 @@ class PlaylistViewset(viewsets.ModelViewSet):
 class PostViewset(viewsets.ModelViewSet):
     """
     privacy = (0, 'private'), (1, 'public')
+    attachment_type: 0-none, 1-image, 2-audio, 3-video
     """
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
