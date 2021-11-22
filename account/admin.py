@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.admin import register
 from django.utils.translation import gettext_lazy as _
-from .models import ReportUser, IgnoreBlockUser
+from .models import ReportUser, BlockUser
 
 
 @register(get_user_model())
@@ -34,6 +34,6 @@ class ReportUserAdmin(admin.ModelAdmin):
     pass
 
 
-@register(IgnoreBlockUser)
+@register(BlockUser)
 class IgnoreBlockUserAdmin(admin.ModelAdmin):
     pass

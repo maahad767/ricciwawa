@@ -36,19 +36,13 @@ class ReportUser(models.Model):
         unique_together = ('reported_user', 'reported_by')
 
 
-class IgnoreBlockUser(models.Model):
+class BlockUser(models.Model):
     """
     Model of blocking/ignoring a user, the information will be used to filter out posts from blocked/ignored users.
     """
-    TYPES = (
-        (0, 'ignored'),
-        (1, 'blocked'),
-    )
-
-    to = models.ForeignKey(get_user_model(), verbose_name=_('blocked/ignored user'), on_delete=models.CASCADE)
-    by = models.ForeignKey(get_user_model(), verbose_name=_('blocked/ignored by'),
-                           related_name='ignore_blocked_users', on_delete=models.CASCADE)
-    _type = models.SmallIntegerField(choices=TYPES, default=0)
+    to_user = models.ForeignKey(get_user_model(), verbose_name=_('blocked/ignored user'), on_delete=models.CASCADE)
+    by_user = models.ForeignKey(get_user_model(), verbose_name=_('blocked/ignored by'),
+                                related_name='ignore_blocked_users', on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ('to', 'by')
+        unique_together = ('to_user', 'by_user')

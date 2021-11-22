@@ -6,7 +6,7 @@ from rest_framework import viewsets, generics, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
-from account.models import IgnoreBlockUser
+from account.models import BlockUser
 from .models import Subscription, Playlist, Post, Comment, FavouriteVocabulary, Category, LikePost, Follow, Notification
 from .serializers import SubscriptionSerializer, PlaylistSerializer, PostSerializer, CommentSerializer, \
     LikePostSerializer, ViewPostSerializer, FollowSerializer, FavouriteSerializer, FavouriteVocabularySerializer, \
@@ -114,13 +114,13 @@ class UserPostListView(generics.ListAPIView):
         # if the user is logged in, then it returns both the public and subscribed plan's posts.
         # if the user is blocked by the user or blocked by the profile owner,
         # then it returns HTTP_400_BAD_REQUEST response,
-        self_blocked_ignored_users = IgnoreBlockUser.objects.filter(to=user, by=owner).first()
+        self_blocked_ignored_users = BlockUser.objects.filter(to=user, by=owner).first()
         if self_blocked_ignored_users:
             response = {
                 'error': 'you have blocked/ignored the user'
             }
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
-        blocked_by_target_user = IgnoreBlockUser.objects.filter(to=owner, by=user).first()
+        blocked_by_target_user = BlockUser.objects.filter(to=owner, by=user).first()
         if blocked_by_target_user:
             response = {
                 'error': 'you are blocked/ignored by the user'

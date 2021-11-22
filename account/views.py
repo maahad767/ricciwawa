@@ -1,7 +1,7 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 
-from .serializers import ReportUserSerializer, IgnoreBlockUserSerializer
+from .serializers import ReportUserSerializer, BlockUserSerializer
 
 
 class ReportUserView(generics.CreateAPIView):
@@ -16,35 +16,32 @@ class ReportUserView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
 
-class IgnoreBlockUserCreateView(generics.CreateAPIView):
+class BlockUserCreateView(generics.CreateAPIView):
     """
     Block a User API
-    _type = (
-        (0, 'ignored'),
-        (1, 'blocked'),
-    )
+
     """
-    serializer_class = IgnoreBlockUserSerializer
+    serializer_class = BlockUserSerializer
     permission_classes = [IsAuthenticated]
 
 
-class IgnoreBlockUserListView(generics.ListAPIView):
+class BlockUserListView(generics.ListAPIView):
     """
     Blocked/Ignored User list API
     """
-    serializer_class = IgnoreBlockUserSerializer
+    serializer_class = BlockUserSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return self.request.user.ignore_blocked_users.all()
 
 
-class IgnoreBlockUserDestroyView(generics.DestroyAPIView):
+class BlockUserDestroyView(generics.DestroyAPIView):
     """
     Unblocks/Un-ignore a user API
     """
-    serializer_class = IgnoreBlockUserSerializer
+    serializer_class = BlockUserSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        return self.request.user.ignore_blocked_users.filter(username=self.kwargs['username']).first()
+        return self.request.user.ignore_blocked_users.filter(to_user=self.kwargs['username']).first()

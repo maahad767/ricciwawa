@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from .models import ReportUser, IgnoreBlockUser
+from .models import ReportUser, BlockUser
 from .fields import UsernameField
 
 
@@ -15,10 +15,10 @@ class ReportUserSerializer(serializers.ModelSerializer):
         read_only_fields = ['status', 'comment']
 
 
-class IgnoreBlockUserSerializer(serializers.ModelSerializer):
-    to = UsernameField(queryset=get_user_model().objects.all())
-    by = serializers.HiddenField(default=serializers.CurrentUserDefault())
+class BlockUserSerializer(serializers.ModelSerializer):
+    to_user = UsernameField(queryset=get_user_model().objects.all())
+    by_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
-        model = IgnoreBlockUser
-        fields = ['id', 'to', 'by', '_type']
+        model = BlockUser
+        fields = ['to_user', 'by_user']
