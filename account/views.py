@@ -44,4 +44,4 @@ class BlockUserDestroyView(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        return self.request.user.ignore_blocked_users.filter(to_user=self.kwargs['username']).first()
+        return self.request.user.ignore_blocked_users.filter(to_user__username=self.kwargs['username']).first()
