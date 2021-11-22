@@ -309,3 +309,11 @@ class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = '__all__'
+
+
+class NotificationMarkSeenSerializer(serializers.ModelSerializer):
+    to_user = UsernameField(queryset=get_user_model().objects.all())
+
+    class Meta:
+        model = Notification
+        fields = ['id', 'to_user']

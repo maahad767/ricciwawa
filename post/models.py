@@ -132,6 +132,9 @@ class LikePost(models.Model):
     liker = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
+    class Meta:
+        unique_together = ('liker', 'post')
+
 
 class LikeComment(models.Model):
     """
@@ -140,6 +143,9 @@ class LikeComment(models.Model):
     liker = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
 
+    class Meta:
+        unique_together = ('liker', 'comment')
+
 
 class ViewPost(models.Model):
     """
@@ -147,6 +153,9 @@ class ViewPost(models.Model):
     """
     viewer = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('viewer', 'post')
 
 
 class SharePost(models.Model):
@@ -164,6 +173,9 @@ class Follow(models.Model):
     followed_user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='followers')
     followed_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='following')
 
+    class Meta:
+        unique_together = ('followed_user', 'followed_by')
+
 
 class Favourite(models.Model):
     """
@@ -171,6 +183,9 @@ class Favourite(models.Model):
     """
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='favorites')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='favorite_by')
+
+    class Meta:
+        unique_together = ('owner', 'post')
 
 
 class Subscribe(models.Model):
@@ -181,6 +196,9 @@ class Subscribe(models.Model):
     subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE)
     is_approved = models.BooleanField(default=False)
 
+    class Meta:
+        unique_together = ('subscriber', 'subscription')
+
 
 class SavePlaylist(models.Model):
     """
@@ -189,15 +207,24 @@ class SavePlaylist(models.Model):
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE)
 
+    class Meta:
+        unique_together = ('owner', 'playlist')
+
 
 class FavouriteVocabulary(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     word = models.CharField(max_length=50)
 
+    class Meta:
+        unique_together = ('user', 'word')
+
 
 class IgnorePost(models.Model):
     ignored_post = models.ForeignKey(Post, on_delete=models.CASCADE)
     ignored_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('ignored_post', 'ignored_by')
 
 
 class ReportPost(models.Model):
@@ -217,6 +244,9 @@ class ReportPost(models.Model):
 
     def __str__(self):
         return f'{self.reported_by} reported {self.post.title[:50]}'
+
+    class Meta:
+        unique_together = ('post', 'reported_by')
 
 
 class Notification(models.Model):

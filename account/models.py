@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -31,6 +32,9 @@ class ReportUser(models.Model):
     def __str__(self):
         return f'{self.reported_by} reported {self.reported_user}'
 
+    class Meta:
+        unique_together = ('reported_user', 'reported_by')
+
 
 class IgnoreBlockUser(models.Model):
     """
@@ -41,7 +45,10 @@ class IgnoreBlockUser(models.Model):
         (1, 'blocked'),
     )
 
-    to = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('blocked/ignored user'), on_delete=models.CASCADE)
-    by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('blocked/ignored by'),
+    to = models.ForeignKey(get_user_model(), verbose_name=_('blocked/ignored user'), on_delete=models.CASCADE)
+    by = models.ForeignKey(get_user_model(), verbose_name=_('blocked/ignored by'),
                            related_name='ignore_blocked_users', on_delete=models.CASCADE)
     _type = models.SmallIntegerField(choices=TYPES, default=0)
+
+    class Meta:
+        unique_together = ('to', 'by')

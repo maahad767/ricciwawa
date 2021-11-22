@@ -7,12 +7,13 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
 from account.models import IgnoreBlockUser
-from .models import Subscription, Playlist, Post, Comment, FavouriteVocabulary, Category, LikePost, Follow
+from .models import Subscription, Playlist, Post, Comment, FavouriteVocabulary, Category, LikePost, Follow, Notification
 from .serializers import SubscriptionSerializer, PlaylistSerializer, PostSerializer, CommentSerializer, \
     LikePostSerializer, ViewPostSerializer, FollowSerializer, FavouriteSerializer, FavouriteVocabularySerializer, \
     SavePlaylistSerializer, SubscribeSerializer, ReportPostSerializer, IgnorePostSerializer, \
     UploadPostImageSerializer, AddPostsToSubscriptionSerializer, AddPostsToPlaylistSerializer, \
-    AddPostsToCategorySerializer, SharePostSerializer, UserInfoSerializer, NotificationSerializer
+    AddPostsToCategorySerializer, SharePostSerializer, UserInfoSerializer, NotificationSerializer, \
+    NotificationMarkSeenSerializer
 
 
 class WebHome(generic.RedirectView):
@@ -176,7 +177,7 @@ class SharePostView(generics.CreateAPIView):
     Creates a share to count how many share a post has.
     """
     serializer_class = SharePostSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 
 class FollowView(generics.CreateAPIView):
@@ -339,3 +340,20 @@ class NotificationViewset(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return self.request.user.notifications_received.all()
+
+
+class MarkNotificationSeenView(generics.GenericAPIView):
+    serializer_class = NotificationMarkSeenSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        notification_ids = self.request.kwargs['notifications']
+
+        return Notification.objects.filter(id__in=notification_ids, to_user=user)
+
+    def post(self, request, *args, **kwargs):
+        notifications = self.get_queryset()
+
+        notifications.bulk_update(is_seen=True)
+        notifications.save()
