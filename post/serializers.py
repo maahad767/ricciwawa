@@ -126,10 +126,17 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class SubscriptionSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    is_subscribed = serializers.SerializerMethodField(read_only=True)
     subscribers = serializers.SerializerMethodField(read_only=True)
     subscriber_list = SubscribeSerializer(source='subscribe_set', many=True, read_only=True)
     category_list = CategorySerializer(source='category_set', many=True, read_only=True)
     posts = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all(), many=True, write_only=True, required=False)
+
+    def get_is_subscribed(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            return Subscribe.objects.filter(subscription=obj, subscriber=user).exists()
+        return False
 
     def get_subscribers(self, obj):
         return obj.subscribe_set.count()
