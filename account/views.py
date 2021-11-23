@@ -38,7 +38,7 @@ class BlockUserListView(generics.ListAPIView):
 
 class BlockUserDestroyView(generics.DestroyAPIView):
     """
-    Unblocks/Un-ignore a user API
+    Unblocks a user API
     """
     serializer_class = BlockUserSerializer
     permission_classes = [IsAuthenticated]

@@ -1,3 +1,4 @@
+from attr.filters import exclude
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
@@ -106,11 +107,28 @@ class SubscribeSerializer(serializers.ModelSerializer):
         }
 
 
+class CategorySerializer(serializers.ModelSerializer):
+    posts = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all(), many=True, write_only=True, required=False)
+
+    def create(self, validated_data):
+        posts = validated_data.pop('posts') if 'posts' in validated_data else []
+        category = super(CategorySerializer, self).create(validated_data)
+        for post in posts:
+            post.category = category
+            post.save()
+
+        return category
+
+    class Meta:
+        model = Category
+        exclude = ['subscription']
+
+
 class SubscriptionSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     subscribers = serializers.SerializerMethodField(read_only=True)
-    # subscribe_set = SubscribeSerializer(many=True, read_only=True)
     subscriber_list = SubscribeSerializer(source='subscribe_set', many=True, read_only=True)
+    category_list = CategorySerializer(source='category_set', many=True, read_only=True)
     posts = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all(), many=True, write_only=True, required=False)
 
     def get_subscribers(self, obj):
@@ -127,24 +145,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Subscription
-        fields = '__all__'
-
-
-class CategorySerializer(serializers.ModelSerializer):
-    posts = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all(), many=True, write_only=True, required=False)
-
-    def create(self, validated_data):
-        posts = validated_data.pop('posts') if 'posts' in validated_data else []
-        category = super(CategorySerializer, self).create(validated_data)
-        for post in posts:
-            post.category = category
-            post.save()
-
-        return category
-
-    class Meta:
-        model = Category
-        fields = '__all__'
+        exclude = []
 
 
 class PlaylistSerializer(serializers.ModelSerializer):
