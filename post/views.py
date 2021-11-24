@@ -85,7 +85,7 @@ class CategoryViewset(viewsets.ModelViewSet):
         return Category.objects.filter(owner=self.request.user)
 
 
-class CategoryListCreateView(generics.ListCreateAPIView):
+class CategoryListCreateView(generics.CreateAPIView):
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticated]
 
