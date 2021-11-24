@@ -13,7 +13,7 @@ from .serializers import SubscriptionSerializer, PlaylistSerializer, PostSeriali
     SavePlaylistSerializer, SubscribeSerializer, ReportPostSerializer, IgnorePostSerializer, \
     UploadPostImageSerializer, AddPostsToSubscriptionSerializer, AddPostsToPlaylistSerializer, \
     AddPostsToCategorySerializer, SharePostSerializer, UserInfoSerializer, NotificationSerializer, \
-    NotificationMarkSeenSerializer
+    NotificationMarkSeenSerializer, CategorySerializer
 
 
 class WebHome(generic.RedirectView):
@@ -78,11 +78,23 @@ class SubscriptionViewset(viewsets.ModelViewSet):
 
 
 class CategoryViewset(viewsets.ModelViewSet):
-    serializer_class = PlaylistSerializer
+    serializer_class = CategorySerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Category.objects.filter(owner=self.request.user)
+
+
+class CategoryListCreateView(generics.ListCreateAPIView):
+    serializer_class = CategorySerializer
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class PlaylistViewset(viewsets.ModelViewSet):
@@ -354,7 +366,6 @@ class MarkNotificationSeenView(generics.GenericAPIView):
     def get_queryset(self):
         user = self.request.user
         notification_ids = self.request.kwargs['notifications']
-
         return Notification.objects.filter(id__in=notification_ids, to_user=user)
 
     def post(self, request, *args, **kwargs):

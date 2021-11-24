@@ -195,9 +195,17 @@ REST_FRAMEWORK = {
 
 
 # ElasticSearch Configurations
+HEADERS = {
+    'Authorization': 'Bearer private-br2m7f1ik7wb431sea2jz4x5',
+    'Content-Type': 'application/json'
+}
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': 'https://ricciwawa.ent.asia-east1.gcp.elastic-cloud.com'
+        # 'hosts': 'localhost:9200',
+        'hosts': ['https://ricciwawa.ent.asia-east1.gcp.elastic-cloud.com/api/as/v1/engines/ricciwawa/documents'],
+        'headers': HEADERS,
+        'use_ssl': True,
+        # 'api_key': 'private-br2m7f1ik7wb431sea2jz4x5',
     },
 }
 
