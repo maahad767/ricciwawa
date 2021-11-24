@@ -121,6 +121,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
+        exclude = []
         extra_kwargs = {
             'subscription': {'write_only': True}
         }
