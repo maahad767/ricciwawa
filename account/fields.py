@@ -31,3 +31,34 @@ class UsernameField(serializers.RelatedField):
             raise serializers.ValidationError(
                 'User does not exist.'
             )
+
+
+class UserField(serializers.RelatedField):
+
+    def to_representation(self, obj):
+        user = {
+            'username': obj.username,
+            'name': obj.name,
+            'picture': obj.picture,
+        }
+        return user
+
+    def to_internal_value(self, data):
+        try:
+            user = get_user_model().objects.get(username=data)
+            return user
+
+        except KeyError:
+            raise serializers.ValidationError(
+                'username is a required field.'
+            )
+
+        except ValueError:
+            raise serializers.ValidationError(
+                'Field should be username'
+            )
+
+        except get_user_model().DoesNotExist:
+            raise serializers.ValidationError(
+                'User does not exist.'
+            )

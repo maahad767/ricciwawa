@@ -2,7 +2,7 @@ from attr.filters import exclude
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from account.fields import UsernameField
+from account.fields import UsernameField, UserField
 from .models import (Post, Comment, LikePost, LikeComment, Subscription, Category, Subscribe, Playlist, SavePlaylist,
                      ViewPost,
                      Favourite, Follow, FavouriteVocabulary, ReportPost, IgnorePost, SharePost, Notification)
@@ -11,7 +11,7 @@ from .utils import upload_get_signed_up, download_get_signed_up
 
 class PostSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    author = serializers.CharField(source='owner.username', read_only=True)
+    author = UserField(source='owner', read_only=True)
     likes = serializers.SerializerMethodField(read_only=True)
     comments = serializers.SerializerMethodField(read_only=True)
     attachment_upload_url = serializers.SerializerMethodField(read_only=True)
@@ -76,7 +76,7 @@ class UploadPostImageSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    author = serializers.CharField(source='owner.username', read_only=True)
+    author = UserField(source='owner', read_only=True)
     likes = serializers.SerializerMethodField(read_only=True)
     is_liked = serializers.SerializerMethodField(read_only=True)
 
@@ -96,7 +96,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class SubscribeSerializer(serializers.ModelSerializer):
     subscriber = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    subscribed_by = serializers.CharField(source='subscriber.username', read_only=True)
+    subscribed_by = UserField(source='subscriber', read_only=True)
 
     class Meta:
         model = Subscribe
@@ -160,7 +160,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 
 class PlaylistSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    author = serializers.CharField(source='owner.username', read_only=True)
+    author = UserField(source='owner', read_only=True)
     stories = serializers.SerializerMethodField(read_only=True)
     posts = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all(), many=True, write_only=True, required=False)
 
@@ -222,7 +222,7 @@ class SavePlaylistSerializer(serializers.ModelSerializer):
 
 
 class FollowSerializer(serializers.ModelSerializer):
-    followed_user = UsernameField(queryset=get_user_model().objects.all())
+    followed_user = UserField(queryset=get_user_model().objects.all())
     followed_by = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
@@ -315,7 +315,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
 class NotificationSerializer(serializers.ModelSerializer):
     from_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    to_user = UsernameField(queryset=get_user_model().objects.all())
+    to_user = UserField(queryset=get_user_model().objects.all())
 
     class Meta:
         model = Notification
@@ -323,7 +323,7 @@ class NotificationSerializer(serializers.ModelSerializer):
 
 
 class NotificationMarkSeenSerializer(serializers.ModelSerializer):
-    to_user = UsernameField(queryset=get_user_model().objects.all())
+    to_user = UserField(queryset=get_user_model().objects.all())
 
     class Meta:
         model = Notification

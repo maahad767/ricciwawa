@@ -38,14 +38,13 @@ class FirebaseAuthentication(BaseAuthentication):
         try:
             print(decoded_token)
             uid = decoded_token.get("uid")
-            username = decoded_token.get("username")
-            email = decoded_token.get("email")
+            name = decoded_token.get("name")
             picture = decoded_token.get("picture")
 
         except Exception:
             raise FirebaseError()
 
-        user, created = get_user_model().objects.get_or_create(username=username, email=email, uid=uid, picture=picture)
+        user, created = get_user_model().objects.get_or_create(uid=uid, name=name, picture=picture)
         if created:
             pass
 

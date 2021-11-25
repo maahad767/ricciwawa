@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_spectacular',
     'drf_spectacular_sidecar',
+    # 'django_elasticsearch_dsl',
     'djstripe',
 
     # local apps
@@ -219,6 +220,15 @@ SPECTACULAR_SETTINGS = {
 # STRIPE_LIVE_SECRET_KEY = os.environ.get("STRIPE_LIVE_SECRET_KEY", "<your secret key>")
 STRIPE_TEST_SECRET_KEY = os.environ.get("STRIPE_TEST_SECRET_KEY", "sk_test_51FW4RBD9iHs4oFDOa4CqRyDgXFB4fkrdWMJxJRlbjtsLfvf5t7uLEss9ebDvIMeG3YNgmZ6bz0C93s6MA8psOqE8000TWde3mg")
 STRIPE_LIVE_MODE = False  # Change to True in production
-DJSTRIPE_WEBHOOK_SECRET = "whsec_eY8QU7v9ffSqRcF41HT3dlmxJ7RpdN0Z"  # Get it from the section in the Stripe dashboard where you added the webhook endpoint
+DJSTRIPE_WEBHOOK_SECRET = "whsec_eY8QU7v9ffSqRcF41HT3dlmxJ7RpdN0Z"
 DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
 DJSTRIPE_USE_NATIVE_JSONFIELD = True
+
+
+# Elasticsearch configuration
+# ELASTICSEARCH_DSL = {
+#     'default': {
+#         'hosts': ['https://ricciwawa.ent.asia-east1.gcp.elastic-cloud.com:9200',
+#         {'http_auth': ('elastic', 'srkMulf2O2XNEOiiQxcIH733')}],
+#     }
+# }

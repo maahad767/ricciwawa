@@ -1,7 +1,33 @@
-from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import generics, status
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.response import Response
 
-from .serializers import ReportUserSerializer, BlockUserSerializer
+from .serializers import ReportUserSerializer, BlockUserSerializer, UserProfileSerializer, CheckUsernameSerializer
+
+
+class CheckUsernameView(generics.GenericAPIView):
+    """
+    Check if username is available
+    """
+    permission_classes = (AllowAny,)
+    serializer_class = CheckUsernameSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+
+class UpdateProfileView(generics.UpdateAPIView):
+    """
+    Update profile
+    """
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
 
 
 class ReportUserView(generics.CreateAPIView):

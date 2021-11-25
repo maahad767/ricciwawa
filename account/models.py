@@ -53,6 +53,7 @@ class User(AbstractUser):
         },
     )
     uid = models.CharField(max_length=255, editable=False, unique=True)
+    name = models.CharField(max_length=255, null=True, blank=True)
     picture = models.URLField(blank=True, null=True)
 
     USERNAME_FIELD = 'uid'
