@@ -8,20 +8,22 @@ from .models import ReportUser, BlockUser
 @register(get_user_model())
 class UserAdmin(admin.ModelAdmin):
     fieldsets = (
-        (None, {'fields': ('username', 'email')}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name')}),
+        (None, {'fields': ('uid', 'username', 'email')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'picture')}),
 
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser')}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'first_name', 'last_name', 'password1', 'password2', 'is_staff', 'is_superuser'),
+            'fields': ('email', 'first_name', 'last_name', 'password1', 'password2', 'picture', 'is_staff',
+                       'is_superuser'),
         }),
     )
-    list_display = ('username', 'email', 'is_staff', 'is_superuser')
-    search_fields = ('email', 'first_name', 'last_name')
+    list_display = ('uid', 'username', 'email', 'is_superuser')
+    search_fields = ('username', 'email', 'uid')
     ordering = ('username',)
+    readonly_fields = ('uid',)
     filter_horizontal = ()
     list_filter = ('is_staff', 'is_superuser')
 

@@ -36,11 +36,19 @@ class FirebaseAuthentication(BaseAuthentication):
             return None
 
         try:
+            print(decoded_token)
             uid = decoded_token.get("uid")
+            username = decoded_token.get("username")
+            email = decoded_token.get("email")
+            picture = decoded_token.get("picture")
+
         except Exception:
             raise FirebaseError()
 
-        user, created = get_user_model().objects.get_or_create(username=uid)
+        user, created = get_user_model().objects.get_or_create(username=username, email=email, uid=uid, picture=picture)
+        if created:
+            pass
+
         user.last_login = timezone.localtime()
 
         return user, None

@@ -111,10 +111,13 @@ class PostViewset(viewsets.ModelViewSet):
     attachment_type: 0-none, 1-image, 2-audio, 3-video
     """
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         return Post.objects.filter(owner=self.request.user)
+
+    def get_object(self):
+        return Post.objects.filter(id=self.kwargs['id'], privacy=1).first()
 
 
 class UserPostListView(generics.ListAPIView):

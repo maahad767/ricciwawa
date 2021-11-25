@@ -1,15 +1,62 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+
+class UserManager(BaseUserManager):
+    def _create_user(self, uid, username, email, password=None, **extra_fields):
+        if not uid:
+            raise ValueError('UID number must be set')
+        email = self.normalize_email(email)
+        user = self.model(uid=uid, username=username, email=email, **extra_fields)
+        user.password = make_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, uid, username=None, email=None, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(uid, username, email, password, **extra_fields)
+
+    def create_superuser(self, uid, username=None, email=None, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self._create_user(uid, username, email, password, **extra_fields)
 
 
 class User(AbstractUser):
     """
     Extends the Django's AbstractUser to create a customizable User model.
     """
-    pass
+    username_validator = UnicodeUsernameValidator()
+    username = models.CharField(
+        _('username'),
+        max_length=150,
+        unique=True,
+        null=True,
+        blank=True,
+        help_text=_('150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        validators=[username_validator],
+        error_messages={
+            'unique': _("A user with that username already exists."),
+        },
+    )
+    uid = models.CharField(max_length=255, editable=False, unique=True)
+    picture = models.URLField(blank=True, null=True)
+
+    USERNAME_FIELD = 'uid'
+    objects = UserManager()
 
 
 class ReportUser(models.Model):

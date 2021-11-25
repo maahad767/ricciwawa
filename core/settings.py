@@ -41,7 +41,6 @@ INSTALLED_APPS = [
 
     # 3rd party apps
     'rest_framework',
-    'django_elasticsearch_dsl',
     'drf_spectacular',
     'drf_spectacular_sidecar',
     'djstripe',
@@ -191,22 +190,6 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 100,
-}
-
-
-# ElasticSearch Configurations
-HEADERS = {
-    'Authorization': 'Bearer private-br2m7f1ik7wb431sea2jz4x5',
-    'Content-Type': 'application/json'
-}
-ELASTICSEARCH_DSL = {
-    'default': {
-        # 'hosts': 'localhost:9200',
-        'hosts': ['https://ricciwawa.ent.asia-east1.gcp.elastic-cloud.com/api/as/v1/engines/ricciwawa/documents'],
-        'headers': HEADERS,
-        'use_ssl': True,
-        # 'api_key': 'private-br2m7f1ik7wb431sea2jz4x5',
-    },
 }
 
 
