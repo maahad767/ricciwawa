@@ -20,7 +20,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = get_user_model()
-        fields = ('username', 'profile', 'name')
+        fields = ('username', 'picture', 'name')
 
 
 class ReportUserSerializer(serializers.ModelSerializer):
