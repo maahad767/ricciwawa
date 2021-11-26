@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_spectacular',
     'drf_spectacular_sidecar',
-    # 'django_elasticsearch_dsl',
+    'django_elasticsearch_dsl',
     'djstripe',
 
     # local apps
@@ -226,9 +226,12 @@ DJSTRIPE_USE_NATIVE_JSONFIELD = True
 
 
 # Elasticsearch configuration
-# ELASTICSEARCH_DSL = {
-#     'default': {
-#         'hosts': ['https://ricciwawa.ent.asia-east1.gcp.elastic-cloud.com:9200',
-#         {'http_auth': ('elastic', 'srkMulf2O2XNEOiiQxcIH733')}],
-#     }
-# }
+CLOUD_ID = "RICCIWAWA:YXNpYS1lYXN0MS5nY3AuZWxhc3RpYy1jbG91ZC5jb20kOTNlMWIwMTQzM2RjNGY3YmE1OWM2YTk5MGNmNTk1OGUkNWU4ZjU5MTdmNGViNDQ0M2ExNmU5OTc2ZTgzNjY3Y2Y="
+HTTP_AUTH = ("elastic", "srkMulf2O2XNEOiiQxcIH733")
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'cloud_id': CLOUD_ID,
+        'http_auth': HTTP_AUTH
+    }
+}
