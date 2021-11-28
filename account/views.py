@@ -2,6 +2,7 @@ from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
+from .documents import UserDocument
 from .serializers import ReportUserSerializer, BlockUserSerializer, UserProfileSerializer, CheckUsernameSerializer
 
 
@@ -71,3 +72,15 @@ class BlockUserDestroyView(generics.DestroyAPIView):
 
     def get_object(self):
         return self.request.user.ignore_blocked_users.filter(to_user__username=self.kwargs['username']).first()
+
+
+class SearchUserView(generics.ListAPIView):
+    """
+    Search for a user API
+    """
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        search_result = UserDocument.search().query("match", query_string="beautiful")
+        return search_result.to_queryset()

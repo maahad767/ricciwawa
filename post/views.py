@@ -140,7 +140,7 @@ class UserPostListView(generics.ListAPIView):
                 'error': 'you have blocked/ignored the user'
             }
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
-        blocked_by_target_user = BlockUser.objects.filter(to=owner, by=user).first()
+        blocked_by_target_user = BlockUser.objects.filter(to_user=owner, by_user=user).first()
         if blocked_by_target_user:
             response = {
                 'error': 'you are blocked/ignored by the user'
