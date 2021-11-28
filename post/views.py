@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
 from account.models import BlockUser
+from .documents import PostDocument
 from .models import Subscription, Playlist, Post, Comment, FavouriteVocabulary, Category, LikePost, Follow, Notification
 from .serializers import SubscriptionSerializer, PlaylistSerializer, PostSerializer, CommentSerializer, \
     LikePostSerializer, ViewPostSerializer, FollowSerializer, FavouriteSerializer, FavouriteVocabularySerializer, \
@@ -376,3 +377,12 @@ class MarkNotificationSeenView(generics.GenericAPIView):
 
         notifications.bulk_update(is_seen=True)
         notifications.save()
+
+
+class SearchPostView(generics.ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        search_result = PostDocument.search().query("multi_match", query=self.kwargs['qs'])
+        return search_result.to_queryset()

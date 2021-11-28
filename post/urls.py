@@ -7,7 +7,7 @@ from post.views import SubscriptionViewset, PlaylistViewset, PostViewset, Commen
     UnignorePostView, UserPostListView, WebHome, GetContentsListView, CategoryViewset, UploadPostImageView, \
     AddPostsToSubscriptionsView, AddPostsToPlaylistView, AddPostsToCategoryView, GetCommentsByPostIDView, \
     GetCommentsByParentIDView, SharePostView, GetUserInfoView, GetSubscriptionsByUserView, GetPlaylistsByUserView, \
-    NotificationViewset, CategoryListCreateView
+    NotificationViewset, CategoryListCreateView, SearchPostView
 
 """
 Router is used to route ViewSets. 
@@ -66,5 +66,6 @@ urlpatterns = [
     # get playlists by username
     path('get-playlists-by-user/<str:username>/', GetPlaylistsByUserView.as_view()),
     # create multiple categories at once
-    path('create-categories/', CategoryListCreateView.as_view())
- ] + router.urls
+    path('create-categories/', CategoryListCreateView.as_view()),
+    path('search-post/<str:qs>/', SearchPostView.as_view()),
+] + router.urls

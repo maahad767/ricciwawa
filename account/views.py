@@ -79,8 +79,8 @@ class SearchUserView(generics.ListAPIView):
     Search for a user API
     """
     serializer_class = UserProfileSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
-        search_result = UserDocument.search().query("match", query_string="beautiful")
+        search_result = UserDocument.search().query("multi_match", query=self.kwargs['qs'])
         return search_result.to_queryset()
