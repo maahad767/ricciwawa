@@ -389,7 +389,7 @@ def dictionary_lookup(trad_spaced_sentence, sim_spaced_sentence):
                             two_chars_result = dictionary_lookup_datastore(
                                 each_char + next_char)
                             if two_chars_result != []:
-                                print(two_chars_result[0]["pinyin"])
+                                # print(two_chars_result[0]["pinyin"])
                                 each_char_pinyin.append(
                                     two_chars_result[0]["pinyin"])
                                 skip_flag = True
