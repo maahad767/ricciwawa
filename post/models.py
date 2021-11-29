@@ -77,7 +77,7 @@ class Post(models.Model):
     timing_simplified_chinese = models.CharField(max_length=1000, null=True, blank=True)
     audio_traditional_chinese = models.CharField(max_length=1000, null=True, blank=True)
     timing_traditional_chinese = models.CharField(max_length=1000, null=True, blank=True)
-
+    full_data = models.JSONField(null=True, blank=True)
     pin_yin_words = models.JSONField(null=True, blank=True)
     meaning_words = models.JSONField(null=True, blank=True)
     english_meaning_article = models.TextField(null=True, blank=True)
@@ -95,7 +95,6 @@ class Post(models.Model):
     # don't change
     hashtags = models.JSONField(null=True, blank=True)
 
-    # below fields can be deleted or converted to json fields
     text_on_post = models.CharField(max_length=500, null=True, blank=True)
     text_position_x = models.IntegerField(null=True, blank=True)
     text_position_y = models.IntegerField(null=True, blank=True)
