@@ -32,7 +32,7 @@ urlpatterns = [
     path('contents/<str:content_type>/<int:id>/', GetContentsListView.as_view()),
     path('user-posts/<str:username>', UserPostListView.as_view()),
     path('like-post/', LikePostView.as_view()),
-    path('unlike-post/<int:post_pk>/', UnlikePostView.as_view()),
+    path('unlike-post/<int:post_id>/', UnlikePostView.as_view()),
     path('share-post/', SharePostView.as_view()),
     path('mark-post-viewd/', ViewPostView.as_view()),
     path('follow-user/', FollowView.as_view()),
