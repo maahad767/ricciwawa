@@ -42,6 +42,6 @@ def add_audio_in_post(instance, created, *args, **kwargs):
         create_mp3_task("hk", trad_spaced_sentence, instance.audio_traditional_chinese)
 
     if sim_spaced_sentence and trad_spaced_sentence:
-        instance.full_data = dictionary_lookup(instance.trad_spaced_sentence, sim_spaced_sentence)
+        instance.full_data = dictionary_lookup(trad_spaced_sentence, sim_spaced_sentence)
 
     instance.save()
