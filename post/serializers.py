@@ -1,8 +1,7 @@
-from attr.filters import exclude
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from account.fields import UsernameField, UserField
+from account.fields import UserField
 from .models import (Post, Comment, LikePost, LikeComment, Subscription, Category, Subscribe, Playlist, SavePlaylist,
                      ViewPost,
                      Favourite, Follow, FavouriteVocabulary, ReportPost, IgnorePost, SharePost, Notification)

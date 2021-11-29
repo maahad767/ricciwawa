@@ -45,17 +45,17 @@ class UserField(serializers.RelatedField):
 
     def to_internal_value(self, data):
         try:
-            user = get_user_model().objects.get(username=data)
+            user = get_user_model().objects.get(uid=data)
             return user
 
         except KeyError:
             raise serializers.ValidationError(
-                'username is a required field.'
+                'UID is a required field.'
             )
 
         except ValueError:
             raise serializers.ValidationError(
-                'Field should be username'
+                'Field should be UID'
             )
 
         except get_user_model().DoesNotExist:
