@@ -110,6 +110,9 @@ class Post(models.Model):
     # and will upload the created file to google cloud storage and
     # then will store the file location in a model field(will be created).
 
+    class Meta:
+        ordering = ['-created_at']
+
 
 class Comment(models.Model):
     """

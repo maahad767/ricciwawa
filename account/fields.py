@@ -37,6 +37,7 @@ class UserField(serializers.RelatedField):
 
     def to_representation(self, obj):
         user = {
+            'uid': obj.uid,
             'username': obj.username,
             'name': obj.name,
             'picture': obj.picture,
