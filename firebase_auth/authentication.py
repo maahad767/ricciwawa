@@ -44,9 +44,11 @@ class FirebaseAuthentication(BaseAuthentication):
         except Exception:
             raise FirebaseError()
 
-        user, created = get_user_model().objects.get_or_create(uid=uid, name=name, picture=picture)
+        user, created = get_user_model().objects.get_or_create(uid=uid)
         if created:
-            pass
+            user.name = name
+            user.picture = picture
+            user.save()
 
         user.last_login = timezone.localtime()
 
