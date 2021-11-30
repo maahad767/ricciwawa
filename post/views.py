@@ -30,7 +30,7 @@ class NewsfeedView(generics.ListAPIView):
     attachment_type: 0-none, 1-image, 2-audio, 3-video
     """
     serializer_class = PostSerializer
-    permission_classes = (AllowAny, DRYPermissions)
+    permission_classes = (AllowAny, )
 
     def get_queryset(self):
         myself = self.request.user

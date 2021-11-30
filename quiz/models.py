@@ -18,6 +18,15 @@ class Quiz(models.Model):
         iaq_marks = self.quiz_inputanswerquestion_related.aggregate(models.Sum('points'))['points__sum'] or 0
         return mcq_marks + iaq_marks
 
+    def has_object_write_permission(self, request):
+        return self.creator == request.user
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ['-created_at']
+
 
 class Question(models.Model):
     quiz = models.ForeignKey(Quiz,
@@ -30,8 +39,15 @@ class Question(models.Model):
     position = models.PositiveSmallIntegerField(null=True)
     points = models.PositiveSmallIntegerField(default=0)
 
+    def has_object_write_permission(self, request):
+        return self.quiz.creator == request.user
+
+    def __str__(self):
+        return self.title
+
     class Meta:
         abstract = True
+        ordering = ['position']
 
 
 class MultipleChoiceQuestion(Question):
@@ -57,6 +73,15 @@ class Choice(models.Model):
     @property
     def get_users_selected(self):
         return self.questions_selected_choices.values_list('quiz_attempt__examinee__username', flat=True)
+
+    def has_object_write_permission(self, request):
+        return self.question.has_object_write_permission(request)
+
+    def __str__(self):
+        return self.choice_text
+
+    class Meta:
+        ordering = ['position']
 
 
 class InputAnswerQuestion(Question):
@@ -84,6 +109,12 @@ class QuizAttempt(models.Model):
             'points_achieved__sum'] or 0
         return mcq_marks + iaq_marks
 
+    def has_object_write_permission(self, request):
+        return self.examinee == request.user
+
+    class Meta:
+        ordering = ['created_at']
+
 
 class QuestionAttempt(models.Model):
     quiz_attempt = models.ForeignKey(QuizAttempt,
@@ -92,6 +123,9 @@ class QuestionAttempt(models.Model):
                                      related_query_name="%(app_label)s_%(class)ss",
                                      )
     points_achieved = models.PositiveSmallIntegerField(null=True, blank=True)
+
+    def has_object_write_permission(self, request):
+        return self.quiz_attempt.has_object_write_permission(request)
 
     class Meta:
         abstract = True

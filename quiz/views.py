@@ -1,5 +1,7 @@
 from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated
+from dry_rest_permissions.generics import DRYPermissions
+
 
 from .models import Quiz, QuizAttempt, MultipleChoiceQuestionAttempt, MultipleChoiceQuestion, InputAnswerQuestion, \
     Choice, InputAnswerQuestionAttempt
@@ -9,7 +11,7 @@ from .serializers import QuizSerializer, MultipleChoiceQuestionSerializer, Choic
 
 class QuizExamineeView(generics.RetrieveAPIView):
 
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, DRYPermissions)
     serializer_class = QuizSerializer
 
     def get_object(self):
@@ -17,7 +19,7 @@ class QuizExamineeView(generics.RetrieveAPIView):
 
 
 class QuizViewset(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
     serializer_class = QuizSerializer
 
     def get_queryset(self):
@@ -25,7 +27,7 @@ class QuizViewset(viewsets.ModelViewSet):
 
 
 class MultipleChoiceQuestionViewset(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
     serializer_class = MultipleChoiceQuestionSerializer
 
     def get_queryset(self):
@@ -33,7 +35,7 @@ class MultipleChoiceQuestionViewset(viewsets.ModelViewSet):
 
 
 class InputAnswerQuestionViewset(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
     serializer_class = InputAnswerQuestionSerializer
 
     def get_queryset(self):
@@ -41,7 +43,7 @@ class InputAnswerQuestionViewset(viewsets.ModelViewSet):
 
 
 class ChoiceViewset(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
     serializer_class = ChoiceSerializer
 
     def get_queryset(self):
@@ -49,7 +51,7 @@ class ChoiceViewset(viewsets.ModelViewSet):
 
 
 class AttemptQuizViewset(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
     serializer_class = AttemptQuizSerializer
 
     def get_queryset(self):
@@ -57,7 +59,7 @@ class AttemptQuizViewset(viewsets.ModelViewSet):
 
 
 class AttemptInputAnswerQuestionViewset(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
     serializer_class = AttemptInputAnswerQuestionSerializer
 
     def get_queryset(self):
@@ -65,7 +67,7 @@ class AttemptInputAnswerQuestionViewset(viewsets.ModelViewSet):
 
 
 class AttemptMultipleChoiceQuestionViewset(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
     serializer_class = MultipleChoiceQuestionSerializer
 
     def get_queryset(self):
