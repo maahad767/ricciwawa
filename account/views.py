@@ -4,6 +4,7 @@ from rest_framework.response import Response
 
 from .documents import UserDocument
 from .serializers import ReportUserSerializer, BlockUserSerializer, UserProfileSerializer, CheckUsernameSerializer
+from dry_rest_permissions.generics import DRYPermissions
 
 
 class CheckUsernameView(generics.GenericAPIView):
@@ -25,7 +26,7 @@ class UpdateProfileView(generics.UpdateAPIView):
     Update profile
     """
     serializer_class = UserProfileSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
     def get_object(self):
         return self.request.user
@@ -40,7 +41,7 @@ class ReportUserView(generics.CreateAPIView):
     )
     """
     serializer_class = ReportUserSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
 
 class BlockUserCreateView(generics.CreateAPIView):
@@ -49,7 +50,7 @@ class BlockUserCreateView(generics.CreateAPIView):
 
     """
     serializer_class = BlockUserSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
 
 class BlockUserListView(generics.ListAPIView):
@@ -68,7 +69,7 @@ class BlockUserDestroyView(generics.DestroyAPIView):
     Unblocks a user API
     """
     serializer_class = BlockUserSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
     def get_object(self):
         return self.request.user.ignore_blocked_users.filter(to_user__username=self.kwargs['username']).first()

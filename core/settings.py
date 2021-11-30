@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     # 3rd party apps
     'rest_framework',
+    'dry_rest_permissions',
     'drf_spectacular',
     'drf_spectacular_sidecar',
     'django_elasticsearch_dsl',

@@ -60,6 +60,9 @@ class User(AbstractUser):
     USERNAME_FIELD = 'uid'
     objects = UserManager()
 
+    def has_object_write_permission(self, request):
+        return request.user == self
+
 
 class ReportUser(models.Model):
     """
@@ -78,6 +81,9 @@ class ReportUser(models.Model):
     status = models.SmallIntegerField(choices=STATUS, default=0)
     attachment = models.FileField(upload_to='reports/', null=True, blank=True)
 
+    def has_object_write_permission(self, request):
+        return request.user == self.reported_by
+
     def __str__(self):
         return f'{self.reported_by} reported {self.reported_user}'
 
@@ -92,6 +98,9 @@ class BlockUser(models.Model):
     to_user = models.ForeignKey(get_user_model(), verbose_name=_('blocked/ignored user'), on_delete=models.CASCADE)
     by_user = models.ForeignKey(get_user_model(), verbose_name=_('blocked/ignored by'),
                                 related_name='ignore_blocked_users', on_delete=models.CASCADE)
+
+    def has_object_write_permission(self, request):
+        return request.user == self.by_user
 
     class Meta:
         unique_together = ('to_user', 'by_user')
