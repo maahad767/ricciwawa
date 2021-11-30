@@ -18,6 +18,21 @@ class Quiz(models.Model):
         iaq_marks = self.quiz_inputanswerquestion_related.aggregate(models.Sum('points'))['points__sum'] or 0
         return mcq_marks + iaq_marks
 
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return True
+
+    @staticmethod
+    def has_write_permission(request):
+        return False
+
+    @staticmethod
+    def has_create_permission(request):
+        return True
+
     def has_object_write_permission(self, request):
         return self.creator == request.user
 
@@ -38,6 +53,21 @@ class Question(models.Model):
     question = models.TextField(null=True, blank=True)
     position = models.PositiveSmallIntegerField(null=True)
     points = models.PositiveSmallIntegerField(default=0)
+
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return True
+
+    @staticmethod
+    def has_write_permission(request):
+        return False
+
+    @staticmethod
+    def has_create_permission(request):
+        return True
 
     def has_object_write_permission(self, request):
         return self.quiz.creator == request.user
@@ -74,6 +104,21 @@ class Choice(models.Model):
     def get_users_selected(self):
         return self.questions_selected_choices.values_list('quiz_attempt__examinee__username', flat=True)
 
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return True
+
+    @staticmethod
+    def has_write_permission(request):
+        return False
+
+    @staticmethod
+    def has_create_permission(request):
+        return True
+
     def has_object_write_permission(self, request):
         return self.question.has_object_write_permission(request)
 
@@ -109,6 +154,21 @@ class QuizAttempt(models.Model):
             'points_achieved__sum'] or 0
         return mcq_marks + iaq_marks
 
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return True
+
+    @staticmethod
+    def has_write_permission(request):
+        return False
+
+    @staticmethod
+    def has_create_permission(request):
+        return True
+
     def has_object_write_permission(self, request):
         return self.examinee == request.user
 
@@ -123,6 +183,21 @@ class QuestionAttempt(models.Model):
                                      related_query_name="%(app_label)s_%(class)ss",
                                      )
     points_achieved = models.PositiveSmallIntegerField(null=True, blank=True)
+
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return True
+
+    @staticmethod
+    def has_write_permission(request):
+        return False
+
+    @staticmethod
+    def has_create_permission(request):
+        return True
 
     def has_object_write_permission(self, request):
         return self.quiz_attempt.has_object_write_permission(request)

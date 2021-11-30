@@ -60,6 +60,21 @@ class User(AbstractUser):
     USERNAME_FIELD = 'uid'
     objects = UserManager()
 
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return True
+
+    @staticmethod
+    def has_write_permission(request):
+        return False
+
+    @staticmethod
+    def has_create_permission(request):
+        return True
+
     def has_object_write_permission(self, request):
         return request.user == self
 
@@ -81,6 +96,21 @@ class ReportUser(models.Model):
     status = models.SmallIntegerField(choices=STATUS, default=0)
     attachment = models.FileField(upload_to='reports/', null=True, blank=True)
 
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return True
+
+    @staticmethod
+    def has_write_permission(request):
+        return False
+
+    @staticmethod
+    def has_create_permission(request):
+        return True
+
     def has_object_write_permission(self, request):
         return request.user == self.reported_by
 
@@ -98,6 +128,21 @@ class BlockUser(models.Model):
     to_user = models.ForeignKey(get_user_model(), verbose_name=_('blocked/ignored user'), on_delete=models.CASCADE)
     by_user = models.ForeignKey(get_user_model(), verbose_name=_('blocked/ignored by'),
                                 related_name='ignore_blocked_users', on_delete=models.CASCADE)
+
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return True
+
+    @staticmethod
+    def has_write_permission(request):
+        return False
+
+    @staticmethod
+    def has_create_permission(request):
+        return True
 
     def has_object_write_permission(self, request):
         return request.user == self.by_user
