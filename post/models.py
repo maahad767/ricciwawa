@@ -18,6 +18,15 @@ class Subscription(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def has_object_write_permission(self, request):
+        return request.user == self.owner
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ['-created_at']
+
 
 class Category(models.Model):
     """
@@ -29,6 +38,15 @@ class Category(models.Model):
     thumbnail = models.ImageField(upload_to='category_thumbnails/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def has_object_write_permission(self, request):
+        return request.user == self.subscription.owner
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ['-created_at']
 
 
 class Playlist(models.Model):
@@ -46,6 +64,15 @@ class Playlist(models.Model):
     privacy = models.SmallIntegerField(choices=PRIVACY_CHOICES, default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def has_object_write_permission(self, request):
+        return request.user == self.owner
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ['-created_at']
 
 
 class Post(models.Model):
@@ -110,6 +137,14 @@ class Post(models.Model):
     # and will upload the created file to google cloud storage and
     # then will store the file location in a model field(will be created).
 
+    def has_object_write_permission(self, request):
+        if request.user.is_authenticated:
+            return request.user == self.owner
+        return False
+
+    def __str__(self):
+        return self.title
+
     class Meta:
         ordering = ['-created_at']
 
@@ -126,6 +161,14 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def has_object_write_permission(self, request):
+        if request.user.is_authenticated:
+            return request.user == self.owner
+        return False
+
+    def __str__(self):
+        return self.text[:50] + '...' if len(self.text) > 50 else self.text
+
     class Meta:
         ordering = ['-created_at']
 
@@ -137,6 +180,11 @@ class LikePost(models.Model):
     liker = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
+    def has_object_write_permission(self, request):
+        if request.user.is_authenticated:
+            return request.user == self.liker
+        return False
+
     class Meta:
         unique_together = ('liker', 'post')
 
@@ -147,6 +195,11 @@ class LikeComment(models.Model):
     """
     liker = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+
+    def has_object_write_permission(self, request):
+        if request.user.is_authenticated:
+            return request.user == self.liker
+        return False
 
     class Meta:
         unique_together = ('liker', 'comment')
@@ -178,6 +231,11 @@ class Follow(models.Model):
     followed_user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='followers')
     followed_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='following')
 
+    def has_object_write_permission(self, request):
+        if request.user.is_authenticated:
+            return request.user == self.followed_by
+        return False
+
     class Meta:
         unique_together = ('followed_user', 'followed_by')
 
@@ -188,6 +246,11 @@ class Favourite(models.Model):
     """
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='favorites')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='favorite_by')
+
+    def has_object_write_permission(self, request):
+        if request.user.is_authenticated:
+            return request.user == self.owner
+        return False
 
     class Meta:
         unique_together = ('owner', 'post')
@@ -201,6 +264,11 @@ class Subscribe(models.Model):
     subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE)
     is_approved = models.BooleanField(default=False)
 
+    def has_object_write_permission(self, request):
+        if request.user.is_authenticated:
+            return request.user == self.subscriber
+        return False
+
     class Meta:
         unique_together = ('subscriber', 'subscription')
 
@@ -212,6 +280,11 @@ class SavePlaylist(models.Model):
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE)
 
+    def has_object_write_permission(self, request):
+        if request.user.is_authenticated:
+            return request.user == self.owner
+        return False
+
     class Meta:
         unique_together = ('owner', 'playlist')
 
@@ -220,6 +293,11 @@ class FavouriteVocabulary(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     word = models.CharField(max_length=50)
 
+    def has_object_write_permission(self, request):
+        if request.user.is_authenticated:
+            return request.user == self.user
+        return False
+
     class Meta:
         unique_together = ('user', 'word')
 
@@ -227,6 +305,11 @@ class FavouriteVocabulary(models.Model):
 class IgnorePost(models.Model):
     ignored_post = models.ForeignKey(Post, on_delete=models.CASCADE)
     ignored_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+
+    def has_object_write_permission(self, request):
+        if request.user.is_authenticated:
+            return request.user == self.ignored_by
+        return False
 
     class Meta:
         unique_together = ('ignored_post', 'ignored_by')
@@ -247,6 +330,11 @@ class ReportPost(models.Model):
     status = models.SmallIntegerField(choices=STATUS, default=0)
     attachment = models.FileField(upload_to='reports/', null=True, blank=True)
 
+    def has_object_write_permission(self, request):
+        if request.user.is_authenticated:
+            return request.user == self.reported_by
+        return False
+
     def __str__(self):
         return f'{self.reported_by} reported {self.post.title[:50]}'
 
@@ -265,3 +353,4 @@ class Notification(models.Model):
     attachment = models.FileField(null=True, blank=True)
     is_seen = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+

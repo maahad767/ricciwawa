@@ -1,6 +1,7 @@
 from django.views import generic
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from dry_rest_permissions.generics import DRYPermissions
 
 from rest_framework import viewsets, generics, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -29,6 +30,7 @@ class NewsfeedView(generics.ListAPIView):
     attachment_type: 0-none, 1-image, 2-audio, 3-video
     """
     serializer_class = PostSerializer
+    permission_classes = (AllowAny, DRYPermissions)
 
     def get_queryset(self):
         myself = self.request.user
@@ -52,7 +54,7 @@ class GetContentsListView(generics.ListAPIView):
     attachment_type: 0-none, 1-image, 2-audio, 3-video
     """
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
     def get_queryset(self):
         content_type = self.kwargs['content_type']
@@ -72,7 +74,7 @@ class SubscriptionViewset(viewsets.ModelViewSet):
     states: (0, 'closed'), (1, 'open')
     """
     serializer_class = SubscriptionSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [AllowAny, DRYPermissions]
 
     def get_queryset(self):
         return Subscription.objects.filter(owner=self.request.user)
@@ -80,7 +82,7 @@ class SubscriptionViewset(viewsets.ModelViewSet):
 
 class CategoryViewset(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
     def get_queryset(self):
         return Category.objects.filter(owner=self.request.user)
@@ -88,7 +90,7 @@ class CategoryViewset(viewsets.ModelViewSet):
 
 class CategoryListCreateView(generics.CreateAPIView):
     serializer_class = CategorySerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, many=True)
@@ -100,7 +102,7 @@ class CategoryListCreateView(generics.CreateAPIView):
 
 class PlaylistViewset(viewsets.ModelViewSet):
     serializer_class = PlaylistSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
     def get_queryset(self):
         return Playlist.objects.filter(owner=self.request.user)
@@ -112,7 +114,7 @@ class PostViewset(viewsets.ModelViewSet):
     attachment_type: 0-none, 1-image, 2-audio, 3-video
     """
     serializer_class = PostSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [AllowAny, DRYPermissions]
 
     def get_queryset(self):
         return Post.objects.filter(owner=self.request.user)
@@ -123,7 +125,7 @@ class PostViewset(viewsets.ModelViewSet):
 
 class UserPostListView(generics.ListAPIView):
     serializer_class = PostSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [AllowAny, DRYPermissions]
 
     def get_queryset(self):
         owner = self.request.user
@@ -156,7 +158,7 @@ class UserPostListView(generics.ListAPIView):
 
 class CommentViewset(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
     def get_queryset(self):
         return Comment.objects.filter(owner=self.request.user)
@@ -164,7 +166,7 @@ class CommentViewset(viewsets.ModelViewSet):
 
 class FavouriteVocabularyViewset(viewsets.ModelViewSet):
     serializer_class = FavouriteVocabularySerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
     def get_queryset(self):
         return FavouriteVocabulary.objects.filter(user=self.request.user)
@@ -172,12 +174,12 @@ class FavouriteVocabularyViewset(viewsets.ModelViewSet):
 
 class LikePostView(generics.CreateAPIView):
     serializer_class = LikePostSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
 
 class UnlikePostView(generics.DestroyAPIView):
     serializer_class = LikePostSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
     def get_object(self):
         post_id = self.kwargs['post_id']
@@ -208,7 +210,7 @@ class FollowView(generics.CreateAPIView):
 
 class UnfollowView(generics.DestroyAPIView):
     serializer_class = FollowSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
     def get_object(self):
         user_id = self.kwargs['username']
@@ -218,53 +220,53 @@ class UnfollowView(generics.DestroyAPIView):
 
 class AddFavouriteView(generics.CreateAPIView):
     serializer_class = FavouriteSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
 
 class RemoveFavouriteView(generics.DestroyAPIView):
     serializer_class = FavouriteSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
 
 class SavePlaylistView(generics.CreateAPIView):
     serializer_class = SavePlaylistSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
 
 class UnsavePlaylistView(generics.DestroyAPIView):
     serializer_class = SavePlaylistSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
 
 class SubscribeView(generics.CreateAPIView):
     serializer_class = SubscribeSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
 
 class UnsubscribeView(generics.DestroyAPIView):
     serializer_class = SubscribeSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
 
 class ReportPostView(generics.CreateAPIView):
     serializer_class = ReportPostSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
 
 class IgnorePostView(generics.CreateAPIView):
     serializer_class = IgnorePostSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
 
 class UnignorePostView(generics.DestroyAPIView):
     serializer_class = IgnorePostSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
 
 # Temporary APIs
 class UploadPostImageView(generics.UpdateAPIView):
     serializer_class = UploadPostImageSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
     def get_object(self):
         return Post.objects.get(id=self.kwargs['post_id'])
@@ -272,7 +274,7 @@ class UploadPostImageView(generics.UpdateAPIView):
 
 class AddPostsToSubscriptionsView(generics.GenericAPIView):
     serializer_class = AddPostsToSubscriptionSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
@@ -286,7 +288,7 @@ class AddPostsToSubscriptionsView(generics.GenericAPIView):
 
 class AddPostsToPlaylistView(generics.GenericAPIView):
     serializer_class = AddPostsToPlaylistSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
@@ -300,7 +302,7 @@ class AddPostsToPlaylistView(generics.GenericAPIView):
 
 class AddPostsToCategoryView(generics.GenericAPIView):
     serializer_class = AddPostsToCategorySerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, DRYPermissions]
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
