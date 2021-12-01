@@ -129,7 +129,7 @@ class UserPostListView(generics.ListAPIView):
 
     def get_queryset(self):
         owner = self.request.user
-        user = get_user_model().objects.get(username=self.kwargs['username'])
+        user = get_user_model().objects.get(uid=self.kwargs['uid'])
 
         if not owner.is_authenticated:
             return Post.objects.filter(owner=user, privacy=1)
@@ -213,7 +213,7 @@ class UnfollowView(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated, DRYPermissions]
 
     def get_object(self):
-        user_id = self.kwargs['username']
+        user_id = self.kwargs.get('uid')
         follower = self.request.user
         return Follow.objects.get(followed_by=follower, followed_user__username=user_id)
 
@@ -335,7 +335,7 @@ class GetSubscriptionsByUserView(generics.ListAPIView):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        return Subscription.objects.filter(owner__username=self.kwargs['username'])
+        return Subscription.objects.filter(owner__uid=self.kwargs['uid'])
 
 
 class GetPlaylistsByUserView(generics.ListAPIView):
@@ -343,7 +343,7 @@ class GetPlaylistsByUserView(generics.ListAPIView):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        return Playlist.objects.filter(owner__username=self.kwargs['username'])
+        return Playlist.objects.filter(owner__uid=self.kwargs['uid'])
 
 
 class GetUserInfoView(generics.RetrieveAPIView):
@@ -351,7 +351,10 @@ class GetUserInfoView(generics.RetrieveAPIView):
     permission_classes = [AllowAny]
 
     def get_object(self):
-        return get_user_model().objects.get(username=self.kwargs['username'])
+        uid = self.request.query_params.get('uid')
+        if uid:
+            return get_user_model().objects.get(uid=uid)
+        return self.request.user
 
 
 class NotificationViewset(viewsets.ModelViewSet):

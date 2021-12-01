@@ -30,13 +30,13 @@ urlpatterns = [
     path('', WebHome.as_view()),
     path('newsfeed-contents/', NewsfeedView.as_view()),
     path('contents/<str:content_type>/<int:id>/', GetContentsListView.as_view()),
-    path('user-posts/<str:username>', UserPostListView.as_view()),
+    path('user-posts/<str:uid>', UserPostListView.as_view()),
     path('like-post/', LikePostView.as_view()),
     path('unlike-post/<int:post_id>/', UnlikePostView.as_view()),
     path('share-post/', SharePostView.as_view()),
     path('mark-post-viewd/', ViewPostView.as_view()),
     path('follow-user/', FollowView.as_view()),
-    path('unfollow-user/<str:username>/', UnfollowView.as_view()),
+    path('unfollow-user/<str:uid>/', UnfollowView.as_view()),
     path('add-to-favrourite-post/', AddFavouriteView.as_view()),
     path('remove-from-favrourite-post/<int:pk>/', RemoveFavouriteView.as_view()),
     path('save-playlist/', SavePlaylistView.as_view()),
@@ -59,12 +59,12 @@ urlpatterns = [
     path('get-comments/parent/<parent_id>/', GetCommentsByParentIDView.as_view()),
 
     # get user info
-    path('get-user-info/<str:username>', GetUserInfoView.as_view()),
+    path('get-user-info/', GetUserInfoView.as_view()),
     # get subscriptions by username
     # path('get-subscriptions/<str:username>', SubscriptionViewset.as_view({'get': 'get_subscriptions'})),
-    path('get-subscriptions-by-user/<str:username>/', GetSubscriptionsByUserView.as_view()),
+    path('get-subscriptions-by-user/<str:uid>/', GetSubscriptionsByUserView.as_view()),
     # get playlists by username
-    path('get-playlists-by-user/<str:username>/', GetPlaylistsByUserView.as_view()),
+    path('get-playlists-by-user/<str:uid>/', GetPlaylistsByUserView.as_view()),
     # create multiple categories at once
     path('create-categories/', CategoryListCreateView.as_view()),
     path('search-post/<str:qs>/', SearchPostView.as_view()),

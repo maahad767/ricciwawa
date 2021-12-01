@@ -301,15 +301,11 @@ class UserInfoSerializer(serializers.ModelSerializer):
     is_followed = serializers.SerializerMethodField()
 
     def get_is_followed(self, obj):
-        followed_user = self.context['request'].query_params.get('username', None)
-        if not followed_user:
-            return False
-        return obj.following.filter(followed_user=followed_user).exists()
+        return obj.followers.filter(followed_by=self.context['request'].user).exists()
 
     class Meta:
         model = get_user_model()
-        fields = ['username', 'is_followed']
-        read_only_fields = ['username']
+        fields = ['uid', 'username', 'is_followed', 'picture', 'name']
 
 
 class NotificationSerializer(serializers.ModelSerializer):
