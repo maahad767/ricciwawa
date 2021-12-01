@@ -174,12 +174,12 @@ class FavouriteVocabularyViewset(viewsets.ModelViewSet):
 
 class LikePostView(generics.CreateAPIView):
     serializer_class = LikePostSerializer
-    permission_classes = [IsAuthenticated, DRYPermissions]
+    permission_classes = [IsAuthenticated]
 
 
 class UnlikePostView(generics.DestroyAPIView):
     serializer_class = LikePostSerializer
-    permission_classes = [IsAuthenticated, DRYPermissions]
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
         post_id = self.kwargs['post_id']
