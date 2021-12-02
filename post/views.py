@@ -212,7 +212,7 @@ class UnfollowView(generics.DestroyAPIView):
     def get_object(self):
         user_id = self.kwargs.get('uid')
         follower = self.request.user
-        return Follow.objects.get(followed_by=follower, followed_user__username=user_id)
+        return Follow.objects.filter(followed_by=follower, followed_user__uid=user_id).first()
 
 
 class AddFavouriteView(generics.CreateAPIView):

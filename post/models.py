@@ -301,6 +301,17 @@ class Follow(models.Model):
     followed_user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='followers')
     followed_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='following')
 
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return True
+
+    @staticmethod
+    def has_write_permission(request):
+        return True
+
     def has_object_write_permission(self, request):
         return request.user == self.followed_by
 
