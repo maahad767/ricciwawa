@@ -38,13 +38,13 @@ urlpatterns = [
     path('follow-user/', FollowView.as_view()),
     path('unfollow-user/<str:uid>/', UnfollowView.as_view()),
     path('add-to-favrourite-post/', AddFavouriteView.as_view()),
-    path('remove-from-favrourite-post/<int:pk>/', RemoveFavouriteView.as_view()),
+    path('remove-from-favrourite-post/<int:id>/', RemoveFavouriteView.as_view()),
     path('save-playlist/', SavePlaylistView.as_view()),
-    path('unsave-playlist/<int:pk>/', UnsavePlaylistView.as_view()),
+    path('unsave-playlist/<int:id>/', UnsavePlaylistView.as_view()),
     path('subscribe-plan/', SubscribeView.as_view()),
-    path('unsubscribe-plan/<int:pk>/', SubscribeView.as_view()),
+    path('unsubscribe-plan/<int:id>/', SubscribeView.as_view()),
     path('ignore-post/', IgnorePostView.as_view()),
-    path('unignore-post/<int:pk>/', UnignorePostView.as_view()),
+    path('unignore-post/<int:id>/', UnignorePostView.as_view()),
 
     # temporary url
     path('post/upload-image/<post_id>', UploadPostImageView.as_view()),

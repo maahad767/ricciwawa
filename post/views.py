@@ -119,9 +119,6 @@ class PostViewset(viewsets.ModelViewSet):
     def get_queryset(self):
         return Post.objects.filter(owner=self.request.user)
 
-    def get_object(self):
-        return Post.objects.filter(id=self.kwargs['id'], privacy=1).first()
-
 
 class UserPostListView(generics.ListAPIView):
     serializer_class = PostSerializer

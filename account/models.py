@@ -69,10 +69,6 @@ class User(AbstractUser):
 
     @staticmethod
     def has_write_permission(request):
-        return False
-
-    @staticmethod
-    def has_create_permission(request):
         return True
 
     def has_object_write_permission(self, request):
@@ -105,10 +101,6 @@ class ReportUser(models.Model):
 
     @staticmethod
     def has_write_permission(request):
-        return False
-
-    @staticmethod
-    def has_create_permission(request):
         return True
 
     def has_object_write_permission(self, request):
@@ -138,10 +130,6 @@ class BlockUser(models.Model):
 
     @staticmethod
     def has_write_permission(request):
-        return False
-
-    @staticmethod
-    def has_create_permission(request):
         return True
 
     def has_object_write_permission(self, request):

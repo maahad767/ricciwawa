@@ -27,10 +27,6 @@ class Subscription(models.Model):
 
     @staticmethod
     def has_write_permission(request):
-        return False
-
-    @staticmethod
-    def has_create_permission(request):
         return True
 
     def has_object_write_permission(self, request):
@@ -63,10 +59,6 @@ class Category(models.Model):
 
     @staticmethod
     def has_write_permission(request):
-        return False
-
-    @staticmethod
-    def has_create_permission(request):
         return True
 
     def has_object_write_permission(self, request):
@@ -104,11 +96,8 @@ class Playlist(models.Model):
 
     @staticmethod
     def has_write_permission(request):
-        return False
-
-    @staticmethod
-    def has_create_permission(request):
         return True
+
 
     def has_object_write_permission(self, request):
         return request.user == self.owner
@@ -191,16 +180,10 @@ class Post(models.Model):
 
     @staticmethod
     def has_write_permission(request):
-        return False
-
-    @staticmethod
-    def has_create_permission(request):
         return True
 
     def has_object_write_permission(self, request):
-        if request.user.is_authenticated:
-            return request.user == self.owner
-        return False
+        return request.user == self.owner
 
     def __str__(self):
         return self.title
@@ -230,16 +213,10 @@ class Comment(models.Model):
 
     @staticmethod
     def has_write_permission(request):
-        return False
-
-    @staticmethod
-    def has_create_permission(request):
         return True
 
     def has_object_write_permission(self, request):
-        if request.user.is_authenticated:
-            return request.user == self.owner
-        return False
+        return request.user == self.owner
 
     def __str__(self):
         return self.text[:50] + '...' if len(self.text) > 50 else self.text
@@ -264,16 +241,10 @@ class LikePost(models.Model):
 
     @staticmethod
     def has_write_permission(request):
-        return False
-
-    @staticmethod
-    def has_create_permission(request):
         return True
 
     def has_object_write_permission(self, request):
-        if request.user.is_authenticated:
-            return request.user == self.liker
-        return False
+        return request.user == self.liker
 
     class Meta:
         unique_together = ('liker', 'post')
@@ -295,16 +266,10 @@ class LikeComment(models.Model):
 
     @staticmethod
     def has_write_permission(request):
-        return False
-
-    @staticmethod
-    def has_create_permission(request):
         return True
 
     def has_object_write_permission(self, request):
-        if request.user.is_authenticated:
-            return request.user == self.liker
-        return False
+        return request.user == self.liker
 
     class Meta:
         unique_together = ('liker', 'comment')
@@ -337,9 +302,7 @@ class Follow(models.Model):
     followed_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='following')
 
     def has_object_write_permission(self, request):
-        if request.user.is_authenticated:
-            return request.user == self.followed_by
-        return False
+        return request.user == self.followed_by
 
     class Meta:
         unique_together = ('followed_user', 'followed_by')
@@ -361,16 +324,10 @@ class Favourite(models.Model):
 
     @staticmethod
     def has_write_permission(request):
-        return False
-
-    @staticmethod
-    def has_create_permission(request):
         return True
 
     def has_object_write_permission(self, request):
-        if request.user.is_authenticated:
-            return request.user == self.owner
-        return False
+        return request.user == self.owner
 
     class Meta:
         unique_together = ('owner', 'post')
@@ -393,16 +350,10 @@ class Subscribe(models.Model):
 
     @staticmethod
     def has_write_permission(request):
-        return False
-
-    @staticmethod
-    def has_create_permission(request):
         return True
 
     def has_object_write_permission(self, request):
-        if request.user.is_authenticated:
-            return request.user == self.subscriber
-        return False
+        return request.user == self.subscriber
 
     class Meta:
         unique_together = ('subscriber', 'subscription')
@@ -424,16 +375,10 @@ class SavePlaylist(models.Model):
 
     @staticmethod
     def has_write_permission(request):
-        return False
-
-    @staticmethod
-    def has_create_permission(request):
         return True
 
     def has_object_write_permission(self, request):
-        if request.user.is_authenticated:
-            return request.user == self.owner
-        return False
+        return request.user == self.owner
 
     class Meta:
         unique_together = ('owner', 'playlist')
@@ -452,16 +397,10 @@ class FavouriteVocabulary(models.Model):
 
     @staticmethod
     def has_write_permission(request):
-        return False
-
-    @staticmethod
-    def has_create_permission(request):
         return True
 
     def has_object_write_permission(self, request):
-        if request.user.is_authenticated:
-            return request.user == self.user
-        return False
+        return request.user == self.user
 
     class Meta:
         unique_together = ('user', 'word')
@@ -480,16 +419,10 @@ class IgnorePost(models.Model):
 
     @staticmethod
     def has_write_permission(request):
-        return False
-
-    @staticmethod
-    def has_create_permission(request):
         return True
 
     def has_object_write_permission(self, request):
-        if request.user.is_authenticated:
-            return request.user == self.ignored_by
-        return False
+        return request.user == self.ignored_by
 
     class Meta:
         unique_together = ('ignored_post', 'ignored_by')
@@ -519,16 +452,10 @@ class ReportPost(models.Model):
 
     @staticmethod
     def has_write_permission(request):
-        return False
-
-    @staticmethod
-    def has_create_permission(request):
         return True
 
     def has_object_write_permission(self, request):
-        if request.user.is_authenticated:
-            return request.user == self.reported_by
-        return False
+        return request.user == self.reported_by
 
     def __str__(self):
         return f'{self.reported_by} reported {self.post.title[:50]}'
