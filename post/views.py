@@ -80,6 +80,17 @@ class SubscriptionViewset(viewsets.ModelViewSet):
         return Subscription.objects.filter(owner=self.request.user)
 
 
+class SubscribedPlansView(generics.ListAPIView):
+    """
+    Returns all the subscribed plans.
+    """
+    serializer_class = SubscriptionSerializer
+    permission_classes = [IsAuthenticated, DRYPermissions]
+
+    def get_queryset(self):
+        return Subscription.objects.filter(id__in=self.request.user.subscriptions.values('subscription'))
+
+
 class CategoryViewset(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticated, DRYPermissions]
