@@ -128,6 +128,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class SubscriptionSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    author = UserField(source='owner', read_only=True)
     is_subscribed = serializers.SerializerMethodField(read_only=True)
     subscribers = serializers.SerializerMethodField(read_only=True)
     subscriber_list = SubscribeSerializer(source='subscribe_set', many=True, read_only=True)

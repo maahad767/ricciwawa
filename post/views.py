@@ -54,7 +54,7 @@ class GetContentsListView(generics.ListAPIView):
     attachment_type: 0-none, 1-image, 2-audio, 3-video
     """
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated, DRYPermissions]
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         content_type = self.kwargs['content_type']
@@ -79,16 +79,19 @@ class SubscriptionViewset(viewsets.ModelViewSet):
     def get_queryset(self):
         return Subscription.objects.filter(owner=self.request.user)
 
+    def get_object(self):
+        return Subscription.objects.get(id=self.kwargs['pk'])
+
 
 class SubscribedPlansView(generics.ListAPIView):
     """
     Returns all the subscribed plans.
     """
     serializer_class = SubscriptionSerializer
-    permission_classes = [IsAuthenticated, DRYPermissions]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Subscription.objects.filter(id__in=self.request.user.subscriptions.values('subscription'))
+        return self.request.user.subscriptions.values('subscription')
 
 
 class CategoryViewset(viewsets.ModelViewSet):
@@ -130,6 +133,16 @@ class PostViewset(viewsets.ModelViewSet):
     def get_queryset(self):
         return Post.objects.filter(owner=self.request.user)
 
+    def get_object(self):
+        post = Post.objects.get(id=self.kwargs['pk'])
+        if post.privacy == 1 or post.owner == self.request.user:
+            return post
+
+        if self.request.user.is_authenticated:
+            if post.subscription in self.request.user.subscriptions.all():
+                return post
+        return None
+
 
 class UserPostListView(generics.ListAPIView):
     serializer_class = PostSerializer
@@ -166,7 +179,7 @@ class UserPostListView(generics.ListAPIView):
 
 class CommentViewset(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticated, DRYPermissions]
+    permission_classes = [AllowAny, DRYPermissions]
 
     def get_queryset(self):
         return Comment.objects.filter(owner=self.request.user)
@@ -200,7 +213,7 @@ class ViewPostView(generics.CreateAPIView):
     View/Controller class for adding views to a post.
     """
     serializer_class = ViewPostSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 
 class SharePostView(generics.CreateAPIView):
