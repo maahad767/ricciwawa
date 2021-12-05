@@ -5,8 +5,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from .models import Post
-from .utils import create_mp3_task
-from utils.utils import get_random_string, dictionary_lookup
+from .utils import create_mp3_task, create_save_edit_fulldata
+from utils.utils import get_random_string
 
 
 @receiver(post_save, sender=Post)
@@ -24,8 +24,6 @@ def add_audio_in_post(instance, created, *args, **kwargs):
     str_hashed_id = str(hashed_id)
     storage_prefix = ""
 
-    sim_spaced_sentence = None
-    trad_spaced_sentence = None
     if instance.text_simplified_chinese:
         sim_spaced_sentence = "\n".join(instance.text_simplified_chinese)
         instance.sim_spaced_datastore_text = ''.join([str(elem) for elem in sim_spaced_sentence])
@@ -41,7 +39,9 @@ def add_audio_in_post(instance, created, *args, **kwargs):
         instance.timing_traditional_chinese = storage_prefix + str_hashed_id + "_hk" + "_timing.txt"
         create_mp3_task("hk", trad_spaced_sentence, instance.audio_traditional_chinese)
 
-    if sim_spaced_sentence and trad_spaced_sentence:
-        instance.full_data = dictionary_lookup(trad_spaced_sentence, sim_spaced_sentence)
+    instance.full_data = create_save_edit_fulldata(instance.text_traditional_chinese,
+                                                   instance.text_simplified_chinese,
+                                                   instance.meaning_words,
+                                                   instance.pin_yin_words)
 
     instance.save()

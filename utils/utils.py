@@ -327,7 +327,7 @@ def google_translate_list(text_list, source_language_code, target_language_code)
 
 
 def dictionary_lookup(trad_spaced_sentence, sim_spaced_sentence):
-    global temp_pinyin
+    # global temp_pinyin
     try:
         # pinyin is a list
         # replace <BR> with <p> because will

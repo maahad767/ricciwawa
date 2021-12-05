@@ -108,7 +108,7 @@ class TranslateSimplifiedToTraditional(generics.GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         text = request.data.get("text")
-        translated_text = google_translate(text, "zh-TW", "zh-CN")
+        translated_text = google_translate(text, "zh-CN", "zh-TW")
         return Response({'data': translated_text})
 
 

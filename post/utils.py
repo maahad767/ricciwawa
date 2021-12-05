@@ -125,3 +125,32 @@ def download_get_signed_up(filename):
 
     # print("curl '{}'".format(url))
     return url
+
+
+def create_save_edit_fulldata(trad_words, sim_word, english_words, pinyin_list):
+    """
+    CHECK WHAT IT IS DOING, IF NEEDS, COPY TO DJ
+    """
+    all_translated_words = []
+    for index, val in enumerate(trad_words):
+        translated_word = {}
+        translated_word["word"] = trad_words[index]
+        translated_word["eng"] = [[english_words[index]]]
+        translated_word["sim"] = [sim_word[index]]
+        translated_word["trad"] = [trad_words[index]]
+        # translated_word["targetted_lang"] = [
+        #     [google_translate(english_words[index], "zh", targetted_lang_code)]]
+        # translated_word["tagalog"] = [
+        #    [google_translate(english_words[index], "zh", "tl")]]
+        # translated_word["indonesian"] = [
+        #    [google_translate(english_words[index], "zh", "id")]]
+        # translated_word["korean"] = [
+        #    [google_translate(english_words[index], "zh", "ko")]]
+        translated_word["pinyin"] = [[pinyin_list[index]]]
+        all_translated_words.append(translated_word)
+        # Kenneth 20210926 #######
+        # add background task to translate the story to other languages and store them into different languages
+        # add background task to have different audio speedt created
+        # create_mp3_task("hk", trad_spaced_sentence, str(hashed_id)) different speed
+
+    return all_translated_words
