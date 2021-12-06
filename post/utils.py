@@ -24,14 +24,15 @@ def create_mp3_task(mp3_lang, mp3_text, filename, time_delay=0):
     project = 'ricciwawa'
     queue = 'my-queue'
     location = 'asia-east2'
-    payload = {"lang": mp3_lang, "mp3_text": mp3_text, "filename": filename}
+    payload = {"language_code": mp3_lang, "text": mp3_text, "output_filename": filename}
 
     if settings.DEBUG:
         import requests
         hostname = os.environ.get('HOSTNAME')
         if hostname is None:
             hostname = 'localhost:8000'
-        requests.post(hostname + "utils/mp3-task-handler/", data=payload)
+        resp = requests.post(hostname + "utils/mp3-task-handler/", data=payload).json()
+        # print(resp)
         return
         # Construct the fully qualified queue name.
     parent = client.queue_path(project, location, queue)

@@ -83,9 +83,10 @@ class Mp3TaskHandler(generics.GenericAPIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             data = serializer.data
+            # print(data)
             temp = utils.speech_tts_msft(data['language_code'], data['text'], data['output_filename'])
             return Response({'success': True})
-        return Response({'success': False})
+        return Response({'success': False, 'errors': serializer.errors})
 
 
 class TranslateToChinese(generics.GenericAPIView):

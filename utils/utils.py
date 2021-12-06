@@ -139,7 +139,7 @@ def upload_blob(source_file_name):
     blob = bucket.blob(source_file_name)
 
     blob.upload_from_filename(source_file_name)
-
+    print("Successful")
 
 # create a random string for hash
 def get_random_string(length):
@@ -162,6 +162,7 @@ def speech_tts_msft(lang, original_input_text, mp3_output_filename):
     => Seems like abandoned function.
     """
     lang = lang.lower().strip(" \"\'")
+    # print(lang, original_input_text, mp3_output_filename)
     previous_word_boundry_offset = 0
     previous_word_audio_offset = 0
     first_offset = 0
