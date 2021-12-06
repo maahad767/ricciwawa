@@ -271,7 +271,7 @@ class UnsubscribeView(generics.DestroyAPIView):
 
     def get_object(self):
         subscription_id = self.kwargs.get('subscription_id')
-        return Subscribe.objects.filter(subscription=subscription_id, user=self.request.user).first()
+        return Subscribe.objects.filter(subscription=subscription_id, subscriber=self.request.user).first()
 
 
 class ReportPostView(generics.CreateAPIView):
