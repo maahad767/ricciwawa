@@ -154,14 +154,14 @@ def get_random_string(length):
 ############################################ Speech to Text MSFT ################################
 previous_word_boundry_offset = 0
 previous_word_audio_offset = 0
-line_break_cumulative = 0
 first_offset = 0
-complete_line = ""
 def speech_tts_msft(lang, original_input_text, mp3_output_filename):
+    """COPIED"""
     """
-    A text to speech function using Azure APIs.
-    Created By: Kenneth Y.
+    A text to speech converter function
+    => Seems like abandoned function.
     """
+    lang = lang.lower().strip(" \"\'")
     previous_word_boundry_offset = 0
     previous_word_audio_offset = 0
     first_offset = 0
@@ -171,12 +171,13 @@ def speech_tts_msft(lang, original_input_text, mp3_output_filename):
     # input_text = original_input_text.replace("\n","").replace("<BR>","<p></p>")
     # Azure does not accept <BR> as line break but <p></p> increases the length, therefore use \n\n\n\n
     input_text = original_input_text.replace("\n", "").replace("<BR>", "\n")
-    # import azure.cognitiveservices.speech as speechsdk
+    import azure.cognitiveservices.speech as speechsdk
     from azure.cognitiveservices.speech import AudioDataStream, SpeechConfig, SpeechSynthesizer, \
-        SpeechSynthesisOutputFormat
-    # , SpeechSynthesisEventArgs, SpeechSynthesisWordBoundaryEventArgs
-    # from azure.cognitiveservices.speech.audio import AudioOutputConfig
+        SpeechSynthesisOutputFormat, SpeechSynthesisEventArgs, SpeechSynthesisWordBoundaryEventArgs
+    from azure.cognitiveservices.speech.audio import AudioOutputConfig
     timing_file_name = mp3_output_filename.replace(".mp3", "_timing.txt")
+    with open(timing_file_name, 'a') as f:
+        pass
     # first offset is to remove the first string that contains Azure information
     first_offset = 0
 
@@ -187,27 +188,29 @@ def speech_tts_msft(lang, original_input_text, mp3_output_filename):
     def show_tts_text(evt):
         try:
             global previous_word_boundry_offset, previous_word_audio_offset, first_offset
-            print(925, evt.text_offset)
             # print (input_text[previous_word_boundry_offset : evt.text_offset],previous_word_boundry_offset, evt.text_offset, evt.audio_offset, evt.audio_offset - previous_word_audio_offset)
             # use mp3_timing here... return it as json data
             with open(timing_file_name, 'a') as f:
                 temp_line = {}
-                temp_line["char_start"] = previous_word_boundry_offset - \
-                                          first_offset
+
+                temp_line["char_start"] = previous_word_boundry_offset - first_offset
+
                 # first time
-                if (previous_word_boundry_offset == 0):
+                if previous_word_boundry_offset == 0:
                     temp_line["char_end"] = 220
                 else:
                     temp_line["char_end"] = evt.text_offset - first_offset
                 # if (line_counter == 0):
                 # print ("466 ", first_offset, evt.text_offset)
-                if (first_offset == 0):
+
+                if first_offset == 0:
                     first_offset = temp_line["char_end"]
                 temp_word = input_text[previous_word_boundry_offset: evt.text_offset]
                 temp_line["chars"] = temp_word.replace("\n", "<BR>")
                 temp_line["audio_start"] = previous_word_audio_offset
                 temp_line["audio_end"] = evt.audio_offset
-                if (len(temp_word) > 0):
+
+                if len(temp_word) > 0:
                     f.write(json.dumps(temp_line))
                     f.write("\n")
 
@@ -218,7 +221,7 @@ def speech_tts_msft(lang, original_input_text, mp3_output_filename):
             # verification checks fail.
             error_message = str(exc)
             print("line 479 ", error_message)
-        return ""
+        return ("")
 
     try:
         # speech_key, service_region = "9b8ded5a42674ea59cac09faeff3b616", "eastus"
@@ -228,29 +231,32 @@ def speech_tts_msft(lang, original_input_text, mp3_output_filename):
             subscription=speech_key, region=service_region)
         speech_config.set_property_by_name(
             "SpeechServiceResponse_Synthesis_WordBoundaryEnabled", "true")
-        if lang == "hk":
+        if (lang == "hk"):
             speech_config.speech_synthesis_language = "zh-HK"
             speech_config.speech_synthesis_voice_name = "Microsoft Server Speech Text to Speech Voice (zh-HK, HiuMaanNeural)"
             input_text = '<speak version="1.0" xmlns="https://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="zn-HK"><voice name="zh-HK-HiuMaanNeural"><mstts:express-as style="newscast"><prosody rate="-35.00%">' + \
                          input_text + ' </prosody></mstts:express-as></voice></speak>'
-        elif lang == "tw":
+        elif (lang == "tw"):
+            # print("HELLO")
             speech_config.speech_synthesis_language = "zh-CN"
             speech_config.speech_synthesis_voice_name = "Microsoft Server Speech Text to Speech Voice (zh-CN, XiaoxiaoNeural)"
             input_text = '<speak version="1.0" xmlns="https://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="zh-CN"><voice name="zh-CN-XiaoxiaoNeural"><mstts:express-as style="newscast"><prosody rate="-45.00%">' + \
                          input_text + '</prosody></mstts:express-as></voice></speak>'
-        elif lang == "ja":
+        elif (lang == "ja"):
             speech_config.speech_synthesis_language = "ja-JP"
             speech_config.speech_synthesis_voice_name = "Microsoft Server Speech Text to Speech Voice (ja-JP, NanamiNeural)"
             input_text = '<speak version="1.0" xmlns="https://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="ja-JP"><voice name="ja-JP-NanamiNeural"><mstts:express-as style="newscast"><prosody rate="-25.00%">' + \
                          input_text + '</prosody></mstts:express-as></voice></speak>'
-        elif lang == "en-US":
+        elif (lang == "en-US"):
             print("line 461")
             speech_config.speech_synthesis_language = "en-US"
             speech_config.speech_synthesis_voice_name = "Microsoft Server Speech Text to Speech Voice (en-US, en-US-AriaNeural)"
             input_text = '<speak version="1.0" xmlns="https://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="en-US"><voice name="en-US-AriaNeural"><mstts:express-as style="customerservice"><prosody rate="-20.00%">' + \
                          input_text + '</prosody></mstts:express-as></voice></speak>'
 
-        speech_config.set_speech_synthesis_output_format(SpeechSynthesisOutputFormat["Audio24Khz48KBitRateMonoMp3"])
+        # speech_config.set_speech_synthesis_output_format(SpeechSynthesisOutputFormat["Audio24Khz96KBitRateMonoMp3"])
+        speech_config.set_speech_synthesis_output_format(
+            SpeechSynthesisOutputFormat["Audio24Khz48KBitRateMonoMp3"])
 
         synthesizer = SpeechSynthesizer(
             speech_config=speech_config, audio_config=None)
@@ -260,16 +266,13 @@ def speech_tts_msft(lang, original_input_text, mp3_output_filename):
         result = synthesizer.speak_ssml_async(input_text).get()
         stream = AudioDataStream(result)
         stream.save_to_wav_file(mp3_output_filename)
-
         # save to firebase storage
-        upload_blob(mp3_output_filename)
-
+        result = upload_blob(mp3_output_filename)
         # upload timing file
-        upload_blob(mp3_output_filename.replace(".mp3", "_timing.txt"))
+        result = upload_blob(
+            mp3_output_filename.replace(".mp3", "_timing.txt"))
         # os.remove(storage_path+mp3_output_filename)
-
-        return True
-
+        return result
     except ValueError as exc:
         # This will be raised if the token is expired or any other
         # verification checks fail.

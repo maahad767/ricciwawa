@@ -6,7 +6,7 @@ from django.dispatch import receiver
 
 from .models import Post
 from .utils import create_mp3_task, create_save_edit_fulldata
-from utils.utils import get_random_string
+from utils.utils import get_random_string, google_translate
 
 
 @receiver(post_save, sender=Post)
@@ -46,5 +46,12 @@ def add_audio_in_post(instance, created, *args, **kwargs):
                                                    instance.text_simplified_chinese,
                                                    instance.meaning_words,
                                                    instance.pin_yin_words)
+
+    instance.korean_meaning_translation = google_translate(
+        instance.english_meaning_article, "zh", "ko")
+    instance.indonesian_meaning_translation = google_translate(
+        instance.english_meaning_article, "zh", "id")
+    instance.tagalog_meaning_translation = google_translate(
+        instance.english_meaning_article, "zh", "tl")
 
     instance.save()

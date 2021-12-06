@@ -92,7 +92,7 @@ class SubscribedPlansView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return self.request.user.subscriptions
+        return Subscription.objects.filter(id__in=self.request.user.subscriptions.values_list('subscription', flat=True))
 
 
 class CategoryViewset(viewsets.ModelViewSet):
