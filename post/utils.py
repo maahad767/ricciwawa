@@ -7,6 +7,7 @@ from google.cloud import tasks_v2, storage
 
 from django.conf import settings
 
+
 # =========================================================
 # Creator: Kenneth Yip
 # This function is very important
@@ -19,7 +20,6 @@ def create_mp3_task(mp3_lang, mp3_text, filename, time_delay=0):
     from google.protobuf import timestamp_pb2
     # Create a client.
     client = tasks_v2.CloudTasksClient()
-    print("line 488 at create_mp3_task")
     # TODO(developer): Uncomment these lines and replace with your values.
     project = 'ricciwawa'
     queue = 'my-queue'
@@ -28,8 +28,10 @@ def create_mp3_task(mp3_lang, mp3_text, filename, time_delay=0):
 
     if settings.DEBUG:
         import requests
-        hostname = os.environ.get('HOSTNAME', "http://127.0.0.1:8000")
-        requests.post(hostname + "/utils/mp3-task-handler/", data=payload)
+        hostname = os.environ.get('HOSTNAME')
+        if hostname is None:
+            hostname = 'localhost:8000'
+        requests.post(hostname + "utils/mp3-task-handler/", data=payload)
         return
         # Construct the fully qualified queue name.
     parent = client.queue_path(project, location, queue)

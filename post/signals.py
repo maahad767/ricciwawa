@@ -30,6 +30,7 @@ def add_audio_in_post(instance, created, *args, **kwargs):
         sim_spaced_sentence = sim_spaced_sentence.replace("<p>", "\n").replace("<BR>", "\n<BR>\n")
         instance.audio_simplified_chinese = storage_prefix + str_hashed_id + "_tw" + ".mp3"
         instance.timing_simplified_chinese = storage_prefix + str_hashed_id + "_tw" + "_timing.txt"
+        print(sim_spaced_sentence)
         create_mp3_task("tw", sim_spaced_sentence, instance.audio_simplified_chinese)
     if instance.text_traditional_chinese:
         trad_spaced_sentence = "\n".join(instance.text_traditional_chinese)
@@ -37,6 +38,8 @@ def add_audio_in_post(instance, created, *args, **kwargs):
         trad_spaced_sentence = trad_spaced_sentence.replace("<p>", "\n").replace("<BR>", "\n<BR>\n")
         instance.audio_traditional_chinese = storage_prefix + str_hashed_id + "_hk" + ".mp3"
         instance.timing_traditional_chinese = storage_prefix + str_hashed_id + "_hk" + "_timing.txt"
+        print(trad_spaced_sentence)
+
         create_mp3_task("hk", trad_spaced_sentence, instance.audio_traditional_chinese)
 
     instance.full_data = create_save_edit_fulldata(instance.text_traditional_chinese,

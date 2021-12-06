@@ -7,7 +7,7 @@ from post.views import SubscriptionViewset, PlaylistViewset, PostViewset, Commen
     UnignorePostView, UserPostListView, WebHome, GetContentsListView, CategoryViewset, UploadPostImageView, \
     AddPostsToSubscriptionsView, AddPostsToPlaylistView, AddPostsToCategoryView, GetCommentsByPostIDView, \
     GetCommentsByParentIDView, SharePostView, GetUserInfoView, GetSubscriptionsByUserView, GetPlaylistsByUserView, \
-    NotificationViewset, CategoryListCreateView, SearchPostView, SubscribedPlansView
+    NotificationViewset, CategoryListCreateView, SearchPostView, SubscribedPlansView, UnsubscribeView
 
 """
 Router is used to route ViewSets. 
@@ -43,7 +43,7 @@ urlpatterns = [
     path('unsave-playlist/<int:id>/', UnsavePlaylistView.as_view()),
     path('sibscribed_plans/', SubscribedPlansView.as_view()),
     path('subscribe-plan/', SubscribeView.as_view()),
-    path('unsubscribe-plan/<int:id>/', SubscribeView.as_view()),
+    path('unsubscribe-plan/<int:subscription_id>/', UnsubscribeView.as_view()),
     path('ignore-post/', IgnorePostView.as_view()),
     path('unignore-post/<int:id>/', UnignorePostView.as_view()),
 

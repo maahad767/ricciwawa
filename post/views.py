@@ -9,7 +9,8 @@ from rest_framework.response import Response
 
 from account.models import BlockUser
 from .documents import PostDocument
-from .models import Subscription, Playlist, Post, Comment, FavouriteVocabulary, Category, LikePost, Follow, Notification
+from .models import Subscription, Playlist, Post, Comment, FavouriteVocabulary, Category, LikePost, Follow, \
+    Notification, Subscribe
 from .serializers import SubscriptionSerializer, PlaylistSerializer, PostSerializer, CommentSerializer, \
     LikePostSerializer, ViewPostSerializer, FollowSerializer, FavouriteSerializer, FavouriteVocabularySerializer, \
     SavePlaylistSerializer, SubscribeSerializer, ReportPostSerializer, IgnorePostSerializer, \
@@ -267,6 +268,10 @@ class SubscribeView(generics.CreateAPIView):
 class UnsubscribeView(generics.DestroyAPIView):
     serializer_class = SubscribeSerializer
     permission_classes = [IsAuthenticated, DRYPermissions]
+
+    def get_object(self):
+        subscription_id = self.kwargs.get('subscription_id')
+        return Subscribe.objects.filter(subscription=subscription_id, user=self.request.user).first()
 
 
 class ReportPostView(generics.CreateAPIView):
