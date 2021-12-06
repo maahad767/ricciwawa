@@ -41,7 +41,7 @@ urlpatterns = [
     path('remove-from-favrourite-post/<int:id>/', RemoveFavouriteView.as_view()),
     path('save-playlist/', SavePlaylistView.as_view()),
     path('unsave-playlist/<int:id>/', UnsavePlaylistView.as_view()),
-    path('sibscribed_plans/', SubscribedPlansView.as_view()),
+    path('subscribed_plans/', SubscribedPlansView.as_view()),
     path('subscribe-plan/', SubscribeView.as_view()),
     path('unsubscribe-plan/<int:subscription_id>/', UnsubscribeView.as_view()),
     path('ignore-post/', IgnorePostView.as_view()),
