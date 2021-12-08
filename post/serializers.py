@@ -17,10 +17,6 @@ class PostSerializer(serializers.ModelSerializer):
     attachment_url = serializers.SerializerMethodField(read_only=True)
     is_liked = serializers.SerializerMethodField(read_only=True)
     shares = serializers.SerializerMethodField(read_only=True)
-    audio_simplified_chinese_url = serializers.SerializerMethodField(read_only=True)
-    audio_traditional_chinese_url = serializers.SerializerMethodField(read_only=True)
-    timing_simplified_chinese_url = serializers.SerializerMethodField(read_only=True)
-    timing_traditional_chinese_url = serializers.SerializerMethodField(read_only=True)
 
     def get_likes(self, obj):
         return obj.likepost_set.count()
@@ -30,11 +26,39 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_attachment_upload_url(self, obj):
         if obj.attachment:
+            if not self.context['request'].user == obj.owner:
+                return None
             return upload_get_signed_up(obj.attachment)
 
     def get_attachment_url(self, obj):
         if obj.attachment:
             return download_get_signed_up(obj.attachment)
+
+    def get_is_liked(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            return LikePost.objects.filter(post=obj, liker=user).exists()
+        return False
+
+    def get_shares(self, obj):
+        return obj.sharepost_set.all().count()
+
+    class Meta:
+        model = Post
+        exclude = ['full_data', 'audio_simplified_chinese', 'audio_traditional_chinese',
+                   'timing_simplified_chinese', 'timing_traditional_chinese']
+        extra_kwargs = {
+            'attachment': {'write_only': True},
+        }
+
+
+class ResourcesSerializer(serializers.ModelSerializer):
+    author = UserField(source='owner', read_only=True)
+
+    audio_simplified_chinese_url = serializers.SerializerMethodField(read_only=True)
+    audio_traditional_chinese_url = serializers.SerializerMethodField(read_only=True)
+    timing_simplified_chinese_url = serializers.SerializerMethodField(read_only=True)
+    timing_traditional_chinese_url = serializers.SerializerMethodField(read_only=True)
 
     def get_audio_simplified_chinese_url(self, obj):
         if obj.audio_simplified_chinese:
@@ -52,18 +76,10 @@ class PostSerializer(serializers.ModelSerializer):
         if obj.timing_traditional_chinese:
             return download_get_signed_up(obj.timing_traditional_chinese)
 
-    def get_is_liked(self, obj):
-        user = self.context['request'].user
-        if user.is_authenticated:
-            return LikePost.objects.filter(post=obj, liker=user).exists()
-        return False
-
-    def get_shares(self, obj):
-        return obj.sharepost_set.all().count()
-
     class Meta:
         model = Post
-        exclude = []
+        exclude = ['attachment', 'audio_simplified_chinese', 'audio_traditional_chinese', 'timing_simplified_chinese',
+                   'timing_traditional_chinese']
 
 
 class UploadPostImageSerializer(serializers.ModelSerializer):
@@ -310,12 +326,10 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
 
 class NotificationSerializer(serializers.ModelSerializer):
-    from_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    to_user = UserField(queryset=get_user_model().objects.all())
 
     class Meta:
         model = Notification
-        fields = '__all__'
+        exclude = ['to_user', 'object_id']
 
 
 class NotificationMarkSeenSerializer(serializers.ModelSerializer):

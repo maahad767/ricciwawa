@@ -7,7 +7,8 @@ from post.views import SubscriptionViewset, PlaylistViewset, PostViewset, Commen
     UnignorePostView, UserPostListView, WebHome, GetContentsListView, CategoryViewset, UploadPostImageView, \
     AddPostsToSubscriptionsView, AddPostsToPlaylistView, AddPostsToCategoryView, GetCommentsByPostIDView, \
     GetCommentsByParentIDView, SharePostView, GetUserInfoView, GetSubscriptionsByUserView, GetPlaylistsByUserView, \
-    NotificationViewset, CategoryListCreateView, SearchPostView, SubscribedPlansView, UnsubscribeView
+    CategoryListCreateView, SearchPostView, SubscribedPlansView, UnsubscribeView, ResourcesView, \
+    NotificationView
 
 """
 Router is used to route ViewSets. 
@@ -24,13 +25,12 @@ router.register(r'posts', PostViewset, basename='post')
 router.register(r'comments', CommentViewset, basename='post')
 router.register(r'fav-vocabs', FavouriteVocabularyViewset, basename='post')
 router.register(r'category', CategoryViewset, basename='category')
-router.register(r'notification', NotificationViewset, basename='notification')
 
 urlpatterns = [
     path('', WebHome.as_view()),
     path('newsfeed-contents/', NewsfeedView.as_view()),
     path('contents/<str:content_type>/<int:id>/', GetContentsListView.as_view()),
-    path('user-posts/<str:uid>', UserPostListView.as_view()),
+    path('user-posts/<str:uid>/', UserPostListView.as_view()),
     path('like-post/', LikePostView.as_view()),
     path('unlike-post/<int:post_id>/', UnlikePostView.as_view()),
     path('share-post/', SharePostView.as_view()),
@@ -48,7 +48,7 @@ urlpatterns = [
     path('unignore-post/<int:id>/', UnignorePostView.as_view()),
 
     # temporary url
-    path('post/upload-image/<post_id>', UploadPostImageView.as_view()),
+    path('post/upload-image/<post_id>/', UploadPostImageView.as_view()),
 
     # add posts to playlist, subscriptions, category etc
     path('add-posts-to-subscriptions/', AddPostsToSubscriptionsView.as_view()),
@@ -56,17 +56,25 @@ urlpatterns = [
     path('add-posts-to-category/', AddPostsToCategoryView.as_view()),
 
     # get comments by post_id
-    path('get-comments/post/<post_id>', GetCommentsByPostIDView.as_view()),
+    path('get-comments/post/<post_id>/', GetCommentsByPostIDView.as_view()),
     path('get-comments/parent/<parent_id>/', GetCommentsByParentIDView.as_view()),
+
+    # resource
+    path('resources/<int:id>/', ResourcesView.as_view()),
 
     # get user info
     path('get-user-info/', GetUserInfoView.as_view()),
-    # get subscriptions by username
-    # path('get-subscriptions/<str:username>', SubscriptionViewset.as_view({'get': 'get_subscriptions'})),
+
+    # get subscriptions by uid
     path('get-subscriptions-by-user/<str:uid>/', GetSubscriptionsByUserView.as_view()),
-    # get playlists by username
+
+    # get playlists by uid
     path('get-playlists-by-user/<str:uid>/', GetPlaylistsByUserView.as_view()),
+
     # create multiple categories at once
     path('create-categories/', CategoryListCreateView.as_view()),
+    # notifications
+    path('notifications/', NotificationView.as_view()),
+    # search post
     path('search-post/<str:qs>/', SearchPostView.as_view()),
 ] + router.urls

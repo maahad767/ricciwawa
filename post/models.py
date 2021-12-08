@@ -188,9 +188,6 @@ class Post(models.Model):
     def has_object_write_permission(self, request):
         return request.user == self.owner
 
-    def __str__(self):
-        return self.title
-
     class Meta:
         ordering = ['-created_at']
 
@@ -199,10 +196,18 @@ class Comment(models.Model):
     """
     Model for Comments
     """
+    ATTACHMENT_TYPE_CHOICES = (
+        (0, 'None'),
+        (1, 'Image'),
+        (2, 'Audio'),
+        (3, 'Video'),
+    )
+
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='replies', null=True, blank=True)
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='comments')
     text = models.TextField(null=True, blank=True)
+    attachment_type = models.SmallIntegerField(choices=ATTACHMENT_TYPE_CHOICES, default=0)
     attachment = models.FileField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -482,11 +487,18 @@ class Notification(models.Model):
     """
     Model to send notification and store them
     """
-    from_user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='notifications_sent')
+    TYPES = (
+        (0, 'announcement'),
+        (10, 'like'),
+        (20, 'comment'),
+        (30, 'follow'),
+        (40, 'subscribe'),
+    )
     to_user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='notifications_received')
     content = models.TextField(null=True, blank=True)
-    notification_type = models.CharField(max_length=200, null=True, blank=True)
+    notification_type = models.PositiveSmallIntegerField(default=4, choices=TYPES)
+    object_id = models.PositiveIntegerField(null=True, blank=True)
     attachment = models.FileField(null=True, blank=True)
     is_seen = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-
+    updated_at = models.DateTimeField(auto_now=True)

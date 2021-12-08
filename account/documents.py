@@ -17,6 +17,7 @@ class UserDocument(Document):
 
         # The fields of the model you want to be indexed in Elasticsearch
         fields = [
+            'uid',
             'name',
             'picture',
             'username',

@@ -16,7 +16,7 @@ from .serializers import SubscriptionSerializer, PlaylistSerializer, PostSeriali
     SavePlaylistSerializer, SubscribeSerializer, ReportPostSerializer, IgnorePostSerializer, \
     UploadPostImageSerializer, AddPostsToSubscriptionSerializer, AddPostsToPlaylistSerializer, \
     AddPostsToCategorySerializer, SharePostSerializer, UserInfoSerializer, NotificationSerializer, \
-    NotificationMarkSeenSerializer, CategorySerializer
+    NotificationMarkSeenSerializer, CategorySerializer, ResourcesSerializer
 
 
 class WebHome(generic.RedirectView):
@@ -92,7 +92,8 @@ class SubscribedPlansView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Subscription.objects.filter(id__in=self.request.user.subscriptions.values_list('subscription', flat=True))
+        return Subscription.objects.filter(
+            id__in=self.request.user.subscriptions.values_list('subscription', flat=True))
 
 
 class CategoryViewset(viewsets.ModelViewSet):
@@ -129,13 +130,28 @@ class PostViewset(viewsets.ModelViewSet):
     attachment_type: 0-none, 1-image, 2-audio, 3-video
     """
     serializer_class = PostSerializer
-    permission_classes = [AllowAny, DRYPermissions]
+    permission_classes = [DRYPermissions]
 
     def get_queryset(self):
         return Post.objects.filter(owner=self.request.user)
 
     def get_object(self):
         post = Post.objects.get(id=self.kwargs['pk'])
+        if post.privacy == 1 or post.owner == self.request.user:
+            return post
+
+        if self.request.user.is_authenticated:
+            if post.subscription in self.request.user.subscriptions.all():
+                return post
+        return None
+
+
+class ResourcesView(generics.RetrieveAPIView):
+    serializer_class = ResourcesSerializer
+    permission_classes = [AllowAny]
+
+    def get_object(self):
+        post = Post.objects.get(id=self.kwargs['id'])
         if post.privacy == 1 or post.owner == self.request.user:
             return post
 
@@ -383,7 +399,7 @@ class GetUserInfoView(generics.RetrieveAPIView):
         return self.request.user
 
 
-class NotificationViewset(viewsets.ModelViewSet):
+class NotificationView(generics.ListAPIView):
     """
     Use only Create Notification(method POST) and Get Notification(method GET, returns list)
     """
@@ -395,6 +411,15 @@ class NotificationViewset(viewsets.ModelViewSet):
 
 
 class MarkNotificationSeenView(generics.GenericAPIView):
+    """
+    Notification Types:
+        (0, 'announcement'),
+        (10, 'like'),
+        (20, 'comment'),
+        (30, 'follow'),
+        (40, 'subscribe')
+    """
+
     serializer_class = NotificationMarkSeenSerializer
     permission_classes = [IsAuthenticated]
 

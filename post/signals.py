@@ -4,7 +4,7 @@ from hashlib import sha1
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from .models import Post
+from .models import Post, LikePost, Notification, Comment, Subscribe, Follow
 from .utils import create_mp3_task, create_save_edit_fulldata
 from utils.utils import get_random_string, google_translate
 
@@ -55,3 +55,105 @@ def add_audio_in_post(instance, created, *args, **kwargs):
         instance.english_meaning_article, "zh", "tl")
 
     instance.save()
+
+
+"""
+TYPES = (
+    (0, 'announcement'),
+    (10, 'like'),
+    (20, 'comment'),
+    (30, 'follow'),
+    (40, 'subscribe'),
+)
+"""
+
+
+# Create Notifications
+@receiver(post_save, sender=LikePost)
+def create_like_notification(instance, created, *args, **kwargs):
+    if not created:
+        return
+
+    # notification_type: 10 for like
+    notification_type = 10
+    to_user = instance.post.owner
+    liked_by = instance.liker
+
+    if to_user == liked_by:
+        return
+
+    likes_count = instance.post.likepost_set.count()
+    if likes_count == 1:
+        content = f'@{liked_by.username} liked your post.'
+    else:
+        content = f'@{liked_by.username} and {likes_count - 1} others liked your post.'
+
+    notification, created = Notification.objects.get_or_create(
+        notification_type=notification_type,
+        to_user=to_user,
+        object_id=instance.post.id)
+    notification.content = content
+    notification.save()
+
+
+@receiver(post_save, sender=Comment)
+def create_comment_notification(instance, created, *args, **kwargs):
+    if not created:
+        return
+
+    notification_type = 20  # 20 for comment
+    to_user = instance.post.owner
+    commented_by = instance.owner
+
+    if to_user == commented_by:
+        return
+
+    content = f'@{commented_by.username} commented on your post.'
+
+    Notification.objects.create(
+        notification_type=notification_type,
+        to_user=to_user,
+        content=content,
+        object_id=instance.post.id)
+
+
+@receiver(post_save, sender=Subscribe)
+def create_subscribe_notification(instance, created, *args, **kwargs):
+    if not created:
+        return
+
+    notification_type = 40  # 40 for subscribe
+    to_user = instance.subscription.owner
+    subscribed_by = instance.subscriber
+
+    if to_user == subscribed_by:
+        return
+
+    content = f'@{subscribed_by.username} subscribed to your subscription plan.'
+
+    Notification.objects.create(
+        notification_type=notification_type,
+        to_user=to_user,
+        content=content,
+        object_id=instance.subscription.id)
+
+
+@receiver(post_save, sender=Follow)
+def create_follow_notification(instance, created, *args, **kwargs):
+    if not created:
+        return
+
+    notification_type = 30  # 20 for follow
+    to_user = instance.followed_user
+    followed_by = instance.followed_by
+
+    if to_user == followed_by:
+        return
+
+    content = f'@{followed_by.username} followed you.'
+
+    Notification.objects.create(
+        notification_type=notification_type,
+        to_user=to_user,
+        content=content,
+        object_id=instance.followed_user.id)
