@@ -316,7 +316,7 @@ class UploadPostImageView(generics.UpdateAPIView):
 
 class AddPostsToSubscriptionsView(generics.GenericAPIView):
     serializer_class = AddPostsToSubscriptionSerializer
-    permission_classes = [IsAuthenticated, DRYPermissions]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
@@ -330,7 +330,7 @@ class AddPostsToSubscriptionsView(generics.GenericAPIView):
 
 class AddPostsToPlaylistView(generics.GenericAPIView):
     serializer_class = AddPostsToPlaylistSerializer
-    permission_classes = [IsAuthenticated, DRYPermissions]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
@@ -344,7 +344,7 @@ class AddPostsToPlaylistView(generics.GenericAPIView):
 
 class AddPostsToCategoryView(generics.GenericAPIView):
     serializer_class = AddPostsToCategorySerializer
-    permission_classes = [IsAuthenticated, DRYPermissions]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)

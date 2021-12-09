@@ -316,13 +316,17 @@ class AddPostsToCategorySerializer(serializers.Serializer):
 
 class UserInfoSerializer(serializers.ModelSerializer):
     is_followed = serializers.SerializerMethodField()
+    follower_count = serializers.SerializerMethodField()
 
     def get_is_followed(self, obj):
         return obj.followers.filter(followed_by=self.context['request'].user).exists()
 
+    def get_follower_count(self, obj):
+        return obj.followers.count()
+
     class Meta:
         model = get_user_model()
-        fields = ['uid', 'username', 'is_followed', 'picture', 'name']
+        fields = ['uid', 'username', 'is_followed', 'follower_count', 'picture', 'name']
 
 
 class NotificationSerializer(serializers.ModelSerializer):
