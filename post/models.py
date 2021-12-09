@@ -298,7 +298,7 @@ class SharePost(models.Model):
     """
     Model to track shares in a post
     """
-    sharer = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    sharer = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, blank=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
 

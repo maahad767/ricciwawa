@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AnonymousUser
 from rest_framework import serializers
 
 from account.fields import UserField
@@ -223,6 +224,14 @@ class ViewPostSerializer(serializers.ModelSerializer):
 
 class SharePostSerializer(serializers.ModelSerializer):
     sharer = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    def validate(self, data):
+        if type(data['sharer']) is AnonymousUser:
+            data['sharer'] = None
+        return data
+
+    def save(self):
+        super(SharePostSerializer, self).save()
 
     class Meta:
         model = SharePost
