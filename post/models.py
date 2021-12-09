@@ -32,9 +32,6 @@ class Subscription(models.Model):
     def has_object_write_permission(self, request):
         return request.user == self.owner
 
-    def __str__(self):
-        return self.title
-
     class Meta:
         ordering = ['-created_at']
 
@@ -63,9 +60,6 @@ class Category(models.Model):
 
     def has_object_write_permission(self, request):
         return request.user == self.subscription.owner
-
-    def __str__(self):
-        return self.title
 
     class Meta:
         ordering = ['-created_at']
@@ -101,9 +95,6 @@ class Playlist(models.Model):
 
     def has_object_write_permission(self, request):
         return request.user == self.owner
-
-    def __str__(self):
-        return self.title
 
     class Meta:
         ordering = ['-created_at']
@@ -225,9 +216,6 @@ class Comment(models.Model):
 
     def has_object_write_permission(self, request):
         return request.user == self.owner
-
-    def __str__(self):
-        return self.text[:50] + '...' if len(self.text) > 50 else self.text
 
     class Meta:
         ordering = ['-created_at']
