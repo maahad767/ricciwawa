@@ -42,17 +42,19 @@ def add_audio_in_post(instance, created, *args, **kwargs):
 
         create_mp3_task("hk", trad_spaced_sentence, instance.audio_traditional_chinese)
 
-    instance.full_data = create_save_edit_fulldata(instance.text_traditional_chinese,
-                                                   instance.text_simplified_chinese,
-                                                   instance.meaning_words,
-                                                   instance.pin_yin_words)
+    if instance.text_traditional_chinese and instance.text_simplified_chinese and instance.meaning_words and instance.pin_yin_words:
+        instance.full_data = create_save_edit_fulldata(instance.text_traditional_chinese,
+                                                       instance.text_simplified_chinese,
+                                                       instance.meaning_words,
+                                                       instance.pin_yin_words)
 
-    instance.korean_meaning_translation = google_translate(
-        instance.english_meaning_article, "zh", "ko")
-    instance.indonesian_meaning_translation = google_translate(
-        instance.english_meaning_article, "zh", "id")
-    instance.tagalog_meaning_translation = google_translate(
-        instance.english_meaning_article, "zh", "tl")
+    if instance.english_meaning_article:
+        instance.korean_meaning_translation = google_translate(
+            instance.english_meaning_article, "zh", "ko")
+        instance.indonesian_meaning_translation = google_translate(
+            instance.english_meaning_article, "zh", "id")
+        instance.tagalog_meaning_translation = google_translate(
+            instance.english_meaning_article, "zh", "tl")
 
     instance.save()
 

@@ -26,9 +26,10 @@ class PostSerializer(serializers.ModelSerializer):
         return obj.comments.all().count()
 
     def get_attachment_upload_url(self, obj):
+        user = self.context['request'].user
+        if not user.is_authenticated or user != obj.owner:
+            return None
         if obj.attachment:
-            if not self.context['request'].user == obj.owner:
-                return None
             return upload_get_signed_up(obj.attachment)
 
     def get_attachment_url(self, obj):
@@ -49,7 +50,7 @@ class PostSerializer(serializers.ModelSerializer):
         exclude = ['full_data', 'audio_simplified_chinese', 'audio_traditional_chinese',
                    'timing_simplified_chinese', 'timing_traditional_chinese']
         extra_kwargs = {
-            'attachment': {'write_only': True},
+            'attachment': {'write_only': True, 'required': False},
         }
 
 
