@@ -7,7 +7,6 @@ from rest_framework import viewsets, generics, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
-from account.models import BlockUser
 from .documents import PostDocument
 from .models import Subscription, Playlist, Post, Comment, FavouriteVocabulary, Category, LikePost, Follow, \
     Notification, Subscribe
@@ -101,7 +100,7 @@ class CategoryViewset(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, DRYPermissions]
 
     def get_queryset(self):
-        return Category.objects.filter(owner=self.request.user)
+        return Category.objects.filter(subscription__owner=self.request.user)
 
 
 class CategoryListCreateView(generics.CreateAPIView):
@@ -135,30 +134,13 @@ class PostViewset(viewsets.ModelViewSet):
     def get_queryset(self):
         return Post.objects.filter(owner=self.request.user)
 
-    def get_object(self):
-        post = Post.objects.get(id=self.kwargs['pk'])
-        if post.privacy == 1 or post.owner == self.request.user:
-            return post
-
-        if self.request.user.is_authenticated:
-            if post.subscription in self.request.user.subscriptions.all():
-                return post
-        return None
-
 
 class ResourcesView(generics.RetrieveAPIView):
     serializer_class = ResourcesSerializer
     permission_classes = [AllowAny]
 
     def get_object(self):
-        post = Post.objects.get(id=self.kwargs['id'])
-        if post.privacy == 1 or post.owner == self.request.user:
-            return post
-
-        if self.request.user.is_authenticated:
-            if post.subscription in self.request.user.subscriptions.all():
-                return post
-        return None
+        return Post.objects.get(id=self.kwargs['id'])
 
 
 class UserPostListView(generics.ListAPIView):

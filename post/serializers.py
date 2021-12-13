@@ -329,7 +329,10 @@ class UserInfoSerializer(serializers.ModelSerializer):
     follower_count = serializers.SerializerMethodField()
 
     def get_is_followed(self, obj):
-        return obj.followers.filter(followed_by=self.context['request'].user).exists()
+        user =  self.context['request'].user
+        if not user.is_authenticated:
+            return False
+        return obj.followers.filter(followed_by=user).exists()
 
     def get_follower_count(self, obj):
         return obj.followers.count()
