@@ -297,6 +297,7 @@ class AddPostsToSubscriptionSerializer(serializers.Serializer):
         for post in posts:
             post.subscription = subscription
             post.privacy = 0
+            post.category = None
             post.save()
 
 
@@ -309,6 +310,7 @@ class AddPostsToPlaylistSerializer(serializers.Serializer):
         posts = self.validated_data['posts']
         for post in posts:
             post.playlist = playlist
+            post.category = None
             post.save()
 
 

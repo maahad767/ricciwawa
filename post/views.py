@@ -151,15 +151,14 @@ class UserPostListView(generics.ListAPIView):
         myself = self.request.user
         user = get_user_model().objects.get(uid=self.kwargs['uid'].strip())
         if myself.is_authenticated:
-            my_posts = Post.objects.filter(owner=self.request.user)
             my_subscriptions = myself.subscriptions.all().values('subscription')
             my_blocked_lists = myself.ignore_blocked_users.all().values('to_user__id')
             my_ignored_posts = myself.ignorepost_set.all().values('ignored_post')
             return (Post.objects.filter(owner=user).filter(Q(privacy=1) |
                                                            (Q(privacy=0) & Q(subscription__in=my_subscriptions)))
-                    .filter(~Q(owner__in=my_blocked_lists)).filter(~Q(id__in=my_ignored_posts)) | my_posts).distinct()
+                    .filter(~Q(owner__in=my_blocked_lists)).filter(~Q(id__in=my_ignored_posts))).distinct()
         else:
-            return Post.objects.filter(privacy=1)
+            return Post.objects.filter(owner=user, privacy=1)
 
 
 class CommentViewset(viewsets.ModelViewSet):
