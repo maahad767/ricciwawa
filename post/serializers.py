@@ -167,6 +167,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         subscription = super(SubscriptionSerializer, self).create(validated_data)
         for post in posts:
             post.subscription = subscription
+            post.privacy = 0
             post.save()
 
         return subscription
@@ -190,6 +191,7 @@ class PlaylistSerializer(serializers.ModelSerializer):
         playlist = super(PlaylistSerializer, self).create(validated_data)
         for post in posts:
             post.playlist = playlist
+            post.privacy = 0
             post.save()
 
         return playlist
@@ -310,6 +312,7 @@ class AddPostsToPlaylistSerializer(serializers.Serializer):
         posts = self.validated_data['posts']
         for post in posts:
             post.playlist = playlist
+            post.privacy = 0
             post.category = None
             post.save()
 
