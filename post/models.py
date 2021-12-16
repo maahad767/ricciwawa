@@ -115,6 +115,7 @@ class Post(models.Model):
     subscription = models.ForeignKey(Subscription, on_delete=models.SET_NULL, null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
     playlist = models.ForeignKey(Playlist, on_delete=models.SET_NULL, null=True, blank=True)
+    position = models.IntegerField(default=0)
     title = models.CharField(max_length=512)
     description = models.TextField(null=True, blank=True)
     text = models.TextField(null=True)

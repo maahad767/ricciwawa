@@ -189,9 +189,23 @@ class PlaylistSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         posts = validated_data.pop('posts') if 'posts' in validated_data else []
         playlist = super(PlaylistSerializer, self).create(validated_data)
-        for post in posts:
+        for pos, post in enumerate(posts):
             post.playlist = playlist
-            post.privacy = 0
+            post.position = pos
+            post.privacy = playlist.privacy
+            post.save()
+
+        return playlist
+
+    def update(self, instance, validated_data):
+        posts = validated_data.pop('posts') if 'posts' in validated_data else []
+        playlist = super(PlaylistSerializer, self).update(instance, validated_data)
+        Post.objects.filter(playlist=playlist).bulk_update(playlist=None)
+
+        for pos, post in enumerate(posts):
+            post.playlist = playlist
+            post.position = pos
+            post.privacy = playlist.privacy
             post.save()
 
         return playlist
@@ -296,10 +310,11 @@ class AddPostsToSubscriptionSerializer(serializers.Serializer):
     def save(self):
         subscription = self.validated_data['subscription']
         posts = self.validated_data['posts']
-        for post in posts:
+        for pos, post in enumerate(posts):
             post.subscription = subscription
             post.privacy = 0
             post.category = None
+            post.position = pos
             post.save()
 
 
@@ -323,8 +338,10 @@ class AddPostsToCategorySerializer(serializers.Serializer):
 
     def save(self):
         category = self.validated_data['category']
+        subscription = category.subscription
         posts = self.validated_data['posts']
         for post in posts:
+            post.subscription = subscription
             post.category = category
             post.save()
 

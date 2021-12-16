@@ -60,11 +60,11 @@ class GetContentsListView(generics.ListAPIView):
         content_type = self.kwargs['content_type']
         content_id = self.kwargs['id']
         if content_type == 'playlist':
-            return Post.objects.filter(playlist__id=content_id)
+            return Post.objects.filter(playlist__id=content_id).order_by('position')
         elif content_type == 'subscription':
-            return Post.objects.filter(subscription__id=content_id)
+            return Post.objects.filter(subscription__id=content_id).order_by('position')
         elif content_type == 'category':
-            return Post.objects.filter(category__id=content_id)
+            return Post.objects.filter(category__id=content_id).order_by('position')
         else:
             return Post.objects.none()
 
