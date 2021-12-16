@@ -3,6 +3,7 @@ from django.contrib.auth.models import AnonymousUser
 from rest_framework import serializers
 
 from account.fields import UserField
+from .fields import AuthoredPostsPrimaryKeyRelatedField
 from .models import (Post, Comment, LikePost, LikeComment, Subscription, Category, Subscribe, Playlist, SavePlaylist,
                      ViewPost,
                      Favourite, Follow, FavouriteVocabulary, ReportPost, IgnorePost, SharePost, Notification)
@@ -85,7 +86,6 @@ class ResourcesSerializer(serializers.ModelSerializer):
 
 
 class UploadPostImageSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Post
         fields = ('image',)
@@ -151,8 +151,8 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     subscribers = serializers.SerializerMethodField(read_only=True)
     subscriber_list = SubscribeSerializer(source='subscribe_set', many=True, read_only=True)
     category_list = CategorySerializer(source='category_set', many=True, read_only=True)
-    posts = serializers.PrimaryKeyRelatedField(queryset=Post.objects.filter(owner=serializers.CurrentUserDefault()),
-                                               many=True, write_only=True, required=False)
+    posts = AuthoredPostsPrimaryKeyRelatedField(queryset=Post.objects.all(),
+                                                many=True, write_only=True, required=False)
 
     def get_is_subscribed(self, obj):
         user = self.context['request'].user
@@ -182,8 +182,8 @@ class PlaylistSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     author = UserField(source='owner', read_only=True)
     stories = serializers.SerializerMethodField(read_only=True)
-    posts = serializers.PrimaryKeyRelatedField(queryset=Post.objects.filter(owner=serializers.CurrentUserDefault()),
-                                               many=True, write_only=True, required=False)
+    posts = AuthoredPostsPrimaryKeyRelatedField(queryset=Post.objects.all(),
+                                                many=True, write_only=True, required=False)
 
     def get_stories(self, obj):
         return obj.post_set.all().count()
@@ -299,7 +299,6 @@ class IgnorePostSerializer(serializers.ModelSerializer):
 
 
 class ReportPostSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = ReportPost
         fields = '__all__'
@@ -353,7 +352,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
     follower_count = serializers.SerializerMethodField()
 
     def get_is_followed(self, obj):
-        user =  self.context['request'].user
+        user = self.context['request'].user
         if not user.is_authenticated:
             return False
         return obj.followers.filter(followed_by=user).exists()
@@ -367,7 +366,6 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
 
 class NotificationSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Notification
         exclude = ['to_user', 'object_id']
