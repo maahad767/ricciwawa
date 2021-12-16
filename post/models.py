@@ -94,7 +94,6 @@ class Playlist(models.Model):
     def has_write_permission(request):
         return True
 
-
     def has_object_write_permission(self, request):
         return request.user == self.owner
 

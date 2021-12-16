@@ -151,7 +151,8 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     subscribers = serializers.SerializerMethodField(read_only=True)
     subscriber_list = SubscribeSerializer(source='subscribe_set', many=True, read_only=True)
     category_list = CategorySerializer(source='category_set', many=True, read_only=True)
-    posts = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all(), many=True, write_only=True, required=False)
+    posts = serializers.PrimaryKeyRelatedField(queryset=Post.objects.filter(owner=serializers.CurrentUserDefault()),
+                                               many=True, write_only=True, required=False)
 
     def get_is_subscribed(self, obj):
         user = self.context['request'].user
@@ -181,7 +182,8 @@ class PlaylistSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     author = UserField(source='owner', read_only=True)
     stories = serializers.SerializerMethodField(read_only=True)
-    posts = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all(), many=True, write_only=True, required=False)
+    posts = serializers.PrimaryKeyRelatedField(queryset=Post.objects.filter(owner=serializers.CurrentUserDefault()),
+                                               many=True, write_only=True, required=False)
 
     def get_stories(self, obj):
         return obj.post_set.all().count()
