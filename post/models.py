@@ -277,7 +277,7 @@ class ViewPost(models.Model):
     """
     Model to track views in a post
     """
-    viewer = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    viewer = models.ForeignKey(get_user_model(), null=True, blank=True, on_delete=models.SET_NULL)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
     class Meta:

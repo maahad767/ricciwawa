@@ -130,8 +130,24 @@ class CategorySerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         posts = validated_data.pop('posts') if 'posts' in validated_data else []
         category = super(CategorySerializer, self).create(validated_data)
-        for post in posts:
+        privacy = category.subscription.privacy
+        for pos, post in enumerate(posts):
             post.category = category
+            post.privacy = privacy
+            post.position = pos
+            post.save()
+
+        return category
+
+    def update(self, instance, validated_data):
+        posts = validated_data.pop('posts') if 'posts' in validated_data else []
+        category = super(CategorySerializer, self).update(instance, validated_data)
+        Post.objects.filter(category=category).update(category=None, position=0)
+        privacy = category.subscription.privacy
+        for pos, post in enumerate(posts):
+            post.category = category
+            post.privacy = privacy
+            post.position = pos
             post.save()
 
         return category
@@ -166,9 +182,24 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         posts = validated_data.pop('posts') if 'posts' in validated_data else []
         subscription = super(SubscriptionSerializer, self).create(validated_data)
-        for post in posts:
+        privacy = subscription.privacy
+        for pos, post in enumerate(posts):
             post.subscription = subscription
-            post.privacy = 0
+            post.privacy = privacy
+            post.position = pos
+            post.save()
+
+        return subscription
+
+    def update(self, instance, validated_data):
+        posts = validated_data.pop('posts') if 'posts' in validated_data else []
+        subscription = super(SubscriptionSerializer, self).update(instance, validated_data)
+        Post.objects.filter(subscription=subscription, category__isnull=True).update(subscription=None, position=0)
+        privacy = subscription.privacy
+        for pos, post in enumerate(posts):
+            post.subscription = subscription
+            post.privacy = privacy
+            post.position = pos
             post.save()
 
         return subscription
@@ -202,7 +233,7 @@ class PlaylistSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         posts = validated_data.pop('posts') if 'posts' in validated_data else []
         playlist = super(PlaylistSerializer, self).update(instance, validated_data)
-        Post.objects.filter(playlist=playlist).bulk_update(playlist=None)
+        Post.objects.filter(playlist=playlist).update(playlist=None)
 
         for pos, post in enumerate(posts):
             post.playlist = playlist
@@ -235,6 +266,11 @@ class LikeCommentSerializer(serializers.ModelSerializer):
 
 class ViewPostSerializer(serializers.ModelSerializer):
     viewer = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    def validate(self, data):
+        if type(data['viewer']) is AnonymousUser:
+            data['viewer'] = None
+        return data
 
     class Meta:
         model = ViewPost
