@@ -4,7 +4,7 @@ from hashlib import sha1
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from .models import Post, LikePost, Notification, Comment, Subscribe, Follow
+from .models import Post, LikePost, Notification, Comment, Subscribe, Follow, Playlist
 from .utils import create_mp3_task, create_save_edit_fulldata
 from utils.utils import get_random_string, google_translate
 

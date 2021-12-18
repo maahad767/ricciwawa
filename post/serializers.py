@@ -182,10 +182,9 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         posts = validated_data.pop('posts') if 'posts' in validated_data else []
         subscription = super(SubscriptionSerializer, self).create(validated_data)
-        privacy = subscription.privacy
         for pos, post in enumerate(posts):
             post.subscription = subscription
-            post.privacy = privacy
+            post.privacy = 0
             post.position = pos
             post.save()
 
@@ -195,10 +194,9 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         posts = validated_data.pop('posts') if 'posts' in validated_data else []
         subscription = super(SubscriptionSerializer, self).update(instance, validated_data)
         Post.objects.filter(subscription=subscription, category__isnull=True).update(subscription=None, position=0)
-        privacy = subscription.privacy
         for pos, post in enumerate(posts):
             post.subscription = subscription
-            post.privacy = privacy
+            post.privacy = 0
             post.position = pos
             post.save()
 
