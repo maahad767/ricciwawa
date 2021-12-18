@@ -130,10 +130,9 @@ class CategorySerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         posts = validated_data.pop('posts') if 'posts' in validated_data else []
         category = super(CategorySerializer, self).create(validated_data)
-        privacy = category.subscription.privacy
         for pos, post in enumerate(posts):
             post.category = category
-            post.privacy = privacy
+            post.privacy = 0
             post.position = pos
             post.save()
 
@@ -143,10 +142,9 @@ class CategorySerializer(serializers.ModelSerializer):
         posts = validated_data.pop('posts') if 'posts' in validated_data else []
         category = super(CategorySerializer, self).update(instance, validated_data)
         Post.objects.filter(category=category).update(category=None, position=0)
-        privacy = category.subscription.privacy
         for pos, post in enumerate(posts):
             post.category = category
-            post.privacy = privacy
+            post.privacy = 0
             post.position = pos
             post.save()
 

@@ -16,6 +16,9 @@ from django.conf import settings
 # It calls Azure using background task to generate the MP3 files.  Background task is needed because it takes long time
 # We use Azure because its Mandarin audio quality is the best.
 # =========================================================
+from utils.utils import google_translate
+
+
 def create_mp3_task(mp3_lang, mp3_text, filename, time_delay=0):
     from google.protobuf import timestamp_pb2
     # Create a client.
@@ -141,19 +144,14 @@ def create_save_edit_fulldata(trad_words, sim_word, english_words, pinyin_list):
         translated_word["eng"] = [[english_words[index]]]
         translated_word["sim"] = [sim_word[index]]
         translated_word["trad"] = [trad_words[index]]
-        # translated_word["targetted_lang"] = [
-        #     [google_translate(english_words[index], "zh", targetted_lang_code)]]
-        # translated_word["tagalog"] = [
-        #    [google_translate(english_words[index], "zh", "tl")]]
-        # translated_word["indonesian"] = [
-        #    [google_translate(english_words[index], "zh", "id")]]
-        # translated_word["korean"] = [
-        #    [google_translate(english_words[index], "zh", "ko")]]
+        translated_word["tagalog"] = [
+           [google_translate(english_words[index], "en", "tl")]]
+        translated_word["indonesian"] = [
+           [google_translate(english_words[index], "en", "id")]]
+        translated_word["korean"] = [
+           [google_translate(english_words[index], "en", "ko")]]
         translated_word["pinyin"] = [[pinyin_list[index]]]
         all_translated_words.append(translated_word)
-        # Kenneth 20210926 #######
-        # add background task to translate the story to other languages and store them into different languages
-        # add background task to have different audio speedt created
-        # create_mp3_task("hk", trad_spaced_sentence, str(hashed_id)) different speed
+
 
     return all_translated_words
