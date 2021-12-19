@@ -55,7 +55,7 @@ class User(AbstractUser):
     email = models.EmailField(_('email address'), null=True, blank=True)
     uid = models.CharField(max_length=255, editable=False, unique=True)
     name = models.CharField(max_length=255, null=True, blank=True)
-    picture = models.URLField(blank=True, null=True)
+    picture = models.ImageField(upload_to='profile_pictures', null=True, blank=True)
 
     USERNAME_FIELD = 'uid'
     objects = UserManager()

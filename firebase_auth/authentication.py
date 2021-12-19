@@ -47,7 +47,7 @@ class FirebaseAuthentication(BaseAuthentication):
         user, created = get_user_model().objects.get_or_create(uid=uid)
         if created:
             user.name = name
-            user.picture = picture
+            # user.picture = picture
             user.save()
 
         user.last_login = timezone.localtime()
