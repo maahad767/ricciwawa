@@ -144,12 +144,12 @@ def create_save_edit_fulldata(trad_words, sim_word, english_words, pinyin_list):
         translated_word["eng"] = [[english_words[index]]]
         translated_word["sim"] = [sim_word[index]]
         translated_word["trad"] = [trad_words[index]]
-        translated_word["tagalog"] = [
-           [google_translate(english_words[index], "en", "tl")]]
-        translated_word["indonesian"] = [
-           [google_translate(english_words[index], "en", "id")]]
-        translated_word["korean"] = [
-           [google_translate(english_words[index], "en", "ko")]]
+        # translated_word["tagalog"] = [
+        #    [google_translate(english_words[index], "en", "tl")]]
+        # translated_word["indonesian"] = [
+        #    [google_translate(english_words[index], "en", "id")]]
+        # translated_word["korean"] = [
+        #    [google_translate(english_words[index], "en", "ko")]]
         translated_word["pinyin"] = [[pinyin_list[index]]]
         all_translated_words.append(translated_word)
 
