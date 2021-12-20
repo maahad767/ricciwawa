@@ -1,10 +1,18 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-
 """
 Here we have defined custom serializer fields
 """
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the UserProfile model.
+    """
+    class Meta:
+        model = get_user_model()
+        fields = ('uid', 'username', 'picture', 'name')
 
 
 class UsernameField(serializers.RelatedField):
@@ -36,13 +44,7 @@ class UsernameField(serializers.RelatedField):
 class UserField(serializers.RelatedField):
 
     def to_representation(self, obj):
-        user = {
-            'uid': obj.uid,
-            'username': obj.username,
-            'name': obj.name,
-            'picture': obj.picture,
-        }
-        return user
+        return UserProfileSerializer(obj).data
 
     def to_internal_value(self, data):
         try:
