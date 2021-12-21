@@ -61,7 +61,7 @@ class BlockUserListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return self.request.user.ignore_blocked_users.all()
+        return self.request.user.blocked_users.all()
 
 
 class BlockUserDestroyView(generics.DestroyAPIView):
@@ -72,7 +72,7 @@ class BlockUserDestroyView(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated, DRYPermissions]
 
     def get_object(self):
-        return self.request.user.ignore_blocked_users.filter(to_user__uid=self.kwargs['uid']).first()
+        return self.request.user.blocked_users.filter(to_user__uid=self.kwargs['uid']).first()
 
 
 class SearchUserView(generics.ListAPIView):

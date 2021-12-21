@@ -152,7 +152,7 @@ class UserPostListView(generics.ListAPIView):
         user = get_user_model().objects.get(uid=self.kwargs['uid'].strip())
         if myself.is_authenticated:
             my_subscriptions = myself.subscriptions.all().values('subscription')
-            my_blocked_lists = myself.ignore_blocked_users.all().values('to_user__id')
+            my_blocked_lists = myself.blocked_users.all().values('to_user__id')
             my_ignored_posts = myself.ignorepost_set.all().values('ignored_post')
             return (Post.objects.filter(owner=user).filter(Q(privacy=1) |
                                                            (Q(privacy=0) & Q(subscription__in=my_subscriptions)))
