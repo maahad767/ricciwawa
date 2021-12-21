@@ -125,7 +125,7 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    posts = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all(), many=True, write_only=True, required=False)
+    posts = AuthoredPostsPrimaryKeyRelatedField(queryset=Post.objects.all(), many=True, write_only=True, required=False)
 
     def create(self, validated_data):
         posts = validated_data.pop('posts') if 'posts' in validated_data else []
