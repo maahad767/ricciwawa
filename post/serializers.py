@@ -394,7 +394,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         if not user.is_authenticated:
             return False
-        return obj.blocked_users.filter(blocked_user=user).exists()
+        return obj.blocked_users.filter(by_user=user).exists()
 
     def get_follower_count(self, obj):
         if type(obj) is AnonymousUser:
