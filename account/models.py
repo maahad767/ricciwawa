@@ -119,7 +119,7 @@ class BlockUser(models.Model):
     """
     to_user = models.ForeignKey(get_user_model(), verbose_name=_('blocked/ignored user'), on_delete=models.CASCADE)
     by_user = models.ForeignKey(get_user_model(), verbose_name=_('blocked/ignored by'),
-                                related_name='ignore_blocked_users', on_delete=models.CASCADE)
+                                related_name='blocked_users', on_delete=models.CASCADE)
 
     @staticmethod
     def has_read_permission(request):

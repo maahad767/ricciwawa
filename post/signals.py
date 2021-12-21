@@ -114,7 +114,12 @@ def create_comment_notification(instance, created, *args, **kwargs):
     if to_user == commented_by:
         return
 
-    content = f'@{commented_by.username} commented on your post.'
+    comments_count = instance.post.comments.count()
+
+    if comments_count == 1:
+        content = f'@{commented_by.username} commented on your post.'
+    else:
+        content = f'@{commented_by.username} and {comments_count - 1} others liked your post.'
 
     Notification.objects.create(
         notification_type=notification_type,
@@ -135,7 +140,13 @@ def create_subscribe_notification(instance, created, *args, **kwargs):
     if to_user == subscribed_by:
         return
 
-    content = f'@{subscribed_by.username} subscribed to your subscription plan.'
+    subscriptions_count = instance.subscription.subscribe_set.count()
+
+    if subscriptions_count == 1:
+        content = f'@{subscribed_by.username} subscribed to your subscription plan.'
+    else:
+        content = f'@{subscribed_by.username} and {subscriptions_count - 1} others subscribed' \
+                  f' to your subscription plan.'
 
     Notification.objects.create(
         notification_type=notification_type,
@@ -156,7 +167,12 @@ def create_follow_notification(instance, created, *args, **kwargs):
     if to_user == followed_by:
         return
 
-    content = f'@{followed_by.username} followed you.'
+    follows_count = instance.followed_user.follow_set.count()
+
+    if follows_count == 1:
+        content = f'@{followed_by.username} followed you.'
+    else:
+        content = f'@{followed_by.username} and {follows_count - 1} others followed you.'
 
     Notification.objects.create(
         notification_type=notification_type,

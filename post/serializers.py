@@ -381,6 +381,7 @@ class AddPostsToCategorySerializer(serializers.Serializer):
 
 class UserInfoSerializer(serializers.ModelSerializer):
     is_followed = serializers.SerializerMethodField()
+    is_blocked = serializers.SerializerMethodField()
     follower_count = serializers.SerializerMethodField()
 
     def get_is_followed(self, obj):
@@ -389,12 +390,18 @@ class UserInfoSerializer(serializers.ModelSerializer):
             return False
         return obj.followers.filter(followed_by=user).exists()
 
+    def get_is_blocked(self, obj):
+        user = self.context['request'].user
+        if not user.is_authenticated:
+            return False
+        return obj.by_user.filter(blocked_user=user).exists()
+
     def get_follower_count(self, obj):
         return obj.followers.count()
 
     class Meta:
         model = get_user_model()
-        fields = ['uid', 'username', 'is_followed', 'follower_count', 'picture', 'name']
+        fields = ['uid', 'username', 'is_blocked', 'is_followed', 'follower_count', 'picture', 'name']
 
 
 class NotificationSerializer(serializers.ModelSerializer):

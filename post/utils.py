@@ -37,9 +37,11 @@ def create_mp3_task(mp3_lang, mp3_text, filename, time_delay=0):
         resp = requests.post(hostname + "utils/mp3-task-handler/", data=payload).json()
         # print(resp)
         return
+
         # Construct the fully qualified queue name.
     parent = client.queue_path(project, location, queue)
 
+    # celery
     # Construct the request body.
     task = {
         'app_engine_http_request': {  # Specify the type of request.
