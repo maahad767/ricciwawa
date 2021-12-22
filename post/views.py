@@ -132,7 +132,10 @@ class PostViewset(viewsets.ModelViewSet):
     permission_classes = [DRYPermissions]
 
     def get_queryset(self):
-        return Post.objects.all()
+        return Post.objects.filter(user=self.request.user)
+
+    def get_object(self):
+        return Post.objects.get(id=self.kwargs['pk'])
 
 
 class ResourcesView(generics.RetrieveAPIView):
