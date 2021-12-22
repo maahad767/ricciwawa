@@ -132,7 +132,7 @@ class PostViewset(viewsets.ModelViewSet):
     permission_classes = [DRYPermissions]
 
     def get_queryset(self):
-        return Post.objects.filter(user=self.request.user)
+        return Post.objects.filter(owner=self.request.user)
 
     def get_object(self):
         return Post.objects.get(id=self.kwargs['pk'])
