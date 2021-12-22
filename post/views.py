@@ -414,11 +414,10 @@ class SearchPostView(generics.ListAPIView):
         search_result = PostDocument.search().query("multi_match", query=self.kwargs['qs']).to_queryset()
 
         if myself.is_authenticated:
-            my_posts = Post.objects.filter(owner=self.request.user)
             my_subscriptions = myself.subscriptions.all().values('subscription')
             my_blocked_lists = myself.blocked_users.all().values('to_user__id')
             my_ignored_posts = myself.ignorepost_set.all().values('ignored_post')
-            return (search_result.filter(Q(privacy=1) | (Q(privacy=0) & Q(subscription__in=my_subscriptions))).filter(
-                ~Q(owner__in=my_blocked_lists)).filter(~Q(id__in=my_ignored_posts)) | my_posts).distinct()
+            return search_result.filter(Q(privacy=1) | (Q(privacy=0) & Q(subscription__in=my_subscriptions))).filter(
+                ~Q(owner__in=my_blocked_lists)).filter(~Q(id__in=my_ignored_posts))
         else:
             return search_result.filter(privacy=1)
