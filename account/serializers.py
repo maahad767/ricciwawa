@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from rest_framework import serializers
 
 from .models import ReportUser, BlockUser
@@ -6,7 +7,12 @@ from .fields import UserField
 
 
 class CheckUsernameSerializer(serializers.Serializer):
-    username = serializers.CharField()
+    username_validator = UnicodeUsernameValidator()
+    username = serializers.CharField(max_length=150, unique=True,
+                                     validators=[username_validator],
+                                     error_messages={
+                                         'unique': "A user with that username already exists.",
+                                     })
 
     def validate_username(self, value):
         if get_user_model().objects.filter(username=value).exists():

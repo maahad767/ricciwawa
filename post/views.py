@@ -77,7 +77,7 @@ class SubscriptionViewset(viewsets.ModelViewSet):
     states: (0, 'closed'), (1, 'open')
     """
     serializer_class = SubscriptionSerializer
-    permission_classes = [AllowAny, DRYPermissions]
+    permission_classes = [DRYPermissions]
 
     def get_queryset(self):
         return Subscription.objects.filter(owner=self.request.user)

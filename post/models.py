@@ -30,6 +30,8 @@ class Subscription(models.Model):
         return True
 
     def has_object_write_permission(self, request):
+        if not request.user.is_authenticated:
+            return False
         return request.user == self.owner
 
     class Meta:
