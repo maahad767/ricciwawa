@@ -1,3 +1,5 @@
+from random import shuffle
+
 from django.views import generic
 from django.contrib.auth import get_user_model
 from django.db.models import Q
@@ -39,10 +41,11 @@ class NewsfeedView(generics.ListAPIView):
             my_subscriptions = myself.subscriptions.all().values('subscription')
             my_blocked_lists = myself.blocked_users.all().values('to_user__id')
             my_ignored_posts = myself.ignorepost_set.all().values('ignored_post')
-            return (Post.objects.filter(Q(privacy=1) | (Q(privacy=0) & Q(subscription__in=my_subscriptions))).filter(
+            qs = (Post.objects.filter(Q(privacy=1) | (Q(privacy=0) & Q(subscription__in=my_subscriptions))).filter(
                 ~Q(owner__in=my_blocked_lists)).filter(~Q(id__in=my_ignored_posts)) | my_posts).distinct()
         else:
-            return Post.objects.filter(privacy=1)
+            qs = Post.objects.filter(privacy=1)
+        return shuffle(qs)
 
 
 class GetContentsListView(generics.ListAPIView):
@@ -401,7 +404,7 @@ class MarkNotificationSeenView(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         notifications = self.get_queryset()
 
-        notifications.bulk_update(is_seen=True)
+        notifications.update(is_seen=True)
         notifications.save()
 
 
