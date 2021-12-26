@@ -45,7 +45,7 @@ class NewsfeedView(generics.ListAPIView):
                 ~Q(owner__in=my_blocked_lists)).filter(~Q(id__in=my_ignored_posts)) | my_posts).distinct()
         else:
             qs = Post.objects.filter(privacy=1)
-        return shuffle(qs)
+        return qs
 
 
 class GetContentsListView(generics.ListAPIView):
