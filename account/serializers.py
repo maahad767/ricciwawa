@@ -8,8 +8,7 @@ from .fields import UserField
 
 class CheckUsernameSerializer(serializers.Serializer):
     username_validator = UnicodeUsernameValidator()
-    username = serializers.CharField(max_length=150, unique=True,
-                                     validators=[username_validator],
+    username = serializers.CharField(max_length=150, validators=[username_validator],
                                      error_messages={
                                          'unique': "A user with that username already exists.",
                                      })
