@@ -87,5 +87,5 @@ class SearchUserView(generics.ListAPIView):
         search_result = UserDocument.search().query("multi_match", query=self.kwargs['qs']).to_queryset()
         if user.is_authenticated:
             my_blocked_lists = user.blocked_users.all().values('to_user__id')
-            search_result = search_result.exclude(my_blocked_lists)
+            search_result = search_result.exclude(id__in=my_blocked_lists)
         return search_result
