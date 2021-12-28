@@ -4,9 +4,9 @@ from hashlib import sha1
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from .models import Post, LikePost, Notification, Comment, Subscribe, Follow, Playlist
-from .utils import create_mp3_task, create_save_edit_fulldata
-from utils.utils import get_random_string, google_translate
+from .models import Post, LikePost, Notification, Comment, Subscribe, Follow
+from .tasks import create_mp3_task, add_full_data, add_full_translations
+from utils.utils import get_random_string
 
 
 @receiver(post_save, sender=Post)
@@ -34,31 +34,21 @@ def add_audio_in_post(instance, created, *args, **kwargs):
         sim_spaced_sentence = sim_spaced_sentence.replace("<p>", "\n").replace("<BR>", "\n<BR>\n")
         instance.audio_simplified_chinese = storage_prefix + str_hashed_id + "_tw" + ".mp3"
         instance.timing_simplified_chinese = storage_prefix + str_hashed_id + "_tw" + "_timing.txt"
-        # print(sim_spaced_sentence)
-        create_mp3_task("tw", sim_spaced_sentence, instance.audio_simplified_chinese)
+        create_mp3_task.delay("tw", sim_spaced_sentence, instance.audio_simplified_chinese)
+
     if instance.text_traditional_chinese:
         trad_spaced_sentence = "\n".join(instance.text_traditional_chinese)
         instance.trad_spaced_datastore_text = ''.join([str(elem) for elem in trad_spaced_sentence])
         trad_spaced_sentence = trad_spaced_sentence.replace("<p>", "\n").replace("<BR>", "\n<BR>\n")
         instance.audio_traditional_chinese = storage_prefix + str_hashed_id + "_hk" + ".mp3"
         instance.timing_traditional_chinese = storage_prefix + str_hashed_id + "_hk" + "_timing.txt"
-        # print(trad_spaced_sentence)
-
-        create_mp3_task("hk", trad_spaced_sentence, instance.audio_traditional_chinese)
+        create_mp3_task.delay("hk", trad_spaced_sentence, instance.audio_traditional_chinese)
 
     if instance.text_traditional_chinese and instance.text_simplified_chinese and instance.meaning_words and instance.pin_yin_words:
-        instance.full_data = create_save_edit_fulldata(instance.text_traditional_chinese,
-                                                       instance.text_simplified_chinese,
-                                                       instance.meaning_words,
-                                                       instance.pin_yin_words)
+        add_full_data.delay(instance.id, instance.text_traditional_chinese, instance.text_simplified_chinese, instance.meaning_words, instance.pin_yin_words)
 
     if instance.english_meaning_article:
-        instance.korean_meaning_translation = google_translate(
-            instance.english_meaning_article, "zh", "ko")
-        instance.indonesian_meaning_translation = google_translate(
-            instance.english_meaning_article, "zh", "id")
-        instance.tagalog_meaning_translation = google_translate(
-            instance.english_meaning_article, "zh", "tl")
+        add_full_translations.delay(instance.id, instance.english_meaning_article)
 
     instance.save()
 

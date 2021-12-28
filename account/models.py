@@ -6,6 +6,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from pip._internal.cli.cmdoptions import editable
 
 
 class UserManager(BaseUserManager):
@@ -39,6 +40,10 @@ class User(AbstractUser):
     """
     Extends the Django's AbstractUser to create a customizable User model.
     """
+    GENDER_CHOICES = (
+        ('m', 'male'),
+        ('f', 'female'),
+    )
     username_validator = UnicodeUsernameValidator()
     username = models.CharField(
         _('username'),
@@ -56,6 +61,11 @@ class User(AbstractUser):
     uid = models.CharField(max_length=255, editable=False, unique=True)
     name = models.CharField(max_length=255, null=True, blank=True)
     picture = models.ImageField(upload_to='profile_pictures', null=True, blank=True)
+    background_image = models.ImageField(upload_to='profile_background_pictures', null=True, blank=True)
+    birthday = models.DateField(null=True, blank=True)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=True, blank=True)
+    country = models.CharField(max_length=3, null=True, blank=True)
+    language = models.CharField(max_length=3, default='en')
 
     USERNAME_FIELD = 'uid'
     objects = UserManager()

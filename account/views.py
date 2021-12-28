@@ -26,7 +26,7 @@ class UpdateProfileView(generics.UpdateAPIView):
     Update profile
     """
     serializer_class = UserProfileSerializer
-    permission_classes = [IsAuthenticated, DRYPermissions]
+    permission_classes = [DRYPermissions]
 
     def get_object(self):
         return self.request.user
@@ -85,7 +85,7 @@ class SearchUserView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         search_result = UserDocument.search().query("multi_match", query=self.kwargs['qs']).to_queryset()
-        if user.is_authenticated():
+        if user.is_authenticated:
             my_blocked_lists = user.blocked_users.all().values('to_user__id')
             search_result = search_result.exclude(my_blocked_lists)
         return search_result

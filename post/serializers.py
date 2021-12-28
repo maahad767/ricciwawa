@@ -336,49 +336,6 @@ class ReportPostSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class AddPostsToSubscriptionSerializer(serializers.Serializer):
-    subscription = serializers.PrimaryKeyRelatedField(queryset=Subscription.objects.all())
-    posts = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all(), many=True)
-
-    def save(self):
-        subscription = self.validated_data['subscription']
-        posts = self.validated_data['posts']
-        for pos, post in enumerate(posts):
-            post.subscription = subscription
-            post.privacy = 0
-            post.category = None
-            post.position = pos
-            post.save()
-
-
-class AddPostsToPlaylistSerializer(serializers.Serializer):
-    playlist = serializers.PrimaryKeyRelatedField(queryset=Playlist.objects.all())
-    posts = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all(), many=True)
-
-    def save(self):
-        playlist = self.validated_data['playlist']
-        posts = self.validated_data['posts']
-        for post in posts:
-            post.playlist = playlist
-            post.privacy = 0
-            post.category = None
-            post.save()
-
-
-class AddPostsToCategorySerializer(serializers.Serializer):
-    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
-    posts = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all(), many=True)
-
-    def save(self):
-        category = self.validated_data['category']
-        subscription = category.subscription
-        posts = self.validated_data['posts']
-        for post in posts:
-            post.subscription = subscription
-            post.category = category
-            post.save()
-
-
 class UserInfoSerializer(serializers.ModelSerializer):
     is_followed = serializers.SerializerMethodField()
     is_blocked = serializers.SerializerMethodField()

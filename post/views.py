@@ -1,5 +1,3 @@
-from random import shuffle
-
 from django.views import generic
 from django.contrib.auth import get_user_model
 from django.db.models import Q
@@ -15,8 +13,7 @@ from .models import Subscription, Playlist, Post, Comment, FavouriteVocabulary, 
 from .serializers import SubscriptionSerializer, PlaylistSerializer, PostSerializer, CommentSerializer, \
     LikePostSerializer, ViewPostSerializer, FollowSerializer, FavouriteSerializer, FavouriteVocabularySerializer, \
     SavePlaylistSerializer, SubscribeSerializer, ReportPostSerializer, IgnorePostSerializer, \
-    UploadPostImageSerializer, AddPostsToSubscriptionSerializer, AddPostsToPlaylistSerializer, \
-    AddPostsToCategorySerializer, SharePostSerializer, UserInfoSerializer, NotificationSerializer, \
+    UploadPostImageSerializer, SharePostSerializer, UserInfoSerializer, NotificationSerializer, \
     NotificationMarkSeenSerializer, CategorySerializer, ResourcesSerializer
 
 
@@ -42,9 +39,9 @@ class NewsfeedView(generics.ListAPIView):
             my_blocked_lists = myself.blocked_users.all().values('to_user__id')
             my_ignored_posts = myself.ignorepost_set.all().values('ignored_post')
             qs = (Post.objects.filter(Q(privacy=1) | (Q(privacy=0) & Q(subscription__in=my_subscriptions))).filter(
-                ~Q(owner__in=my_blocked_lists)).filter(~Q(id__in=my_ignored_posts)) | my_posts).distinct()
+                ~Q(owner__in=my_blocked_lists)).filter(~Q(id__in=my_ignored_posts)) | my_posts).distinct().order_by()
         else:
-            qs = Post.objects.filter(privacy=1)
+            qs = Post.objects.filter(privacy=1).order_by()
         return qs
 
 
@@ -137,9 +134,6 @@ class PostViewset(viewsets.ModelViewSet):
     def get_queryset(self):
         return Post.objects.filter(owner=self.request.user)
 
-    def get_object(self):
-        return Post.objects.get(id=self.kwargs['pk'])
-
 
 class ResourcesView(generics.RetrieveAPIView):
     serializer_class = ResourcesSerializer
@@ -155,7 +149,10 @@ class UserPostListView(generics.ListAPIView):
 
     def get_queryset(self):
         myself = self.request.user
-        user = get_user_model().objects.get(uid=self.kwargs['uid'].strip())
+        uid = self.kwargs['uid'].strip()
+        if uid == 'self':
+            return Post.objects.filter(owner=myself)
+        user = get_user_model().objects.get(uid=uid)
         if myself.is_authenticated:
             my_subscriptions = myself.subscriptions.all().values('subscription')
             my_blocked_lists = myself.blocked_users.all().values('to_user__id')
@@ -285,48 +282,6 @@ class UploadPostImageView(generics.UpdateAPIView):
 
     def get_object(self):
         return Post.objects.get(id=self.kwargs['post_id'])
-
-
-class AddPostsToSubscriptionsView(generics.GenericAPIView):
-    serializer_class = AddPostsToSubscriptionSerializer
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class AddPostsToPlaylistView(generics.GenericAPIView):
-    serializer_class = AddPostsToPlaylistSerializer
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class AddPostsToCategoryView(generics.GenericAPIView):
-    serializer_class = AddPostsToCategorySerializer
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class GetCommentsByParentIDView(generics.ListAPIView):

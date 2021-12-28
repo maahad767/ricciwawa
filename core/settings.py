@@ -236,6 +236,10 @@ ELASTICSEARCH_DSL = {
     }
 }
 
+# CELERY CONFIG
+# CELERY_BROKER_URL = 'redis://redis-14720.c16.us-east-1-2.ec2.cloud.redislabs.com:14720'
+# CELERY_BROKER_URL = "amqp://test:test@localhost:5672//"
+CELERY_BROKER_URL = "amqps://itcqjtpa:g2TiG7ckMsNN8JP1hlH0NFBIqCaGXyEt@jellyfish.rmq.cloudamqp.com/itcqjtpa"
 
 if os.environ.get('DEBUG') == 'FALSE':
     DEBUG = False
