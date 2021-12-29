@@ -360,7 +360,8 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ['uid', 'username', 'is_blocked', 'is_followed', 'follower_count', 'picture', 'name']
+        fields = ['uid', 'username', 'is_blocked', 'is_followed', 'follower_count', 'picture', 'name',
+                  'background_image', 'birthday', 'gender', 'country', 'language']
 
 
 class NotificationSerializer(serializers.ModelSerializer):
