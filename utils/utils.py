@@ -268,10 +268,9 @@ def speech_tts_msft(lang, original_input_text, mp3_output_filename):
         stream = AudioDataStream(result)
         stream.save_to_wav_file(mp3_output_filename)
         # save to firebase storage
-        result = upload_blob(mp3_output_filename)
+        upload_blob(mp3_output_filename)
         # upload timing file
-        result = upload_blob(
-            mp3_output_filename.replace(".mp3", "_timing.txt"))
+        upload_blob(mp3_output_filename.replace(".mp3", "_timing.txt"))
         # os.remove(storage_path+mp3_output_filename)
         return result
     except ValueError as exc:
@@ -284,6 +283,29 @@ def speech_tts_msft(lang, original_input_text, mp3_output_filename):
 
 # translate to user prefered language
 # first check datastore, if it is not there, use Google translate
+
+def translate_word(word):
+    """
+    @author: Mohammad
+    Will translate a traditional word to tagalog, indonesian, and korean currently. Uses datastore dictionary.
+    If a word is missing, then it'll use Google Translate.
+    Returns a dictionary.
+    """
+    query = datastore_client.query(kind='dictionary')
+    query.add_filter('trad', '=', word)
+    word_translations = list(query.fetch(limit=1))
+    data = dict()
+    if word_translations:
+        data['tagalog'] = word_translations[0]['tagalog']
+        data['indonesian'] = word_translations[0]['indonesian']
+        data['korean'] = word_translations[0]['korean']
+    else:
+        data['tagalog'] = google_translate(word, "zh-TW", "tl")
+        data['indonesian'] = google_translate(word, "zh-TW", "id")
+        data['korean'] = google_translate(word, "zh-TW", "ko")
+    return data
+
+
 def google_translate(text, source_language_code, target_language_code):
     try:
         if source_language_code == 'zh-TW' and len(text) < 1500:
