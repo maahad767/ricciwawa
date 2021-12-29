@@ -26,8 +26,8 @@ def add_audio_in_post(instance, created, *args, **kwargs):
 
     if instance.attachment:
         ext = instance.attachment.split('.')[-1]
-        instance.attachment = "attachment_" + str_hashed_id + "." + ext  # change file name
-        instance.save()
+        attachment_name = "attachment_" + str_hashed_id + "." + ext  # change file name
+        instance.update(attachment=attachment_name)
 
     if instance.text_simplified_chinese:
         sim_spaced_sentence = "\n".join(instance.text_simplified_chinese)
