@@ -1,11 +1,7 @@
-import json
 import datetime
-import os
-import time
 
 from google.cloud import tasks_v2, storage
 
-from django.conf import settings
 from utils.utils import speech_tts_msft
 
 # =========================================================
@@ -20,10 +16,13 @@ from utils.utils import google_translate
 
 
 def create_mp3_task(language_code, text, output_filename, time_delay=0):
+    """
+    Not being used, check post.tasks.create_mp3_task instead.
+    """
+
     # from google.protobuf import timestamp_pb2
     # Create a client.
     # client = tasks_v2.CloudTasksClient()
-    # TODO(developer): Uncomment these lines and replace with your values.
     # project = 'ricciwawa'
     # queue = 'my-queue'
     # location = 'asia-east2'
@@ -137,7 +136,7 @@ def download_get_signed_up(filename):
 
 def create_save_edit_fulldata(trad_words, sim_word, english_words, pinyin_list):
     """
-    CHECK WHAT IT IS DOING, IF NEEDS, COPY TO DJ
+    NOT BEING USED. CHECK post.tasks.add_full_data instead.
     """
     all_translated_words = []
     for index, val in enumerate(trad_words):

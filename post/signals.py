@@ -27,6 +27,7 @@ def add_audio_in_post(instance, created, *args, **kwargs):
     if instance.attachment:
         ext = instance.attachment.split('.')[-1]
         instance.attachment = "attachment_" + str_hashed_id + "." + ext  # change file name
+        instance.save()
 
     if instance.text_simplified_chinese:
         sim_spaced_sentence = "\n".join(instance.text_simplified_chinese)
@@ -49,8 +50,6 @@ def add_audio_in_post(instance, created, *args, **kwargs):
 
     if instance.english_meaning_article:
         add_full_translations.delay(instance.id, instance.english_meaning_article)
-
-    instance.save()
 
 
 """
