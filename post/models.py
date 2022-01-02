@@ -3,6 +3,16 @@ from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 
 
+class HashTag(models.Model):
+    """
+    HashTag Model
+    """
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
 class Subscription(models.Model):
     """
     Model for Subscription Plans
@@ -15,6 +25,7 @@ class Subscription(models.Model):
     thumbnail = models.ImageField(upload_to='subscription_thumbnails/', null=True, blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     state = models.SmallIntegerField(choices=STATE_CHOICES, default=1)
+    hashtags = models.ManyToManyField(HashTag, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -82,6 +93,7 @@ class Playlist(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
     thumbnail = models.ImageField(null=True, blank=True)
     privacy = models.SmallIntegerField(choices=PRIVACY_CHOICES, default=1)
+    hashtags = models.ManyToManyField(HashTag, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -152,7 +164,7 @@ class Post(models.Model):
     # expect different formats, which are similar but different
     # 6769, 6770: create mp3 for simplified chinese and traditional text_chinese
     # don't change
-    hashtags = models.JSONField(null=True, blank=True)
+    hashtags = models.ManyToManyField(HashTag, blank=True)
 
     text_on_post = models.CharField(max_length=500, null=True, blank=True)
     text_position_x = models.IntegerField(null=True, blank=True)

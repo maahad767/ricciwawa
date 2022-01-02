@@ -59,12 +59,14 @@ class User(AbstractUser):
     email = models.EmailField(_('email address'), null=True, blank=True)
     uid = models.CharField(max_length=255, editable=False, unique=True)
     name = models.CharField(max_length=255, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
     picture = models.ImageField(upload_to='profile_pictures', null=True, blank=True)
     background_image = models.ImageField(upload_to='profile_background_pictures', null=True, blank=True)
     birthday = models.DateField(null=True, blank=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=True, blank=True)
     country = models.CharField(max_length=3, null=True, blank=True)
     language = models.CharField(max_length=3, default='en')
+    hashtags = models.ManyToManyField('post.HashTag', blank=True)
 
     USERNAME_FIELD = 'uid'
     objects = UserManager()
