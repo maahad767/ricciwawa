@@ -30,7 +30,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ('uid', 'username', 'picture', 'name', 'description', 'background_image', 'birthday',
-                  'gender', 'country', 'language')
+                  'gender', 'country', 'language', 'hashtags')
         read_only_fields = ['uid']
 
 
