@@ -122,10 +122,10 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'd5jjjjmin2gn9l',
-        'USER': 'dgwctdmvezejch',
-        'PASSWORD': '076515a7bf51556d18599e1682b9ad4131503ecdbe534b5c635b8c51f0526a58',
-        'HOST': 'ec2-34-232-245-127.compute-1.amazonaws.com',
+        'NAME': 'dbbefc24poppkf',
+        'USER': 'u4va2b8gkrlh25',
+        'PASSWORD': 'peca0ca905cdacd5996aa190bb0db291e7080a3785a0b3fa95a9beac36555f8ed',
+        'HOST': 'ec2-23-21-100-200.compute-1.amazonaws.com',
         'PORT': '5432',
     }
 }
@@ -190,7 +190,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 100,
+    'PAGE_SIZE': 10,
 }
 
 

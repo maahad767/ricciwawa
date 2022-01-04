@@ -13,6 +13,8 @@ import base64
 from firebase_admin import credentials, auth
 from google.cloud import texttospeech, speech, storage, datastore, translate
 
+from utils.models import Word
+
 datastore_client = datastore.Client()
 # cred = credentials.Certificate(os.environ.get('SERVICE_ACCOUNT_KEY', 'ricciwawa-6e11b342c999.json'))
 # default_app = firebase_admin.initialize_app(cred)
@@ -576,4 +578,29 @@ def uid_to_id_token(uid):
     # print(response)
     return response['idToken']
 
+
+def add_translation_data_to_database(filename):
+    """Add translation data to the database."""
+    words = open(filename, 'r').readlines()
+
+    for word in words[10]:
+        print(word)
+        print(type(word))
+        di = json.loads(word)
+        print(di)
+    # for word in words[10]:
+    #     word = json.loads(word)
+    #     trad = word["trad"]
+    #     sim = word["sim"]
+    #     eng = word["english"]
+    #     ind = word["indonesian"]
+    #     es = word['es']
+    #     vi = word['vi']
+    #     hu = word['hu']
+    #     ko = word['korean']
+    #     tl = word['tagalog']
+    #     pinyin = word['pinyin']
+    #     print(trad, sim, eng, ind, es, vi, hu, ko, tl, pinyin)
+        # Word.objects.create(trad=trad, sim=sim, eng=eng, ind=ind, es=es, vi=vi, hu=hu, ko=ko, tl=tl, pinyin=pinyin)
+    print("added data into database")
 

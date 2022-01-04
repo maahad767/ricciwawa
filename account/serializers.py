@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from rest_framework import serializers
 
+from post.fields import HashTagPrimaryKeyRelatedField
+from post.models import HashTag
 from .models import ReportUser, BlockUser
 from .fields import UserField
 
@@ -23,6 +25,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
     """
     Serializer for the UserProfile model.
     """
+    hashtags = HashTagPrimaryKeyRelatedField(many=True, queryset=HashTag.objects.all())
+
     class Meta:
         model = get_user_model()
         fields = ('uid', 'username', 'picture', 'name', 'description', 'background_image', 'birthday',

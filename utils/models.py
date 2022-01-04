@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class Dictionary(models.Model):
+class Word(models.Model):
     trad = models.CharField(max_length=100)
     pinyin = models.CharField(max_length=100)
     sim = models.CharField(max_length=100)

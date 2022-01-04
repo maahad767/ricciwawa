@@ -3,10 +3,10 @@ from django.contrib.auth.models import AnonymousUser
 from rest_framework import serializers
 
 from account.fields import UserField
-from .fields import AuthoredPostsPrimaryKeyRelatedField
+from .fields import AuthoredPostsPrimaryKeyRelatedField, HashTagPrimaryKeyRelatedField
 from .models import (Post, Comment, LikePost, LikeComment, Subscription, Category, Subscribe, Playlist, SavePlaylist,
                      ViewPost,
-                     Favourite, Follow, FavouriteVocabulary, ReportPost, IgnorePost, SharePost, Notification)
+                     Favourite, Follow, FavouriteVocabulary, ReportPost, IgnorePost, SharePost, Notification, HashTag)
 from .utils import upload_get_signed_up, download_get_signed_up
 
 
@@ -19,6 +19,7 @@ class PostSerializer(serializers.ModelSerializer):
     attachment_url = serializers.SerializerMethodField(read_only=True)
     is_liked = serializers.SerializerMethodField(read_only=True)
     shares = serializers.SerializerMethodField(read_only=True)
+    hashtags = HashTagPrimaryKeyRelatedField(many=True, queryset=HashTag.objects.all())
 
     def get_likes(self, obj):
         return obj.likepost_set.count()
@@ -57,11 +58,37 @@ class PostSerializer(serializers.ModelSerializer):
 
 class ResourcesSerializer(serializers.ModelSerializer):
     author = UserField(source='owner', read_only=True)
+    likes = serializers.SerializerMethodField(read_only=True)
+    comments = serializers.SerializerMethodField(read_only=True)
+    is_liked = serializers.SerializerMethodField(read_only=True)
+    shares = serializers.SerializerMethodField(read_only=True)
+    hashtags = HashTagPrimaryKeyRelatedField(many=True, queryset=HashTag.objects.all())
+    attachment_url = serializers.SerializerMethodField(read_only=True)
 
     audio_simplified_chinese_url = serializers.SerializerMethodField(read_only=True)
     audio_traditional_chinese_url = serializers.SerializerMethodField(read_only=True)
     timing_simplified_chinese_url = serializers.SerializerMethodField(read_only=True)
     timing_traditional_chinese_url = serializers.SerializerMethodField(read_only=True)
+
+    def get_likes(self, obj):
+        return obj.likepost_set.count()
+
+    def get_comments(self, obj):
+        return obj.comments.all().count()
+
+    def get_attachment_url(self, obj):
+        if obj.attachment:
+            return download_get_signed_up(obj.attachment)
+
+    def get_is_liked(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            return LikePost.objects.filter(post=obj, liker=user).exists()
+        return False
+
+    def get_shares(self, obj):
+        return obj.sharepost_set.all().count()
+
 
     def get_audio_simplified_chinese_url(self, obj):
         if obj.audio_simplified_chinese:
@@ -167,6 +194,8 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     category_list = CategorySerializer(source='category_set', many=True, read_only=True)
     posts = AuthoredPostsPrimaryKeyRelatedField(queryset=Post.objects.all(),
                                                 many=True, write_only=True, required=False)
+    hashtags = HashTagPrimaryKeyRelatedField(many=True, queryset=HashTag.objects.all())
+
 
     def get_is_subscribed(self, obj):
         user = self.context['request'].user
@@ -208,6 +237,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 class PlaylistSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     author = UserField(source='owner', read_only=True)
+    hashtags = HashTagPrimaryKeyRelatedField(many=True, queryset=HashTag.objects.all())
     stories = serializers.SerializerMethodField(read_only=True)
     posts = AuthoredPostsPrimaryKeyRelatedField(queryset=Post.objects.all(),
                                                 many=True, write_only=True, required=False)
