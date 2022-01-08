@@ -25,7 +25,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     """
     Serializer for the UserProfile model.
     """
-    hashtags = HashTagPrimaryKeyRelatedField(many=True, queryset=HashTag.objects.all())
+    hashtags = HashTagPrimaryKeyRelatedField(many=True, queryset=HashTag.objects.all(), required=False)
 
     class Meta:
         model = get_user_model()

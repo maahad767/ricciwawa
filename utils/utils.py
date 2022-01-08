@@ -581,26 +581,20 @@ def uid_to_id_token(uid):
 
 def add_translation_data_to_database(filename):
     """Add translation data to the database."""
-    words = open(filename, 'r').readlines()
+    words = open(filename, 'r', encoding="utf-8").readlines()
 
-    for word in words[10]:
-        print(word)
-        print(type(word))
-        di = json.loads(word)
-        print(di)
-    # for word in words[10]:
-    #     word = json.loads(word)
-    #     trad = word["trad"]
-    #     sim = word["sim"]
-    #     eng = word["english"]
-    #     ind = word["indonesian"]
-    #     es = word['es']
-    #     vi = word['vi']
-    #     hu = word['hu']
-    #     ko = word['korean']
-    #     tl = word['tagalog']
-    #     pinyin = word['pinyin']
-    #     print(trad, sim, eng, ind, es, vi, hu, ko, tl, pinyin)
-        # Word.objects.create(trad=trad, sim=sim, eng=eng, ind=ind, es=es, vi=vi, hu=hu, ko=ko, tl=tl, pinyin=pinyin)
+    for i, word in enumerate(words):
+        word = json.loads(word)
+        trad = word["trad"]
+        sim = word["sim"]
+        eng = word["english"]
+        ind = word["indonesian"]
+        es = word['es']
+        vi = word['vi']
+        hu = word['hu']
+        ko = word['korean']
+        tl = word['tagalog']
+        pinyin = word['pinyin']
+        Word.objects.get_or_create(trad=trad, sim=sim, eng=eng, ind=ind, es=es, vi=vi, hu=hu, ko=ko, tl=tl, pinyin=pinyin)
+        print(i)
     print("added data into database")
-

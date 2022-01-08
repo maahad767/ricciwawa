@@ -19,7 +19,7 @@ class PostSerializer(serializers.ModelSerializer):
     attachment_url = serializers.SerializerMethodField(read_only=True)
     is_liked = serializers.SerializerMethodField(read_only=True)
     shares = serializers.SerializerMethodField(read_only=True)
-    hashtags = HashTagPrimaryKeyRelatedField(many=True, queryset=HashTag.objects.all())
+    hashtags = HashTagPrimaryKeyRelatedField(many=True, queryset=HashTag.objects.all(), required=False)
 
     def get_likes(self, obj):
         return obj.likepost_set.count()
@@ -62,7 +62,7 @@ class ResourcesSerializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField(read_only=True)
     is_liked = serializers.SerializerMethodField(read_only=True)
     shares = serializers.SerializerMethodField(read_only=True)
-    hashtags = HashTagPrimaryKeyRelatedField(many=True, queryset=HashTag.objects.all())
+    hashtags = HashTagPrimaryKeyRelatedField(many=True, queryset=HashTag.objects.all(), required=False)
     attachment_url = serializers.SerializerMethodField(read_only=True)
 
     audio_simplified_chinese_url = serializers.SerializerMethodField(read_only=True)
@@ -194,7 +194,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     category_list = CategorySerializer(source='category_set', many=True, read_only=True)
     posts = AuthoredPostsPrimaryKeyRelatedField(queryset=Post.objects.all(),
                                                 many=True, write_only=True, required=False)
-    hashtags = HashTagPrimaryKeyRelatedField(many=True, queryset=HashTag.objects.all())
+    hashtags = HashTagPrimaryKeyRelatedField(many=True, queryset=HashTag.objects.all(), required=False)
 
 
     def get_is_subscribed(self, obj):
@@ -237,7 +237,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 class PlaylistSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     author = UserField(source='owner', read_only=True)
-    hashtags = HashTagPrimaryKeyRelatedField(many=True, queryset=HashTag.objects.all())
+    hashtags = HashTagPrimaryKeyRelatedField(many=True, queryset=HashTag.objects.all(), required=False)
     stories = serializers.SerializerMethodField(read_only=True)
     posts = AuthoredPostsPrimaryKeyRelatedField(queryset=Post.objects.all(),
                                                 many=True, write_only=True, required=False)
@@ -397,7 +397,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
-        exclude = ['to_user', 'object_id']
+        exclude = ['to_user']
 
 
 class NotificationMarkSeenSerializer(serializers.ModelSerializer):
