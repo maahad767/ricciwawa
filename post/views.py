@@ -50,6 +50,8 @@ class GetContentsListView(generics.ListAPIView):
     Returns posts for a specific playlist or subscription.
     For Playlist's Posts : /contents/playlist/<playlist_id>/
     For Subscription's Posts : /contents/subscription/<subscription_id>/
+    For Category's Posts : /contents/category/<category_id>/
+    For HashTag's Posts : /contents/hashtag/<hashtag_id>/
     privacy: 0-private, 1-public
     attachment_type: 0-none, 1-image, 2-audio, 3-video
     """
