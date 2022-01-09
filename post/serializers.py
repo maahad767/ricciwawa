@@ -20,6 +20,8 @@ class PostSerializer(serializers.ModelSerializer):
     is_liked = serializers.SerializerMethodField(read_only=True)
     shares = serializers.SerializerMethodField(read_only=True)
     hashtags = HashTagPrimaryKeyRelatedField(many=True, queryset=HashTag.objects.all(), required=False)
+    has_resources = serializers.SerializerMethodField(read_only=True)
+    has_quiz = serializers.SerializerMethodField(read_only=True)
 
     def get_likes(self, obj):
         return obj.likepost_set.count()
@@ -46,6 +48,12 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_shares(self, obj):
         return obj.sharepost_set.all().count()
+
+    def get_has_resources(self, obj):
+        return True if obj.full_data else False
+
+    def get_has_quiz(self, obj):
+        return obj.quiz_set.all().exists()
 
     class Meta:
         model = Post
@@ -195,7 +203,6 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     posts = AuthoredPostsPrimaryKeyRelatedField(queryset=Post.objects.all(),
                                                 many=True, write_only=True, required=False)
     hashtags = HashTagPrimaryKeyRelatedField(many=True, queryset=HashTag.objects.all(), required=False)
-
 
     def get_is_subscribed(self, obj):
         user = self.context['request'].user
@@ -406,3 +413,9 @@ class NotificationMarkSeenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = ['id', 'to_user']
+
+
+class HashTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HashTag
+        fields = '__all__'

@@ -8,7 +8,7 @@ from post.views import SubscriptionViewset, PlaylistViewset, PostViewset, Commen
     GetCommentsByPostIDView, \
     GetCommentsByParentIDView, SharePostView, GetUserInfoView, GetSubscriptionsByUserView, GetPlaylistsByUserView, \
     CategoryListCreateView, SearchPostView, SubscribedPlansView, UnsubscribeView, ResourcesView, \
-    NotificationView
+    NotificationView, SearchHashTagView
 
 """
 Router is used to route ViewSets. 
@@ -72,4 +72,5 @@ urlpatterns = [
     path('notifications/', NotificationView.as_view()),
     # search post
     path('search-post/<str:qs>/', SearchPostView.as_view()),
+    path('search-hashtag/<str:qs>/', SearchHashTagView.as_view()),
 ] + router.urls

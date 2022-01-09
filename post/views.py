@@ -9,12 +9,12 @@ from rest_framework.response import Response
 
 from .documents import PostDocument
 from .models import Subscription, Playlist, Post, Comment, FavouriteVocabulary, Category, LikePost, Follow, \
-    Notification, Subscribe
+    Notification, Subscribe, HashTag
 from .serializers import SubscriptionSerializer, PlaylistSerializer, PostSerializer, CommentSerializer, \
     LikePostSerializer, ViewPostSerializer, FollowSerializer, FavouriteSerializer, FavouriteVocabularySerializer, \
     SavePlaylistSerializer, SubscribeSerializer, ReportPostSerializer, IgnorePostSerializer, \
     UploadPostImageSerializer, SharePostSerializer, UserInfoSerializer, NotificationSerializer, \
-    NotificationMarkSeenSerializer, CategorySerializer, ResourcesSerializer
+    NotificationMarkSeenSerializer, CategorySerializer, ResourcesSerializer, HashTagSerializer
 
 
 class WebHome(generic.RedirectView):
@@ -65,6 +65,8 @@ class GetContentsListView(generics.ListAPIView):
             return Post.objects.filter(subscription__id=content_id).order_by('position')
         elif content_type == 'category':
             return Post.objects.filter(category__id=content_id).order_by('position')
+        elif content_type == 'hashtag':
+            return Post.objects.filter(hashtags__id=content_id).order_by('position')
         else:
             return Post.objects.none()
 
@@ -378,3 +380,11 @@ class SearchPostView(generics.ListAPIView):
                 ~Q(owner__in=my_blocked_lists)).filter(~Q(id__in=my_ignored_posts))
         else:
             return search_result.filter(privacy=1)
+
+
+class SearchHashTagView(generics.ListAPIView):
+    serializer_class = HashTagSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        return HashTag.objects.filter(name__icontains=self.kwargs['qs'].strip())
