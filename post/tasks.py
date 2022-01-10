@@ -27,8 +27,9 @@ def add_full_data_translations(instance_id, trad_words, sim_words, eng_words, pi
         word['word'] = word['trad']
         word['korean'] = word['ko']
         word['indonesian'] = word['ind']
-
+        word['tagalog'] = word['tl']
     instance.full_data = list(full_data)
+
     english_article = instance.english_meaning_article
     if english_article:
         instance.korean_meaning_translation = google_translate(english_article, "en", "ko")
