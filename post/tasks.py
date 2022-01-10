@@ -23,11 +23,12 @@ def add_full_data_translations(instance_id, trad_words, sim_words, eng_words, pi
 
     full_data = list(Word.objects.filter(trad__in=trad_words).values())
 
-    for word in full_data:
+    for word, pinyin in zip(full_data, pinyin_words):
         word['word'] = word['trad']
         word['korean'] = word['ko']
         word['indonesian'] = word['ind']
         word['tagalog'] = word['tl']
+        word['pinyin'] = [pinyin]
     instance.full_data = full_data
 
     english_article = instance.english_meaning_article
