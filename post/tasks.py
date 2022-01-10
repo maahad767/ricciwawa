@@ -12,7 +12,7 @@ def create_mp3_task(language_code, text, output_filename):
 
 
 @shared_task
-def add_full_data_translations(instance_id, trad_words, sim_words, eng_words, pinyin_words):
+def add_full_data_translations(instance_id):
     instance = Post.objects.get(id=instance_id)
     trad_words = instance.text_traditional_chinese
     pinyin_words = instance.pin_yin_words
