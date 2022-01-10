@@ -24,6 +24,7 @@ def add_full_data_translations(instance_id, trad_words, sim_words, eng_words, pi
     full_data = Word.objects.filter(trad__in=trad_words).values()
 
     for word in full_data:
+        word['word'] = word['trad']
         word['korean'] = word['ko']
         word['indonesian'] = word['ind']
 
