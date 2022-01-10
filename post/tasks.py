@@ -12,17 +12,12 @@ def create_mp3_task(language_code, text, output_filename):
 
 
 @shared_task
-def add_full_data_translations(instance_id, trad_words, sim_words, eng_words, pinyin_words):
+def add_full_data_translations(instance_id):
     instance = Post.objects.get(id=instance_id)
-    full_data = []
-    # for tw, sw, ew, pw in zip(trad_words, sim_words, eng_words, pinyin_words):
-    #     translated_word = {'word': tw, 'eng': [ew], 'sim': [sw], 'pinyin': [pw], 'trad': [tw],
-    #                        }
-    #     translated_word.update(translate_word(tw))
-    #     full_data.append(translated_word)
+    trad_words = instance.text_traditional_chinese
+    pinyin_words = instance.pin_yin_words
 
     full_data = list(Word.objects.filter(trad__in=trad_words).values())
-
     for word in full_data:
         word['word'] = word['trad']
         word['korean'] = word['ko']
