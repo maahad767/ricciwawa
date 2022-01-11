@@ -46,6 +46,7 @@ def add_audio_in_post(instance, created, *args, **kwargs):
     if instance.text_traditional_chinese and instance.text_simplified_chinese and instance.meaning_words and instance.pin_yin_words:
         add_full_data_translations.delay(instance.id)
 
+
 """
 TYPES = (
     (0, 'announcement'),
