@@ -237,7 +237,7 @@ ELASTICSEARCH_DSL = {
 }
 
 # CELERY CONFIG
-CELERY_BROKER_URL = os.getenv('REDIS_URL', 'amqp://test:test@localhost:5672//')
+CELERY_BROKER_URL = os.getenv('REDISCLOUD_URL', 'amqp://test:test@localhost:5672//')
 
 if os.environ.get('DEBUG') == 'FALSE':
     DEBUG = False
