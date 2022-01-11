@@ -2,7 +2,7 @@ from celery import shared_task
 
 from post.models import Post
 from utils.models import Word
-from utils.utils import speech_tts_msft, google_translate, translate_word
+from utils.utils import speech_tts_msft, google_translate
 
 
 @shared_task
