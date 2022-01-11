@@ -2,7 +2,7 @@ from celery import shared_task
 
 from post.models import Post
 from utils.models import Word
-from utils.utils import speech_tts_msft, google_translate, translate_word
+from utils.utils import speech_tts_msft, google_translate
 
 
 @shared_task
@@ -16,14 +16,11 @@ def add_full_data_translations(instance_id):
     instance = Post.objects.get(id=instance_id)
     trad_words = instance.text_traditional_chinese
     pinyin_words = instance.pin_yin_words
+    sim_words = instance.text_simplified_chinese
+    eng_words = instance.meaning_words
 
     full_data = list(Word.objects.filter(trad__in=trad_words).values())
 
-    for word, pinyin in zip(full_data, pinyin_words):
-        word['word'] = word['trad']
-        word['korean'] = word['ko']
-        word['indonesian'] = word['ind']
-        word['tagalog'] = word['tl']
     for word in full_data:
         word['word'] = word['trad']
         word['korean'] = word['ko']
@@ -31,7 +28,7 @@ def add_full_data_translations(instance_id):
         word['tagalog'] = word['tl']
 
     new_full_data = []
-    for tw, pw in zip(trad_words, pinyin_words):
+    for tw, pw, sw, ew in zip(trad_words, pinyin_words, sim_words, eng_words):
         word = None
         for w in full_data:
             if w['trad'] == tw:
@@ -39,9 +36,11 @@ def add_full_data_translations(instance_id):
                 break
 
         if word is None:
-            continue
+            word = {'trad': tw}
 
         word['pinyin'] = pw
+        word['sim'] = sw
+        word['eng'] = ew
         new_full_data.append(word)
     instance.full_data = new_full_data
 
