@@ -107,28 +107,28 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # }
 
 # Development Database
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'dc14m2smvlgdol',
-#         'USER': 'epuehcbeyfqlde',
-#         'PASSWORD': 'd3d86103315271d06e6200a4ec9736d55aed5d28377c66a6603a19255ad1bee3',
-#         'HOST': 'ec2-34-232-149-136.compute-1.amazonaws.com',
-#         'PORT': '5432',
-#     }
-# }
-
-# Production Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dbbefc24poppkf',
-        'USER': 'u4va2b8gkrlh25',
-        'PASSWORD': 'peca0ca905cdacd5996aa190bb0db291e7080a3785a0b3fa95a9beac36555f8ed',
-        'HOST': 'ec2-23-21-100-200.compute-1.amazonaws.com',
+        'NAME': 'dc14m2smvlgdol',
+        'USER': 'epuehcbeyfqlde',
+        'PASSWORD': 'd3d86103315271d06e6200a4ec9736d55aed5d28377c66a6603a19255ad1bee3',
+        'HOST': 'ec2-34-232-149-136.compute-1.amazonaws.com',
         'PORT': '5432',
     }
 }
+
+# Production Database
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'dbbefc24poppkf',
+#         'USER': 'u4va2b8gkrlh25',
+#         'PASSWORD': 'peca0ca905cdacd5996aa190bb0db291e7080a3785a0b3fa95a9beac36555f8ed',
+#         'HOST': 'ec2-23-21-100-200.compute-1.amazonaws.com',
+#         'PORT': '5432',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

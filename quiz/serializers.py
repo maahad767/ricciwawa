@@ -3,6 +3,7 @@ from drf_writable_nested import WritableNestedModelSerializer
 
 from .models import Quiz, MultipleChoiceQuestion, Choice, InputAnswerQuestion, QuizAttempt, \
     MultipleChoiceQuestionAttempt, InputAnswerQuestionAttempt
+from .utils import grade_quiz_attempt
 
 
 class ChoiceSerializer(serializers.ModelSerializer):
@@ -119,6 +120,8 @@ class AttemptQuizSerializer(serializers.ModelSerializer):
 
         iaq_attempts_instance = [InputAnswerQuestionAttempt(**item, quiz_attempt=quiz_attempt) for item in iaq_attempts]
         InputAnswerQuestionAttempt.objects.bulk_create(iaq_attempts_instance)
+
+        grade_quiz_attempt(quiz_attempt)  # grade quiz attempt and update points
         return quiz_attempt
 
     class Meta:
