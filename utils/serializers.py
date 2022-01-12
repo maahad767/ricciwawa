@@ -35,7 +35,7 @@ class Mp3TaskHandlerSerializer(serializers.Serializer):
     output_filename = serializers.CharField(max_length=200)
 
 
-class TranslateToChineseSerializer(serializers.Serializer):
+class TranslateChineseSerializer(serializers.Serializer):
     text = serializers.CharField(max_length=5000)
 
 

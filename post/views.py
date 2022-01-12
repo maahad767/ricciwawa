@@ -41,8 +41,8 @@ class NewsfeedView(generics.ListAPIView):
             qs = (Post.objects.filter(Q(privacy=1) | (Q(privacy=0) & Q(subscription__in=my_subscriptions))).filter(
                 ~Q(owner__in=my_blocked_lists)).filter(~Q(id__in=my_ignored_posts)) | my_posts).distinct().order_by()
         else:
-            qs = Post.objects.filter(privacy=1).order_by()
-        return qs
+            qs = Post.objects.filter(privacy=1)
+        return qs.order_by('?')
 
 
 class GetContentsListView(generics.ListAPIView):

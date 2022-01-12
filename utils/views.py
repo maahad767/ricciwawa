@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from rest_framework.response import Response
 
 from .serializers import TextToSpeechSerializer, SpeechToTextSerializer, PronunciationAssessmentSerializer, \
-    Mp3TaskHandlerSerializer, TranslateToChineseSerializer, TranslateSimplifiedToTraditionalSerializer, \
+    Mp3TaskHandlerSerializer, TranslateChineseSerializer, TranslateSimplifiedToTraditionalSerializer, \
     UIDToIdTokenSerializer
 from . import utils
 from .utils import speech_tts_msft, google_translate
@@ -89,12 +89,12 @@ class Mp3TaskHandler(generics.GenericAPIView):
         return Response({'success': False, 'errors': serializer.errors})
 
 
-class TranslateToChinese(generics.GenericAPIView):
+class TranslateChinese(generics.GenericAPIView):
     """
     Author: Kenneth Y.
     Just wrapped for django
     """
-    serializer_class = TranslateToChineseSerializer
+    serializer_class = TranslateChineseSerializer
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):

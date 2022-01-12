@@ -52,8 +52,8 @@ class QuizSerializer(WritableNestedModelSerializer):
         return instance.total_points
 
     def create(self, validated_data):
-        mc_questions = validated_data.pop('quiz_multiplechoicequestion_related')
-        ia_questions = validated_data.pop('quiz_inputanswerquestion_related')
+        mc_questions = validated_data.pop('quiz_multiplechoicequestion_related', [])
+        ia_questions = validated_data.pop('quiz_inputanswerquestion_related', [])
         quiz = Quiz.objects.create(**validated_data)
 
         for question in mc_questions:
@@ -69,7 +69,6 @@ class QuizSerializer(WritableNestedModelSerializer):
     class Meta:
         model = Quiz
         exclude = []
-
 
 class AttemptMultipleChoiceQuestionSerializer(serializers.ModelSerializer):
 
