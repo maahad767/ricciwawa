@@ -51,7 +51,7 @@ class Question(models.Model):
                              )
     title = models.CharField(max_length=256)
     question = models.TextField(null=True, blank=True)
-    position = models.PositiveSmallIntegerField(null=True)
+    position = models.PositiveSmallIntegerField(default=0)
     points = models.PositiveSmallIntegerField(default=0)
 
     @staticmethod
@@ -90,7 +90,7 @@ class MultipleChoiceQuestion(Question):
 
 class Choice(models.Model):
     question = models.ForeignKey(MultipleChoiceQuestion, on_delete=models.CASCADE, related_name='choices')
-    position = models.PositiveSmallIntegerField(null=True, blank=True)
+    position = models.PositiveSmallIntegerField(blank=True, default=0)
     choice_text = models.TextField(null=True)
     is_correct_choice = models.BooleanField(default=False)
     explanation = models.TextField(null=True, blank=True)
@@ -182,7 +182,7 @@ class QuestionAttempt(models.Model):
                                      related_name="%(app_label)s_%(class)s_related",
                                      related_query_name="%(app_label)s_%(class)ss",
                                      )
-    points_achieved = models.PositiveSmallIntegerField(null=True, blank=True)
+    points_achieved = models.PositiveSmallIntegerField(blank=True, default=0)
 
     @staticmethod
     def has_read_permission(request):
