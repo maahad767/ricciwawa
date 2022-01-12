@@ -70,6 +70,7 @@ class QuizSerializer(WritableNestedModelSerializer):
         model = Quiz
         exclude = []
 
+
 class AttemptMultipleChoiceQuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
