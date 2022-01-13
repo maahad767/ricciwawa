@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from drf_writable_nested import WritableNestedModelSerializer
 
+from post.fields import AuthoredPostsPrimaryKeyRelatedField
+from post.models import Post
 from .models import Quiz, MultipleChoiceQuestion, Choice, InputAnswerQuestion, QuizAttempt, \
     MultipleChoiceQuestionAttempt, InputAnswerQuestionAttempt
 from .utils import grade_quiz_attempt
@@ -43,6 +45,7 @@ class InputAnswerQuestionSerializer(serializers.ModelSerializer):
 
 class QuizSerializer(WritableNestedModelSerializer):
     creator = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    post = AuthoredPostsPrimaryKeyRelatedField(queryset=Post.objects.all())
     mc_questions = MultipleChoiceQuestionSerializer(source='quiz_multiplechoicequestion_related',
                                                     default=None, many=True)
     ia_questions = InputAnswerQuestionSerializer(source='quiz_inputanswerquestion_related',

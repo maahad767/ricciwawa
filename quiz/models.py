@@ -34,7 +34,9 @@ class Quiz(models.Model):
         return True
 
     def has_object_write_permission(self, request):
-        return self.creator == request.user
+        if request.user.is_authenticated:
+            return request.user == self.creator
+        return False
 
     def __str__(self):
         return self.title
@@ -70,7 +72,9 @@ class Question(models.Model):
         return True
 
     def has_object_write_permission(self, request):
-        return self.quiz.creator == request.user
+        if request.user.is_authenticated:
+            return request.user == self.quiz.creator
+        return False
 
     def __str__(self):
         return self.title
@@ -170,7 +174,9 @@ class QuizAttempt(models.Model):
         return True
 
     def has_object_write_permission(self, request):
-        return self.examinee == request.user
+        if request.user.is_authenticated:
+            return request.user == self.quiz.creator
+        return False
 
     class Meta:
         ordering = ['created_at']

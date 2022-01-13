@@ -19,7 +19,7 @@ class QuizExamineeView(generics.RetrieveAPIView):
 
 
 class QuizViewset(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated, DRYPermissions]
+    permission_classes = [DRYPermissions]
     serializer_class = QuizSerializer
 
     def get_queryset(self):
@@ -27,7 +27,7 @@ class QuizViewset(viewsets.ModelViewSet):
 
 
 class MultipleChoiceQuestionViewset(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated, DRYPermissions]
+    permission_classes = [DRYPermissions]
     serializer_class = MultipleChoiceQuestionSerializer
 
     def get_queryset(self):
