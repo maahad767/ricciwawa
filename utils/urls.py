@@ -13,4 +13,6 @@ urlpatterns = [
     path('translate-simplified-to-traditional/', views.TranslateSimplifiedToTraditional.as_view(),
          name='translate_simplified_to_traditional'),
     path('uid-to-idtoken/', views.UIDToIdTokenView.as_view(), name='uid_to_idtoken'),
+    # temp file
+    path('group-words/', views.GroupWordsView.as_view(), name='group_words'),
 ]

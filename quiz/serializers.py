@@ -1,10 +1,11 @@
 from rest_framework import serializers
 from drf_writable_nested import WritableNestedModelSerializer
 
-from post.fields import AuthoredPostsPrimaryKeyRelatedField
-from post.models import Post
 from .models import Quiz, MultipleChoiceQuestion, Choice, InputAnswerQuestion, QuizAttempt, \
     MultipleChoiceQuestionAttempt, InputAnswerQuestionAttempt
+from post.models import Post
+
+from post.fields import AuthoredPostsPrimaryKeyRelatedField
 from .utils import grade_quiz_attempt
 
 

@@ -1,3 +1,5 @@
+import timeit
+
 from django.http import FileResponse
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
@@ -5,7 +7,7 @@ from rest_framework.response import Response
 
 from .serializers import TextToSpeechSerializer, SpeechToTextSerializer, PronunciationAssessmentSerializer, \
     Mp3TaskHandlerSerializer, TranslateChineseSerializer, TranslateSimplifiedToTraditionalSerializer, \
-    UIDToIdTokenSerializer
+    UIDToIdTokenSerializer, WordGroupingSerializer
 from . import utils
 from .utils import speech_tts_msft, google_translate
 
@@ -130,4 +132,28 @@ class UIDToIdTokenView(generics.GenericAPIView):
             data = serializer.data
             id_token = utils.uid_to_id_token(data['uid'])
             return Response({'id_token': id_token})
+        return Response(serializer.errors)
+
+
+class GroupWordsView(generics.GenericAPIView):
+    """
+    Word Grouping Endpoint for Testing Purpose
+    """
+    serializer_class = WordGroupingSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            data = serializer.data
+            start = timeit.default_timer()
+            grouped_words = utils.word_grouping(data['text'])
+            stop = timeit.default_timer()
+            execution_time = stop - start
+            print(execution_time)
+            resp = {
+                'result': grouped_words,
+                'exec_time': execution_time
+            }
+            return Response(resp)
         return Response(serializer.errors)

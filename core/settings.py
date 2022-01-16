@@ -91,32 +91,32 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 #
-# DATABASES = {
-#     # 'default': {
-#     #     'ENGINE': 'django.db.backends.sqlite3',
-#     #     'NAME': BASE_DIR / 'db.sqlite3',
-#     # }
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'ricciwawadb',
-#         'USER': 'ricciwawadbuser',
-#         'PASSWORD': 'abcdefgh123',
-#         'HOST': '127.0.0.1',
-#         'PORT': '5432',
-#     }
-# }
-
-# Development Database
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dc14m2smvlgdol',
-        'USER': 'epuehcbeyfqlde',
-        'PASSWORD': 'd3d86103315271d06e6200a4ec9736d55aed5d28377c66a6603a19255ad1bee3',
-        'HOST': 'ec2-34-232-149-136.compute-1.amazonaws.com',
+        'NAME': 'ricciwawadb',
+        'USER': 'ricciwawadbuser',
+        'PASSWORD': 'abcdefgh123',
+        'HOST': '127.0.0.1',
         'PORT': '5432',
     }
 }
+
+# Development Database
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'dc14m2smvlgdol',
+#         'USER': 'epuehcbeyfqlde',
+#         'PASSWORD': 'd3d86103315271d06e6200a4ec9736d55aed5d28377c66a6603a19255ad1bee3',
+#         'HOST': 'ec2-34-232-149-136.compute-1.amazonaws.com',
+#         'PORT': '5432',
+#     }
+# }
 
 # Production Database
 # DATABASES = {

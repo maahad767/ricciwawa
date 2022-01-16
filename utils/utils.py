@@ -3,7 +3,9 @@ import json
 import logging
 import os
 import random
+import re
 import string
+import timeit
 
 import firebase_admin
 import requests
@@ -11,11 +13,15 @@ import time
 import base64
 
 from firebase_admin import credentials, auth
-from google.cloud import texttospeech, speech, storage, datastore, translate
+from google.cloud import texttospeech, speech, storage, datastore, translate, language
+
+from utils.data.cedict import cedict_phrase
 
 from utils.models import Word
 
 datastore_client = datastore.Client()
+
+
 # cred = credentials.Certificate(os.environ.get('SERVICE_ACCOUNT_KEY', 'ricciwawa-6e11b342c999.json'))
 # default_app = firebase_admin.initialize_app(cred)
 
@@ -143,6 +149,7 @@ def upload_blob(source_file_name):
     blob.upload_from_filename(source_file_name)
     print("Successful")
 
+
 # create a random string for hash
 def get_random_string(length):
     """
@@ -157,6 +164,8 @@ def get_random_string(length):
 previous_word_boundry_offset = 0
 previous_word_audio_offset = 0
 first_offset = 0
+
+
 def speech_tts_msft(lang, original_input_text, mp3_output_filename):
     """COPIED"""
     """
@@ -404,14 +413,11 @@ def google_translate_list(text_list, source_language_code, target_language_code)
 
 
 def dictionary_lookup(trad_spaced_sentence, sim_spaced_sentence):
-    # global temp_pinyin
     try:
         # pinyin is a list
         # replace <BR> with <p> because will
-        all_words = trad_spaced_sentence.replace(
-            "<BR>", "<BR><p>").split("<p>")
-        all_words_sim = sim_spaced_sentence.replace(
-            "<BR>", "<BR><p>").split("<p>")
+        all_words = trad_spaced_sentence.replace("<BR>", "<BR><p>").split("<p>")
+        all_words_sim = sim_spaced_sentence.replace("<BR>", "<BR><p>").split("<p>")
 
         all_translated_words = []
         word_counter = 0  # used to identify the simplified word matching the trad word
@@ -451,8 +457,7 @@ def dictionary_lookup(trad_spaced_sentence, sim_spaced_sentence):
                 if (counter == 0 and len(word) > 1):
                     temp_sim = ""
                     word_pinyin = []
-                    # single char could have multiple pinyins, word can only have one pinyin
-                    each_char_pinyin = []
+                    each_char_pinyin = []  # single char could have multiple pinyins, word can only have one pinyin
                     i = 0
                     while i < len(word):
                         # for each_char in word:
@@ -463,44 +468,39 @@ def dictionary_lookup(trad_spaced_sentence, sim_spaced_sentence):
                         skip_flag = False
                         if (i + 1) < len(word):
                             next_char = word[i + 1]
-                            two_chars_result = dictionary_lookup_datastore(
-                                each_char + next_char)
+                            two_chars_result = dictionary_lookup_datastore(each_char + next_char)
                             if two_chars_result != []:
-                                # print(two_chars_result[0]["pinyin"])
-                                each_char_pinyin.append(
-                                    two_chars_result[0]["pinyin"])
+                                print(two_chars_result[0]["pinyin"])
+                                each_char_pinyin.append(two_chars_result[0]["pinyin"])
                                 skip_flag = True
                                 # jump one char ahead
                                 i = i + 1
                         i = i + 1
-                        if skip_flag == False:
-                            temp_result = dictionary_lookup_datastore(
-                                each_char)
+                        if (skip_flag == False):
+                            temp_result = dictionary_lookup_datastore(each_char)
                             # only use the first pinyin reported, could be an incorrect pinyin
-                            if temp_result != []:
+                            if (temp_result != []):
                                 # each character may have multiple meanings/pinyin
                                 for each_temp_result in temp_result:
-                                    if len(temp_result[0]["sim"]) > 0:
+                                    if (len(temp_result[0]["sim"]) > 0):
                                         # could have multiple meanings and multiple pinyins,
                                         # if each_temp_result["pinyin"] is not a list, don't loop
-                                        if type(each_temp_result["pinyin"]) is list:
+                                        if (type(each_temp_result["pinyin"]) is list):
                                             for each_pinyin in each_temp_result["pinyin"]:
                                                 # if not added before
                                                 if not (each_pinyin in each_char_pinyin):
-                                                    each_char_pinyin.append(
-                                                        each_pinyin)
+                                                    each_char_pinyin.append(each_pinyin)
                                         else:
                                             # if not a list, add directly
                                             if not (each_temp_result["pinyin"] in each_char_pinyin):
-                                                each_char_pinyin.append(
-                                                    each_temp_result["pinyin"])
+                                                each_char_pinyin.append(each_temp_result["pinyin"])
                                     else:
                                         # there is no pinyin, add space
                                         temp_pinyin = "&nbsp;"
-                                if temp_result.count(",") > 0:
+                                if (temp_result.count(",") > 0):
                                     temp_pinyin = "(" + temp_pinyin + ")"
                                 # if no sim, add space
-                                if len(temp_result[0]["sim"]) > 0:
+                                if (len(temp_result[0]["sim"]) > 0):
                                     temp_sim = temp_result[0]["sim"][0]
                                 else:
                                     temp_sim = each_char
@@ -513,38 +513,37 @@ def dictionary_lookup(trad_spaced_sentence, sim_spaced_sentence):
                         new_word_pinyin = ""  # a string to hold pinyin
                         for each_word_pinyin in word_pinyin:
                             if (type(each_word_pinyin) is list):
-                                new_word_pinyin = new_word_pinyin + \
-                                                  " " + " ".join(each_word_pinyin)
+                                new_word_pinyin = new_word_pinyin + " " + " ".join(each_word_pinyin)
                             else:
                                 new_word_pinyin = new_word_pinyin + " " + each_word_pinyin
                         word_pinyin = new_word_pinyin.strip().split(" ")
-                    word_sim = all_words_sim[word_counter]
+                    word_sim = all_words_sim[word_counter];
                     # translation from Google
-                    eng_meaning = google_translate(word, 'zh-TW', "en")
-                    id_meaning = google_translate(word, 'zh-TW', "id")
-                    tl_meaning = google_translate(word, 'zh-TW', "tl")
-                    ko_meaning = google_translate(word, 'zh-TW', "ko")
-                    now = datetime.datetime.now()
-                    date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-                    entity = datastore.Entity(
-                        key=datastore_client.key('dictionary'))
-                    entity.update({
-                        "trad": word,
-                        "sim": word_sim,
-                        "pinyin": word_pinyin,
-                        "english": eng_meaning,
-                        "indonesian": id_meaning,
-                        "tagalog": tl_meaning,
-                        "korean": ko_meaning,
-                        'timestamp': date_time,
-                    })
+                    # eng_meaning = google_translate(word, 'zh-TW', "en")
+                    # id_meaning = google_translate(word, 'zh-TW', "id")
+                    # tl_meaning = google_translate(word, 'zh-TW', "tl")
+                    # ko_meaning = google_translate(word, 'zh-TW', "ko")
+
+                    # now = datetime.datetime.now()
+                    # date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+                    # entity = datastore.Entity(key=datastore_client.key('dictionary'))
+                    # entity.update({
+                    #    "trad": word,
+                    #    "sim": word_sim,
+                    #    "pinyin": word_pinyin,
+                    #    "english": eng_meaning,
+                    #    "indonesian": id_meaning,
+                    #    "tagalog": tl_meaning,
+                    #    "korean": ko_meaning,
+                    #    'timestamp': date_time,
+                    # })
                     # datastore_client.put(entity)
-                    translated_word["eng"].append(eng_meaning)
+                    # translated_word ["eng"].append(eng_meaning)
                     translated_word["sim"].append(word_sim)
                     translated_word["trad"].append(word)
-                    translated_word["tagalog"].append(tl_meaning)
-                    translated_word["indonesian"].append(id_meaning)
-                    translated_word["korean"].append(ko_meaning)
+                    # translated_word ["tagalog"].append(tl_meaning)
+                    # translated_word ["indonesian"].append(id_meaning)
+                    # translated_word ["korean"].append(ko_meaning)
                     translated_word["pinyin"].append(word_pinyin)
             all_translated_words.append(translated_word)
             word_counter = word_counter + 1
@@ -555,14 +554,50 @@ def dictionary_lookup(trad_spaced_sentence, sim_spaced_sentence):
         print("error")
         error_message = str(exc)
         logging.info(error_message)
-        return "", ""
+        return ("", "")
+
+
+# translate to traditional text first
+def google_translate_v2(text, source_language_code, target_language_code):
+    try:
+        # The input text could be simplified or traditional
+        # loop twice to get the simplified and traditional versions
+        client = translate.TranslationServiceClient()
+        return_translated_text = ""
+        # Detail on supported types can be found here:
+        # https://cloud.google.com/translate/docs/supported-formats
+        response = client.translate_text(
+            parent="projects/ricciwawa/locations/global",
+            contents=[text],
+            mime_type="text/html",  # mime types: text/plain, text/html
+            source_language_code=source_language_code,
+            target_language_code=target_language_code
+        )
+        # Display the translation for each input text provided
+        for translation in response.translations:
+            # for some reaons, Google may add spaces
+            return_translated_text = return_translated_text + translation.translated_text
+        return return_translated_text.replace("> ", ">").replace(" < ", "<")
+    except ValueError as exc:
+        # This will be raised if the token is expired or any other
+        # verification checks fail.
+        error_message = str(exc)
+        logging.info(error_message)
+        return ""
 
 
 def dictionary_lookup_datastore(input_text):
-    query = datastore_client.query(kind='dictionary')
-    query.add_filter('trad', '=', input_text)
-    datastore_query_result = list(query.fetch(limit=20))
-    return datastore_query_result
+    # query = datastore_client.query(kind='dictionary')
+    # query.add_filter('trad', '=', input_text)
+    # datastore_query_result = list(query.fetch(limit=20))
+    res = list(Word.objects.filter(trad__in=input_text).values())
+    for word in res:
+        word['word'] = word['trad']
+        word['korean'] = word['ko']
+        word['indonesian'] = word['ind']
+        word['tagalog'] = word['tl']
+        word['english'] = word['eng']
+    return res
 
 
 def uid_to_id_token(uid):
@@ -595,6 +630,262 @@ def add_translation_data_to_database(filename):
         ko = word['korean']
         tl = word['tagalog']
         pinyin = word['pinyin']
-        Word.objects.get_or_create(trad=trad, sim=sim, eng=eng, ind=ind, es=es, vi=vi, hu=hu, ko=ko, tl=tl, pinyin=pinyin)
+        Word.objects.get_or_create(trad=trad, sim=sim, eng=eng, ind=ind, es=es, vi=vi, hu=hu, ko=ko, tl=tl,
+                                   pinyin=pinyin)
         print(i)
     print("added data into database")
+
+
+def analyze_text_syntax(text, lang_choice):
+    try:
+        return_data = []
+        spaced_return = ""  # the traditional Chinese text.  Each element
+        # ============= For Google library ==========
+        client = language.LanguageServiceClient()
+        document = language.Document(
+            content=text.replace("<BR>", "AYHEBXTEUDJDGAUBZFDQ"),
+            language=lang_choice,
+            # type_=language.Document.Type.HTML)
+            type_=language.Document.Type.PLAIN_TEXT)
+        response = client.analyze_syntax(document=document)
+        return_data.append(response)
+        # ============= For Google API Call ==========
+
+        a_sentences = response.sentences
+
+        # store tokens and their positions
+        tokens = response.tokens
+        token_list = []  # holds the tokens
+        # hold the tokens pos in a sentence
+        for token in tokens:
+            token_list.append(token.text.content)
+        # store entities
+        # use another document to avoid the <BR> replacement
+        document = language.Document(
+            content=text,
+            language=lang_choice,
+            type_=language.Document.Type.HTML)
+        # type_=language.Document.Type.PLAIN_TEXT)
+        response = client.analyze_entities(document=document)
+        return_data.append(response)
+        a_entity_name = []
+        for entity in response.entities:
+            if not ("(" in entity.name):
+                if len(entity.name) > 1 and not entity.name in a_entity_name:  # if only one character, do not include it
+                    a_entity_name.append(entity.name)
+
+        # get phrase and add them to a_entity
+        for list_phrase in cedict_phrase:
+            for each_phrase in cedict_phrase[list_phrase]:
+                if each_phrase in text:
+                    a_entity_name.append(each_phrase)
+                    print(1017, each_phrase)
+
+        # for each sentence, replace the entity with spaces and the store the position of the entities
+        sen_counter = 0
+        for current_sentence in a_sentences:
+            a_entity_position = {}
+            a_token_pos = {}
+            cur_text = current_sentence.text.content  # curent text content to store the sentence text
+            for entity_name in a_entity_name:
+                for m in re.finditer(entity_name, cur_text):
+                    # must be longer than one and contain no digit
+                    if len(entity_name) > 1 and not bool(re.search(r'\d', entity_name)):
+                        a_entity_position[m.start()] = entity_name
+                        # all entities are now replaced by spaces
+                        # cur_text = cur_text.replace(entity_name,  " "*len(entity_name))
+            # find the tokens per sentence
+            j = 0
+            temp_cur_text = cur_text
+
+            while j < len(token_list):
+                if token_list[j] is not None:
+                    pos = temp_cur_text.find(token_list[j])
+                    if pos > -1:
+                        # print ("line 572", pos, token_list[j])
+                        a_token_pos[pos] = token_list[j]
+                        temp_cur_text = temp_cur_text[0:pos] + " " * len(token_list[j]) + temp_cur_text[
+                                                                                          pos + len(token_list[j]):]
+                        token_list[j] = None
+                j = j + 1
+
+            sen_counter = sen_counter + 1
+            # print (a_token_pos)
+            # print (a_entity_position)
+            new_sentence = []
+            i = 0
+            while i < len(cur_text):
+                if i in a_entity_position:
+                    new_sentence.append(a_entity_position[i])
+                    i = i + len(a_entity_position[i])
+                elif i in a_token_pos:
+                    new_sentence.append(a_token_pos[i])
+                    i = i + len(a_token_pos[i])
+                else:
+                    i = i + 1
+            # cannot trust the <BR> returned by Google in new_sentence
+            # "<p>"+<p>.join the first <p> is for sentence break.  The second "<p>" is for join
+            spaced_return = spaced_return + "<p>" + "<p>".join(new_sentence)
+            spaced_return = spaced_return.replace("<<p>BR<p>>", "<BR>").replace("<BR<p>>", "<BR>")
+            # print("968", spaced_return)
+            # spaced_return = spaced_return.replace("<BR><p><BR><p>","<BR>")
+            # print("970", spaced_return)
+        spaced_return = spaced_return.replace("AYHEBXTEUDJDGAUBZFDQ", "<BR>").replace("<p>*=*=*", "<BR>").replace(
+            "*<p>=*=*", "<BR>").replace("*<p>=*=<p>*", "<BR>").replace("<BR><BR>", "<p><BR>").replace(
+            "<BR>*<p>=*<p>=*<p>", "<p><BR>")
+        spaced_return = spaced_return[3:]  # remove the leading <p><BR>
+        return spaced_return
+
+    except ValueError as exc:
+        print("error")
+        error_message = str(exc)
+        logging.info(error_message)
+        return "", ""
+
+
+def word_grouping(input_text):
+    # text = google_translate (input_text,"zh-TW", "zh-TW")
+    # start = timeit.default_timer()
+    text = analyze_text_syntax(input_text, "zh-TW")
+    # print(text)
+    # stop = timeit.default_timer()
+    # execution_time = stop - start
+    # print(execution_time)
+    # start = timeit.default_timer()
+    sim_chinese_text = google_translate_v2(text, "zh-TW", "zh-CN")
+    trad_chinese_text = google_translate_v2(sim_chinese_text, "zh-CN", "zh-TW")
+    # stop = timeit.default_timer()
+
+    # print('==============================')
+    # print('==============================')
+    # print(trad_chinese_text)
+    # print('==============================')
+    # print('==============================')
+    # print(sim_chinese_text)
+    # print('==============================')
+    # print('==============================')
+    all_words = trad_chinese_text.replace("<BR>", "<BR><p>").split("<p>")
+    all_words_sim = sim_chinese_text.replace("<BR>", "<BR><p>").split("<p>")
+    # print(all_words)
+    # all_word_translations = list(Word.objects.filter(trad__in=all_words).values())
+    #
+    # for word in all_word_translations:
+    #     word['word'] = word['trad']
+    #     word['korean'] = word['ko']
+    #     word['indonesian'] = word['ind']
+    #     word['tagalog'] = word['tl']
+    #
+    # final_grouped_words = []
+    # for tw in all_words:
+    #     word = None
+    #     for w in all_word_translations:
+    #         if w['trad'] == tw:
+    #             word = w
+    #             break
+    #
+    #     if word is None:
+    #         word = {'trad': tw}
+    #
+    #     final_grouped_words.append(word)
+    # execution_time = stop - start
+    # print(execution_time)
+
+    all_translated_words = []
+    word_counter = 0  # used to identify the simplified word matching the trad word
+    for word in all_words:
+        translated_word = {"word": word, "eng": [], "sim": [], "trad": [], "tagalog": [], "indonesian": [],
+                           "korean": [], "pinyin": []}
+        if word != "<BR>":
+            word = word.strip()
+            res = list(Word.objects.filter(trad=word).values())
+            counter = 0
+            # loop to find all the meaning
+            for items in res:
+                counter += 1
+                # may contain multiple meaning seperated by ,
+                temp_eng = items["eng"]
+                temp_sim = items["sim"]
+                temp_trad = items["trad"]
+                temp_tagalog = items["tl"]
+                temp_indonesian = items["ind"]
+                temp_korean = items["ko"]
+                temp_pinyin = items["pinyin"].split(" ")
+                translated_word["eng"].append(temp_eng)
+                translated_word["sim"].append(temp_sim)
+                translated_word["trad"].append(temp_trad)
+                translated_word["tagalog"].append(temp_tagalog)
+                translated_word["indonesian"].append(temp_indonesian)
+                translated_word["korean"].append(temp_korean)
+                translated_word["pinyin"].append(temp_pinyin)
+
+            # cannot find such wording and the word length >1
+            if counter == 0 and len(word) > 1:
+                temp_sim = ""
+                word_pinyin = []
+                each_char_pinyin = []  # single char could have multiple pinyins, word can only have one pinyin
+                i = 0
+                while i < len(word):
+                    # for each_char in word:
+                    each_char_pinyin = []  # it is a word, so only one pinyin
+                    each_char = word[i]
+                    next_char = ""
+                    last_char = ""
+                    skip_flag = False
+                    if (i + 1) < len(word):
+                        next_char = word[i + 1]
+                        two_chars_result = list(Word.objects.filter(trad=each_char + next_char).values())
+                        if two_chars_result:
+                            print(two_chars_result[0]["pinyin"])
+                            each_char_pinyin.append(two_chars_result[0]["pinyin"])
+                            skip_flag = True
+                            # jump one char ahead
+                            i = i + 1
+                    i = i + 1
+                    if not skip_flag:
+                        temp_result = list(Word.objects.filter(trad=each_char).values())
+                        # only use the first pinyin reported, could be an incorrect pinyin
+                        if temp_result:
+                            # each character may have multiple meanings/pinyin
+                            for each_temp_result in temp_result:
+                                if len(temp_result[0]["sim"]) > 0:
+                                    # could have multiple meanings and multiple pinyins,
+                                    # if each_temp_result["pinyin"] is not a list, don't loop
+                                    if type(each_temp_result["pinyin"]) is list:
+                                        for each_pinyin in each_temp_result["pinyin"]:
+                                            # if not added before
+                                            if not (each_pinyin in each_char_pinyin):
+                                                each_char_pinyin.append(each_pinyin)
+                                    else:
+                                        # if not a list, add directly
+                                        if not (each_temp_result["pinyin"] in each_char_pinyin):
+                                            each_char_pinyin.append(each_temp_result["pinyin"])
+                                else:
+                                    # there is no pinyin, add space
+                                    temp_pinyin = "&nbsp;"
+                            if temp_result.count(",") > 0:
+                                temp_pinyin = "(" + temp_pinyin + ")"
+                            # if no sim, add space
+                            if len(temp_result[0]["sim"]) > 0:
+                                temp_sim = temp_result[0]["sim"][0]
+                            else:
+                                temp_sim = each_char
+                    # a list of pinyin per word.  Each char has its own list of pinyin
+                    temp_sim = temp_sim.strip()
+                    # a char may have multiple pinyins, join them by comma
+                    word_pinyin.append(",".join(each_char_pinyin))
+                # if it is a word, make sure there is one element in word_pinyin
+                if len(word) > 1:
+                    new_word_pinyin = ""  # a string to hold pinyin
+                    for each_word_pinyin in word_pinyin:
+                        if type(each_word_pinyin) is list:
+                            new_word_pinyin = new_word_pinyin + " " + " ".join(each_word_pinyin)
+                        else:
+                            new_word_pinyin = new_word_pinyin + " " + each_word_pinyin
+                    word_pinyin = new_word_pinyin.strip().split(" ")
+                word_sim = all_words_sim[word_counter]
+                translated_word["sim"].append(word_sim)
+                translated_word["trad"].append(word)
+                translated_word["pinyin"].append(word_pinyin)
+        all_translated_words.append(translated_word)
+        word_counter = word_counter + 1
+    return all_translated_words

@@ -46,3 +46,8 @@ class TranslateSimplifiedToTraditionalSerializer(serializers.Serializer):
 
 class UIDToIdTokenSerializer(serializers.Serializer):
     uid = serializers.CharField(max_length=200)
+
+
+class WordGroupingSerializer(serializers.Serializer):
+    text = serializers.CharField(max_length=5000)
+    language_code = serializers.CharField(max_length=50, default='zh')
