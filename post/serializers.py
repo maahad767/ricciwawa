@@ -370,6 +370,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
     is_followed = serializers.SerializerMethodField()
     is_blocked = serializers.SerializerMethodField()
     follower_count = serializers.SerializerMethodField()
+    likes_count = serializers.SerializerMethodField()
 
     def get_is_followed(self, obj):
         user = self.context['request'].user
@@ -388,10 +389,15 @@ class UserInfoSerializer(serializers.ModelSerializer):
             return 0
         return obj.followers.count()
 
+    def get_likes_count(self, obj):
+        if type(obj) is AnonymousUser:
+            return 0
+        return obj.likepost_set.count() + obj.likecomment_set.count()
+
     class Meta:
         model = get_user_model()
         fields = ['uid', 'username', 'is_blocked', 'is_followed', 'follower_count', 'picture', 'name', 'description',
-                  'background_image', 'birthday', 'gender', 'country', 'language']
+                  'background_image', 'birthday', 'gender', 'country', 'language', 'likes_count']
 
 
 class NotificationSerializer(serializers.ModelSerializer):
