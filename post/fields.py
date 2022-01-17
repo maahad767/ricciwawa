@@ -35,8 +35,8 @@ class HashTagPrimaryKeyRelatedField(serializers.PrimaryKeyRelatedField):
         """
         Override to_representation to return a list of HashTag objects
         """
-        # return HashTagSerializer(value).data
-        return value.name
+        return HashTagSerializer(value).data
+        # return value.name
 
     def to_internal_value(self, data):
         """
