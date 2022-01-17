@@ -16,6 +16,16 @@ class AuthoredPostsPrimaryKeyRelatedField(serializers.PrimaryKeyRelatedField):
         return queryset.filter(owner=self.context['request'].user)
 
 
+class HashTagSerializer(serializers.ModelSerializer):
+    """
+    Serializer for HashTag model.
+    """
+
+    class Meta:
+        model = HashTag
+        fields = '__all__'
+
+
 class HashTagPrimaryKeyRelatedField(serializers.PrimaryKeyRelatedField):
     """
     A PrimaryKeyRelatedField to Create and Return HashTag list
@@ -25,6 +35,7 @@ class HashTagPrimaryKeyRelatedField(serializers.PrimaryKeyRelatedField):
         """
         Override to_representation to return a list of HashTag objects
         """
+        # return HashTagSerializer(value).data
         return value.name
 
     def to_internal_value(self, data):

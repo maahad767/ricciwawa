@@ -431,6 +431,11 @@ class NotificationMarkSeenSerializer(serializers.ModelSerializer):
 
 
 class HashTagSerializer(serializers.ModelSerializer):
+    posts_count = serializers.SerializerMethodField()
+
+    def get_posts_count(self, obj):
+        return obj.post_set.count()
+
     class Meta:
         model = HashTag
-        fields = '__all__'
+        exclude = []
