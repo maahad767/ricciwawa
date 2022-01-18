@@ -20,6 +20,10 @@ class HashTagSerializer(serializers.ModelSerializer):
     """
     Serializer for HashTag model.
     """
+    posts_count = serializers.SerializerMethodField()
+
+    def get_posts_count(self, obj):
+        return obj.post_set.count()
 
     class Meta:
         model = HashTag
