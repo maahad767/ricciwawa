@@ -10,6 +10,52 @@ from .models import (Post, Comment, LikePost, LikeComment, Subscription, Categor
 from .utils import upload_get_signed_up, download_get_signed_up
 
 
+class PostListSerializer(serializers.ModelSerializer):
+    author = UserField(source='owner', read_only=True)
+    likes = serializers.SerializerMethodField(read_only=True)
+    comments = serializers.SerializerMethodField(read_only=True)
+    attachment_url = serializers.SerializerMethodField(read_only=True)
+    is_liked = serializers.SerializerMethodField(read_only=True)
+    shares = serializers.SerializerMethodField(read_only=True)
+    hashtags = HashTagPrimaryKeyRelatedField(many=True, queryset=HashTag.objects.all(), required=False)
+    has_resources = serializers.SerializerMethodField(read_only=True)
+    has_quiz = serializers.SerializerMethodField(read_only=True)
+
+    def get_likes(self, obj):
+        return obj.likepost_set.count()
+
+    def get_comments(self, obj):
+        return obj.comments.all().count()
+
+    def get_attachment_url(self, obj):
+        if obj.attachment:
+            return download_get_signed_up(obj.attachment)
+
+    def get_is_liked(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            return LikePost.objects.filter(post=obj, liker=user).exists()
+        return False
+
+    def get_shares(self, obj):
+        return obj.sharepost_set.all().count()
+
+    def get_has_resources(self, obj):
+        return True if obj.full_data else False
+
+    def get_has_quiz(self, obj):
+        return obj.quiz_set.all().exists()
+
+    class Meta:
+        model = Post
+        exclude = ['owner', 'full_data', 'attachment', 'text_traditional_chinese', 'text_simplified_chinese',
+                   'pin_yin_words', 'meaning_words', 'english_meaning_article', 'korean_meaning_translation',
+                   'indonesian_meaning_translation', 'tagalog_meaning_translation', 'story_difficulty', 'story_tags',
+                   'story_category', 'story_source', 'sim_spaced_datastore_text', 'trad_spaced_datastore_text',
+                   'audio_simplified_chinese', 'timing_simplified_chinese', 'audio_traditional_chinese',
+                   'timing_traditional_chinese']
+
+
 class PostSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     author = UserField(source='owner', read_only=True)
@@ -57,8 +103,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        exclude = ['full_data', 'audio_simplified_chinese', 'audio_traditional_chinese',
-                   'timing_simplified_chinese', 'timing_traditional_chinese']
+        exclude = []
         extra_kwargs = {
             'attachment': {'write_only': True, 'required': False},
         }
@@ -117,7 +162,9 @@ class ResourcesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         exclude = ['attachment', 'audio_simplified_chinese', 'audio_traditional_chinese', 'timing_simplified_chinese',
-                   'timing_traditional_chinese']
+                   'timing_traditional_chinese', 'text_simplified_chinese', 'text_traditional_chinese',
+                   'pin_yin_words', 'meaning_words', 'sim_spaced_datastore_text', 'trad_spaced_datastore_text',
+                   'story_tags', 'story_difficulty', 'story_category', 'story_source', 'owner']
 
 
 class UploadPostImageSerializer(serializers.ModelSerializer):

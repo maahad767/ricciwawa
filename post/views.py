@@ -14,7 +14,7 @@ from .serializers import SubscriptionSerializer, PlaylistSerializer, PostSeriali
     LikePostSerializer, ViewPostSerializer, FollowSerializer, FavouriteSerializer, FavouriteVocabularySerializer, \
     SavePlaylistSerializer, SubscribeSerializer, ReportPostSerializer, IgnorePostSerializer, \
     UploadPostImageSerializer, SharePostSerializer, UserInfoSerializer, NotificationSerializer, \
-    NotificationMarkSeenSerializer, CategorySerializer, ResourcesSerializer, HashTagSerializer
+    NotificationMarkSeenSerializer, CategorySerializer, ResourcesSerializer, HashTagSerializer, PostListSerializer
 
 
 class WebHome(generic.RedirectView):
@@ -28,7 +28,7 @@ class NewsfeedView(generics.ListAPIView):
     privacy: 0-private, 1-public
     attachment_type: 0-none, 1-image, 2-audio, 3-video
     """
-    serializer_class = PostSerializer
+    serializer_class = PostListSerializer
     permission_classes = (AllowAny, )
 
     def get_queryset(self):
@@ -55,7 +55,7 @@ class GetContentsListView(generics.ListAPIView):
     privacy: 0-private, 1-public
     attachment_type: 0-none, 1-image, 2-audio, 3-video
     """
-    serializer_class = PostSerializer
+    serializer_class = PostListSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
@@ -132,8 +132,13 @@ class PostViewset(viewsets.ModelViewSet):
     privacy = (0, 'private'), (1, 'public')
     attachment_type: 0-none, 1-image, 2-audio, 3-video
     """
-    serializer_class = PostSerializer
     permission_classes = [DRYPermissions]
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return PostListSerializer
+
+        return PostSerializer
 
     def get_queryset(self):
         return Post.objects.filter(owner=self.request.user)
@@ -367,7 +372,7 @@ class MarkNotificationSeenView(generics.GenericAPIView):
 
 
 class SearchPostView(generics.ListAPIView):
-    serializer_class = PostSerializer
+    serializer_class = PostListSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
