@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'post',
     'quiz',
     'web',
+    'system',
 
     # reusable local apps
     'firebase_auth',
