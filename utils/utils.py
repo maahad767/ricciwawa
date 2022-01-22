@@ -98,7 +98,6 @@ def speech_to_text(speech_file, sample_rate, audio_channel_count, language_code)
     return {'transcript': transcript}
 
 
-
 def pronunciation_assessment(speech_file, reference_text, language_code='en-us'):
     """
     Pronunciation assessment using azure pronunciation assessment api.
