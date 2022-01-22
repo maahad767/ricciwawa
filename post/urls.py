@@ -1,6 +1,7 @@
 from django.urls import path
 from rest_framework import routers
 
+from post.models import LikeHashTag
 from post.views import SubscriptionViewset, PlaylistViewset, PostViewset, CommentViewset, NewsfeedView, \
     FavouriteVocabularyViewset, LikePostView, UnlikePostView, ViewPostView, FollowView, AddFavouriteView, \
     RemoveFavouriteView, SavePlaylistView, UnsavePlaylistView, SubscribeView, UnfollowView, IgnorePostView, \
@@ -8,7 +9,7 @@ from post.views import SubscriptionViewset, PlaylistViewset, PostViewset, Commen
     GetCommentsByPostIDView, \
     GetCommentsByParentIDView, SharePostView, GetUserInfoView, GetSubscriptionsByUserView, GetPlaylistsByUserView, \
     CategoryListCreateView, SearchPostView, SubscribedPlansView, UnsubscribeView, ResourcesView, \
-    NotificationView, SearchHashTagView
+    NotificationView, SearchHashTagView, LikeHashTagView, FollowHashTagView
 
 """
 Router is used to route ViewSets. 
@@ -25,6 +26,7 @@ router.register(r'posts', PostViewset, basename='post')
 router.register(r'comments', CommentViewset, basename='post')
 router.register(r'fav-vocabs', FavouriteVocabularyViewset, basename='post')
 router.register(r'category', CategoryViewset, basename='category')
+
 
 urlpatterns = [
     path('', WebHome.as_view()),
@@ -73,4 +75,8 @@ urlpatterns = [
     # search post
     path('search-post/<str:qs>/', SearchPostView.as_view()),
     path('search-hashtag/<str:qs>/', SearchHashTagView.as_view()),
+    path('like-hashtag/', LikeHashTagView.as_view()),
+    path('unlike-hashtag/<hashtag_id>/', LikeHashTagView.as_view()),
+    path('follow-hashtag/', FollowHashTagView.as_view()),
+    path('unfollow-hashtag/<hashtag_id>/', FollowHashTagView.as_view()),
 ] + router.urls

@@ -9,12 +9,13 @@ from rest_framework.response import Response
 
 from .documents import PostDocument
 from .models import Subscription, Playlist, Post, Comment, FavouriteVocabulary, Category, LikePost, Follow, \
-    Notification, Subscribe, HashTag
+    Notification, Subscribe, HashTag, LikeHashTag, FollowHashTag
 from .serializers import SubscriptionSerializer, PlaylistSerializer, PostSerializer, CommentSerializer, \
     LikePostSerializer, ViewPostSerializer, FollowSerializer, FavouriteSerializer, FavouriteVocabularySerializer, \
     SavePlaylistSerializer, SubscribeSerializer, ReportPostSerializer, IgnorePostSerializer, \
     UploadPostImageSerializer, SharePostSerializer, UserInfoSerializer, NotificationSerializer, \
-    NotificationMarkSeenSerializer, CategorySerializer, ResourcesSerializer, HashTagSerializer, PostListSerializer
+    NotificationMarkSeenSerializer, CategorySerializer, ResourcesSerializer, HashTagSerializer, PostListSerializer, \
+    LikeHashTagSerializer, FollowHashTagSerializer
 
 
 class WebHome(generic.RedirectView):
@@ -395,3 +396,19 @@ class SearchHashTagView(generics.ListAPIView):
 
     def get_queryset(self):
         return HashTag.objects.filter(name__icontains=self.kwargs['qs'].strip())
+
+
+class LikeHashTagView(generics.CreateAPIView, generics.DestroyAPIView):
+    serializer_class = LikeHashTagSerializer
+    permission_classes = [DRYPermissions]
+
+    def get_object(self):
+        return LikeHashTag.objects.get(id=self.kwargs['hashtag_id'])
+
+
+class FollowHashTagView(generics.CreateAPIView, generics.DestroyAPIView):
+    serializer_class = FollowHashTagSerializer
+    permission_classes = [DRYPermissions]
+
+    def get_object(self):
+        return FollowHashTag.objects.get(id=self.kwargs['hashtag_id'])

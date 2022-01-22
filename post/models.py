@@ -509,3 +509,52 @@ class Notification(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+
+class LikeHashTag(models.Model):
+
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    hashtag = models.ForeignKey(HashTag, on_delete=models.CASCADE)
+
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return True
+
+    @staticmethod
+    def has_write_permission(request):
+        return True
+
+    def has_object_write_permission(self, request):
+        if request.user.is_authenticated:
+            return request.user == self.user
+        return False
+
+    class Meta:
+        unique_together = ('user', 'hashtag')
+
+
+class FollowHashTag(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    hashtag = models.ForeignKey(HashTag, on_delete=models.CASCADE)
+
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return True
+
+    @staticmethod
+    def has_write_permission(request):
+        return True
+
+    def has_object_write_permission(self, request):
+        if request.user.is_authenticated:
+            return request.user == self.user
+        return False
+
+    class Meta:
+        unique_together = ('user', 'hashtag')

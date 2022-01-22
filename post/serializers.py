@@ -1,3 +1,4 @@
+from attr.filters import exclude
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from rest_framework import serializers
@@ -6,7 +7,8 @@ from account.fields import UserField
 from .fields import AuthoredPostsPrimaryKeyRelatedField, HashTagPrimaryKeyRelatedField
 from .models import (Post, Comment, LikePost, LikeComment, Subscription, Category, Subscribe, Playlist, SavePlaylist,
                      ViewPost,
-                     Favourite, Follow, FavouriteVocabulary, ReportPost, IgnorePost, SharePost, Notification, HashTag)
+                     Favourite, Follow, FavouriteVocabulary, ReportPost, IgnorePost, SharePost, Notification, HashTag,
+                     LikeHashTag, FollowHashTag)
 from .utils import upload_get_signed_up, download_get_signed_up
 
 
@@ -486,3 +488,17 @@ class HashTagSerializer(serializers.ModelSerializer):
     class Meta:
         model = HashTag
         exclude = []
+
+
+class LikeHashTagSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = LikeHashTag
+        exclude = ['id']
+
+
+class FollowHashTagSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = FollowHashTag
+        exclude = ['id']
