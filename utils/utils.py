@@ -63,22 +63,34 @@ def speech_to_text(speech_file, sample_rate, audio_channel_count, language_code)
     :param language_code: the language of the speech
     :return: transcript of the speech as a dictionary
     """
+    print("UPLOADING AUDIO FILE")
+    bucket_name = "ricciwawa_mp3"
+    storage_client = storage.Client()
+    bucket = storage_client.get_bucket(bucket_name)
+    blob = bucket.blob(speech_file.name)
+    blob.upload_from_string(speech_file.file.read())
+
     client = speech.SpeechClient()
-    binary_audio = speech_file.read()
-    audio = speech.RecognitionAudio(content=binary_audio)
+    gcs_uri = 'gs://' + bucket_name + '/' + speech_file.name
+    audio = speech.RecognitionAudio(uri=gcs_uri)
     config = speech.RecognitionConfig({
         'encoding': speech.RecognitionConfig.AudioEncoding.LINEAR16,
         'sample_rate_hertz': int(sample_rate),
         'audio_channel_count': int(audio_channel_count),
         'language_code': language_code,
     })
-    response = client.recognize(config=config, audio=audio)
+    operation = client.long_running_recognize(config=config, audio=audio)
+
+    print("Waiting for operation to complete...")
+    response = operation.result(timeout=1000)
     transcript = str()
     for result in response.results:
         transcript += result.alternatives[0].transcript
         print("Transcript: {}".format(result.alternatives[0].transcript))
 
+    blob.delete()
     return {'transcript': transcript}
+
 
 
 def pronunciation_assessment(speech_file, reference_text, language_code='en-us'):
