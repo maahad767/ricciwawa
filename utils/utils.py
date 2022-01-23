@@ -17,6 +17,8 @@ import azure.cognitiveservices.speech as speechsdk
 from utils.models import Word
 
 datastore_client = datastore.Client()
+
+
 # cred = credentials.Certificate(os.environ.get('SERVICE_ACCOUNT_KEY', 'ricciwawa-6e11b342c999.json'))
 # default_app = firebase_admin.initialize_app(cred)
 
@@ -64,46 +66,74 @@ def speech_to_text(speech_file, sample_rate, audio_channel_count, language_code)
     :param language_code: the language of the speech
     :return: transcript of the speech as a dictionary
     """
-    print("UPLOADING AUDIO FILE")
-    bucket_name = "ricciwawa_mp3"
-    storage_client = storage.Client()
-    bucket = storage_client.get_bucket(bucket_name)
-    blob = bucket.blob(speech_file.name)
-    blob.upload_from_string(speech_file.file.read())
+    # print("UPLOADING AUDIO FILE")
+    # bucket_name = "ricciwawa_mp3"
+    # storage_client = storage.Client()
+    # bucket = storage_client.get_bucket(bucket_name)
+    # blob = bucket.blob(speech_file.name)
+    # blob.upload_from_string(speech_file.file.read())
+    #
+    # client = speech.SpeechClient()
+    # gcs_uri = 'gs://' + bucket_name + '/' + speech_file.name
+    # audio = speech.RecognitionAudio(uri=gcs_uri)
+    # config = speech.RecognitionConfig({
+    #     'encoding': speech.RecognitionConfig.AudioEncoding.LINEAR16,
+    #     'sample_rate_hertz': int(sample_rate),
+    #     'audio_channel_count': int(audio_channel_count),
+    #     'language_code': language_code,
+    # })
+    # operation = client.long_running_recognize(config=config, audio=audio)
+    #
+    # print("Waiting for operation to complete...")
+    # response = operation.result(timeout=1000)
+    # transcript = str()
+    # for result in response.results:
+    #     transcript += result.alternatives[0].transcript
+    #     print("Transcript: {}".format(result.alternatives[0].transcript))
+    #
+    # blob.delete()
+    # return {'transcript': transcript}
 
-    client = speech.SpeechClient()
-    gcs_uri = 'gs://' + bucket_name + '/' + speech_file.name
-    audio = speech.RecognitionAudio(uri=gcs_uri)
-    config = speech.RecognitionConfig({
-        'encoding': speech.RecognitionConfig.AudioEncoding.LINEAR16,
-        'sample_rate_hertz': int(sample_rate),
-        'audio_channel_count': int(audio_channel_count),
-        'language_code': language_code,
-    })
-    operation = client.long_running_recognize(config=config, audio=audio)
+    subscription_key = "aea95857cbf14d41b132fefe96a3052e"  # transfer this to settings.py
+    region = "eastasia"  # transfer this to settings.py
+    speech_config = speechsdk.SpeechConfig(subscription=subscription_key, region=region)
+    speech_config.speech_recognition_language = "zh-CN"
+    tmp_filename = random.choice(string.ascii_letters) + str(time.time()) + '.wav'
+    done = False
 
-    print("Waiting for operation to complete...")
-    response = operation.result(timeout=1000)
     transcript = str()
-    for result in response.results:
-        transcript += result.alternatives[0].transcript
-        print("Transcript: {}".format(result.alternatives[0].transcript))
 
-    blob.delete()
-    return {'transcript': transcript}
+    def recognizing(evt):
+        nonlocal transcript
+        print('RECOGNIZED: {}'.format(evt.result.text))
+        transcript += evt.result.text
 
-    # subscription_key = "aea95857cbf14d41b132fefe96a3052e"  # transfer this to settings.py
-    # region = "eastasia"  # transfer this to settings.py
-    # speech_config = speechsdk.SpeechConfig(subscription=subscription_key, region=region)
-    # speech_config.speech_recognition_language = "zh-CN"
-    # tmp_filename = random.choice(string.ascii_letters) + str(time.time()) + '.wav'
-    # with open(tmp_filename, "wb") as f:
-    #     f.write(speech_file.file.read())
-    # audio_input = speechsdk.AudioConfig(filename=tmp_filename)
-    # speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_input)
-    # # os.remove(tmp_filename)
-    # result = speech_recognizer.recognize_once_async().get()
+    def stop_cb(evt):
+        print('CLOSING on {}'.format(evt))
+        speech_recognizer.stop_continuous_recognition()
+        nonlocal done
+        done = True
+
+    with open(tmp_filename, "wb") as f:
+        f.write(speech_file.file.read())
+    audio_input = speechsdk.AudioConfig(filename=tmp_filename)
+    speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_input)
+    speech_recognizer.recognizing.connect(lambda evt: None)
+
+    speech_recognizer.recognized.connect(recognizing)
+    speech_recognizer.session_started.connect(lambda evt: print('SESSION STARTED: {}'.format(evt)))
+    speech_recognizer.session_stopped.connect(lambda evt: print('SESSION STOPPED {}'.format(evt)))
+    speech_recognizer.canceled.connect(lambda evt: print('CANCELED {}'.format(evt)))
+
+    speech_recognizer.session_stopped.connect(stop_cb)
+    speech_recognizer.canceled.connect(stop_cb)
+    speech_recognizer.start_continuous_recognition()
+    while not done:
+        time.sleep(.5)
+
+    # os.remove(tmp_filename)
     # return {'transcript': result.text}
+    return {'transcript': transcript}
 
 
 def pronunciation_assessment(speech_file, reference_text, language_code='en-us'):
@@ -168,6 +198,7 @@ def upload_blob(source_file_name):
     blob.upload_from_filename(source_file_name)
     print("Successful")
 
+
 # create a random string for hash
 def get_random_string(length):
     """
@@ -182,6 +213,8 @@ def get_random_string(length):
 previous_word_boundry_offset = 0
 previous_word_audio_offset = 0
 first_offset = 0
+
+
 def speech_tts_msft(lang, original_input_text, mp3_output_filename):
     """COPIED"""
     """
@@ -620,6 +653,7 @@ def add_translation_data_to_database(filename):
         ko = word['korean']
         tl = word['tagalog']
         pinyin = word['pinyin']
-        Word.objects.get_or_create(trad=trad, sim=sim, eng=eng, ind=ind, es=es, vi=vi, hu=hu, ko=ko, tl=tl, pinyin=pinyin)
+        Word.objects.get_or_create(trad=trad, sim=sim, eng=eng, ind=ind, es=es, vi=vi, hu=hu, ko=ko, tl=tl,
+                                   pinyin=pinyin)
         print(i)
     print("added data into database")
