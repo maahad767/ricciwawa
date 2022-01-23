@@ -12,6 +12,7 @@ import base64
 
 from firebase_admin import credentials, auth
 from google.cloud import texttospeech, speech, storage, datastore, translate
+import azure.cognitiveservices.speech as speechsdk
 
 from utils.models import Word
 
@@ -90,6 +91,19 @@ def speech_to_text(speech_file, sample_rate, audio_channel_count, language_code)
 
     blob.delete()
     return {'transcript': transcript}
+
+    # subscription_key = "aea95857cbf14d41b132fefe96a3052e"  # transfer this to settings.py
+    # region = "eastasia"  # transfer this to settings.py
+    # speech_config = speechsdk.SpeechConfig(subscription=subscription_key, region=region)
+    # speech_config.speech_recognition_language = "zh-CN"
+    # tmp_filename = random.choice(string.ascii_letters) + str(time.time()) + '.wav'
+    # with open(tmp_filename, "wb") as f:
+    #     f.write(speech_file.file.read())
+    # audio_input = speechsdk.AudioConfig(filename=tmp_filename)
+    # speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_input)
+    # # os.remove(tmp_filename)
+    # result = speech_recognizer.recognize_once_async().get()
+    # return {'transcript': result.text}
 
 
 def pronunciation_assessment(speech_file, reference_text, language_code='en-us'):
