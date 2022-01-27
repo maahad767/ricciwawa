@@ -270,10 +270,10 @@ def get_random_string(length):
     return result_str
 
 
-def get_hashed_filename():
+def get_hashed_filename(ext='.wav'):
     date_time = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
     hashed_id = sha1(str.encode(get_random_string(10) + date_time)).hexdigest()
-    return str(hashed_id)
+    return str(hashed_id)+ext
 
 
 ############################################ Speech to Text MSFT ################################
