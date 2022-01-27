@@ -15,4 +15,7 @@ urlpatterns = [
     path('uid-to-idtoken/', views.UIDToIdTokenView.as_view(), name='uid_to_idtoken'),
     # temp file
     path('group-words/', views.GroupWordsView.as_view(), name='group_words'),
+    path('stt-initiate/', views.InitiateSTTView.as_view(), name='initiate_stt'),
+    path('stt-start/', views.StartSTTView.as_view(), name='start_stt'),
+    path('stt-result/', views.GetSTTResultView.as_view(), name='stt_result'),
 ]

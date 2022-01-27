@@ -1,4 +1,3 @@
-from attr.filters import exclude
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from rest_framework import serializers
@@ -9,7 +8,7 @@ from .models import (Post, Comment, LikePost, LikeComment, Subscription, Categor
                      ViewPost,
                      Favourite, Follow, FavouriteVocabulary, ReportPost, IgnorePost, SharePost, Notification, HashTag,
                      LikeHashTag, FollowHashTag)
-from .utils import upload_get_signed_up, download_get_signed_up
+from utils.utils import upload_get_signed_up, download_get_signed_up
 
 
 class PostListSerializer(serializers.ModelSerializer):

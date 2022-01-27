@@ -1,6 +1,6 @@
-from abc import ABC
-
 from rest_framework import serializers
+
+from utils.utils import get_hashed_filename
 
 """
 This is the module that contains the Serializer Classes which are used for Serializing and Deserializing JSON
@@ -51,3 +51,14 @@ class UIDToIdTokenSerializer(serializers.Serializer):
 class WordGroupingSerializer(serializers.Serializer):
     text = serializers.CharField(max_length=5000)
     language_code = serializers.CharField(max_length=50, default='zh')
+
+
+class STTSerializer(serializers.Serializer):
+    language_code = serializers.CharField(max_length=50, default='zh-CN')
+    filename = serializers.CharField(max_length=200, default=get_hashed_filename)
+    size = serializers.IntegerField(min_value=0)
+    duration = serializers.IntegerField(min_value=0)
+
+
+class STTResultSerializer(serializers.Serializer):
+    transcription_id = serializers.CharField(max_length=200)

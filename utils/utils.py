@@ -6,6 +6,7 @@ import random
 import re
 import string
 import timeit
+from hashlib import sha1
 
 import firebase_admin
 import requests
@@ -25,6 +26,62 @@ datastore_client = datastore.Client()
 
 # cred = credentials.Certificate(os.environ.get('SERVICE_ACCOUNT_KEY', 'ricciwawa-6e11b342c999.json'))
 # default_app = firebase_admin.initialize_app(cred)
+
+def upload_get_signed_up(filename, bucket_name="ricciwawa"):
+    """
+    generate a signed upload url
+
+    Reference:
+        https://stackoverflow.com/questions/30843450/how-to-create-google-cloud-storage-signed-urls-on-app-engine-python
+
+    Args:
+        :param filename: filename to store in google storage
+        :param bucket_name: you can change the bucket name if you need
+
+    Returns:
+        (str): returns signed url
+    """
+    """Generates a v4 signed URL for downloading a blob.
+
+    Note that this method requires a service account key file. You can not use
+    this if you are using Application Default Credentials from Google Compute
+    Engine or from the Google Cloud SDK.
+    """
+    blob_name = filename
+
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(blob_name)
+
+    url = blob.generate_signed_url(
+        version="v4",
+        expiration=datetime.timedelta(minutes=15),
+        method="PUT",
+        content_type="application/octet-stream",
+    )
+    # print(
+    #     "curl -X PUT -H 'Content-Type: application/octet-stream' "
+    #     "--upload-file mhb.py '{}'".format(url)
+    # )
+    return url
+
+
+def download_get_signed_up(filename, bucket_name="ricciwawa"):
+    """
+    Generates Signed Download URL
+    """
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(filename)
+
+    url = blob.generate_signed_url(
+        version="v4",
+        expiration=datetime.timedelta(minutes=30),
+        method="GET",
+    )
+
+    # print("curl '{}'".format(url))
+    return url
 
 
 def text_to_speech(text, language_code="en-US", ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL):
@@ -211,6 +268,12 @@ def get_random_string(length):
     letters = string.ascii_lowercase
     result_str = ''.join(random.choice(letters) for i in range(length))
     return result_str
+
+
+def get_hashed_filename():
+    date_time = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+    hashed_id = sha1(str.encode(get_random_string(10) + date_time)).hexdigest()
+    return str(hashed_id)
 
 
 ############################################ Speech to Text MSFT ################################
@@ -942,3 +1005,62 @@ def word_grouping(input_text):
         all_translated_words.append(translated_word)
         word_counter = word_counter + 1
     return all_translated_words
+
+
+def check_file_successfully_uploaded(filename, size, bucket_name='ricciwawa'):
+    """
+    Check if file is successfully uploaded to Google Cloud Storage
+    """
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.get_blob(filename)
+
+    if blob.exists() and blob.size == size:
+        return True
+    return False
+
+
+def initiate_transcribing(filename, language_code, bucket_name="ricciwawa"):
+    content_url = download_get_signed_up(filename, bucket_name)
+
+    body = {
+        'contentUrls': [content_url],
+        'locale': language_code,
+        'displayName': f'Transcription of file using default model for {language_code}'
+    }
+    subscription_key = "aea95857cbf14d41b132fefe96a3052e"  # transfer this to settings.py
+    region = "eastasia"  # transfer this to settings.py
+    endpoint = f'https://{region}.api.cognitive.microsoft.com/speechtotext/v3.0/transcriptions'
+    headers = {'Ocp-Apim-Subscription-Key': subscription_key}
+    response = requests.post(endpoint, json=body, headers=headers).json()
+
+    transcription_id = response['self'].split('/')[-1]
+    status = response['status']
+
+    data = {
+        'transcription_id': transcription_id,
+        'status': status
+    }
+    return data
+
+
+def get_transcription_status(transcription_id):
+    subscription_key = "aea95857cbf14d41b132fefe96a3052e"  # transfer this to settings.py
+    region = "eastasia"  # transfer this to settings.py
+    endpoint = f'https://{region}.api.cognitive.microsoft.com/speechtotext/v3.0/transcriptions/{transcription_id}'
+    headers = {'Ocp-Apim-Subscription-Key': subscription_key}
+    response = requests.get(endpoint, headers=headers).json()
+    status = response['status']
+    return status
+
+
+def get_transcription_url(transcription_id):
+    subscription_key = "aea95857cbf14d41b132fefe96a3052e"  # transfer this to settings.py
+    region = "eastasia"  # transfer this to settings.py
+    endpoint = f'https://{region}.api.cognitive.microsoft.com/speechtotext/v3.0/transcriptions/{transcription_id}/files'
+    headers = {'Ocp-Apim-Subscription-Key': subscription_key}
+    response = requests.get(endpoint, headers=headers).json()
+    data = {
+        'transcription_url': response['values'][1]['links']['contentUrl'],
+    }
+    return data

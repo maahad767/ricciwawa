@@ -4,16 +4,6 @@ from google.cloud import tasks_v2, storage
 
 from utils.utils import speech_tts_msft
 
-# =========================================================
-# Creator: Kenneth Yip
-# This function is very important
-# It gets the text and create the Mandarin and Cantonese audios
-# Will soon also have slower Mandarin and Cantonese audios based on Abdul silence adding module
-# It calls Azure using background task to generate the MP3 files.  Background task is needed because it takes long time
-# We use Azure because its Mandarin audio quality is the best.
-# =========================================================
-from utils.utils import google_translate
-
 
 def create_mp3_task(language_code, text, output_filename, time_delay=0):
     """
@@ -76,62 +66,9 @@ def create_mp3_task(language_code, text, output_filename, time_delay=0):
     #     response = client.create_task(parent=parent, task=task)
 
 
-def upload_get_signed_up(filename):
-    """
-    generate a signed upload url
-
-    Reference:
-        https://stackoverflow.com/questions/30843450/how-to-create-google-cloud-storage-signed-urls-on-app-engine-python
-
-    Args:
-        filename (str): filename to store in google storage
-
-    Returns:
-        (str): returns signed url
-    """
-    """Generates a v4 signed URL for downloading a blob.
-
-    Note that this method requires a service account key file. You can not use
-    this if you are using Application Default Credentials from Google Compute
-    Engine or from the Google Cloud SDK.
-    """
-    bucket_name = 'ricciwawa'
-    blob_name = filename
-
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(blob_name)
-
-    url = blob.generate_signed_url(
-        version="v4",
-        expiration=datetime.timedelta(minutes=15),
-        method="PUT",
-        content_type="application/octet-stream",
-    )
-    # print(
-    #     "curl -X PUT -H 'Content-Type: application/octet-stream' "
-    #     "--upload-file mhb.py '{}'".format(url)
-    # )
-    return url
 
 
-def download_get_signed_up(filename):
-    """
-    Generates Signed Download URL
-    """
-    bucket_name = 'ricciwawa'
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(filename)
 
-    url = blob.generate_signed_url(
-        version="v4",
-        expiration=datetime.timedelta(minutes=30),
-        method="GET",
-    )
-
-    # print("curl '{}'".format(url))
-    return url
 
 
 def create_save_edit_fulldata(trad_words, sim_word, english_words, pinyin_list):
@@ -158,3 +95,5 @@ def create_save_edit_fulldata(trad_words, sim_word, english_words, pinyin_list):
         # translation each word for all the languages.
 
     return all_translated_words
+
+
