@@ -74,6 +74,18 @@ class GetContentsListView(generics.ListAPIView):
             return Post.objects.none()
 
 
+class LikedPostsView(generics.ListAPIView):
+    """
+    Returns posts liked by the user.
+    """
+    serializer_class = PostListSerializer
+    permission_classes = (IsAuthenticated, )
+
+    def get_queryset(self):
+        myself = self.request.user
+        return Post.objects.filter(id__in=myself.likepost_set.values('id'))
+
+
 class SubscriptionViewset(viewsets.ModelViewSet):
     """
     states: (0, 'closed'), (1, 'open')

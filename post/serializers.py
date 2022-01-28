@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
+from django.db.models import Count, Sum
 from rest_framework import serializers
 
 from account.fields import UserField
@@ -447,7 +448,8 @@ class UserInfoSerializer(serializers.ModelSerializer):
     def get_likes_count(self, obj):
         if type(obj) is AnonymousUser:
             return 0
-        return obj.likepost_set.count() + obj.likecomment_set.count()
+        return obj.post_set.annotate(likes_count=Count('likepost')).aggregate(
+            total_likes=Sum('likes_count'))['total_likes']
 
     class Meta:
         model = get_user_model()

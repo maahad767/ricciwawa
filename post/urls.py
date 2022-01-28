@@ -9,7 +9,7 @@ from post.views import SubscriptionViewset, PlaylistViewset, PostViewset, Commen
     GetCommentsByPostIDView, \
     GetCommentsByParentIDView, SharePostView, GetUserInfoView, GetSubscriptionsByUserView, GetPlaylistsByUserView, \
     CategoryListCreateView, SearchPostView, SubscribedPlansView, UnsubscribeView, ResourcesView, \
-    NotificationView, SearchHashTagView, LikeHashTagView, FollowHashTagView
+    NotificationView, SearchHashTagView, LikeHashTagView, FollowHashTagView, LikedPostsView
 
 """
 Router is used to route ViewSets. 
@@ -32,6 +32,7 @@ urlpatterns = [
     path('', WebHome.as_view()),
     path('newsfeed-contents/', NewsfeedView.as_view()),
     path('contents/<str:content_type>/<int:id>/', GetContentsListView.as_view()),
+    path('liked-posts/', LikedPostsView.as_view()),
     path('user-posts/<str:uid>/', UserPostListView.as_view()),
     path('like-post/', LikePostView.as_view()),
     path('unlike-post/<int:post_id>/', UnlikePostView.as_view()),
