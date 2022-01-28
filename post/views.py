@@ -83,7 +83,7 @@ class LikedPostsView(generics.ListAPIView):
 
     def get_queryset(self):
         myself = self.request.user
-        return Post.objects.filter(id__in=myself.likepost_set.values('id'))
+        return Post.objects.filter(id__in=myself.likepost_set.values('post'))
 
 
 class SubscriptionViewset(viewsets.ModelViewSet):
