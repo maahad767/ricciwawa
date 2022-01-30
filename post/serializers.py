@@ -461,9 +461,9 @@ class NotificationSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
 
     def get_image(self, obj):
-        if 10 <= obj.type <= 29:
+        if 10 <= obj.notification_type <= 29:
             return Post.objects.get(id=obj.object_id).image
-        elif 40 <= obj.type <= 49:
+        elif 40 <= obj.notification_type <= 49:
             return Subscription.objects.get(id=obj.object_id).thumbnail
         return None
 
