@@ -463,11 +463,12 @@ class NotificationSerializer(serializers.ModelSerializer):
         image = None
         if 10 <= obj.notification_type <= 29:
             post = Post.objects.filter(id=obj.object_id).first()
-            if post:
+            if post and post.image:
                 image = post.image.url
         elif 40 <= obj.notification_type <= 49:
             subscription = Subscription.objects.filter(id=obj.object_id).first()
-            image = subscription.thumbnail.url
+            if subscription and subscription.thumbnail:
+                image = subscription.thumbnail.url
         return image
 
     class Meta:
