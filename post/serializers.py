@@ -144,7 +144,6 @@ class ResourcesSerializer(serializers.ModelSerializer):
     def get_shares(self, obj):
         return obj.sharepost_set.all().count()
 
-
     def get_audio_simplified_chinese_url(self, obj):
         if obj.audio_simplified_chinese:
             return download_get_signed_up(obj.audio_simplified_chinese)
@@ -461,11 +460,15 @@ class NotificationSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
 
     def get_image(self, obj):
+        image = None
         if 10 <= obj.notification_type <= 29:
-            return Post.objects.get(id=obj.object_id).image
+            post = Post.objects.filter(id=obj.object_id).first()
+            if post:
+                image = post.image
         elif 40 <= obj.notification_type <= 49:
-            return Subscription.objects.get(id=obj.object_id).thumbnail
-        return None
+            subscription = Subscription.objects.filter(id=obj.object_id).first()
+            image = subscription.thumbnail
+        return image
 
     class Meta:
         model = Notification
@@ -492,14 +495,12 @@ class HashTagSerializer(serializers.ModelSerializer):
 
 
 class LikeHashTagSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = LikeHashTag
         exclude = ['id']
 
 
 class FollowHashTagSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = FollowHashTag
         exclude = ['id']
