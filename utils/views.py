@@ -168,6 +168,9 @@ class InitiateSTTView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
+        request_data = request.data
+        if 'filename' in request_data:
+            del request_data['filename']
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             data = serializer.data
@@ -181,9 +184,6 @@ class StartSTTView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
-        request_data = request.data
-        if 'filename' in request_data:
-            del request_data['filename']
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             data = serializer.data
