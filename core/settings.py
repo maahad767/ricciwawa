@@ -9,12 +9,16 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import io
 from pathlib import Path
 import django_heroku
 import os
+import environ
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+from google.cloud import secretmanager
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.path.join(BASE_DIR, 'ricciwawa-6e11b342c999.json')
 
@@ -92,16 +96,16 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ricciwawadb',
-        'USER': 'ricciwawadbuser',
-        'PASSWORD': 'abcdefgh123',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'ricciwawadb',
+#         'USER': 'ricciwawadbuser',
+#         'PASSWORD': 'abcdefgh123',
+#         'HOST': '127.0.0.1',
+#         'PORT': '5432',
+#     }
+# }
 
 # DATABASES = {
 #     'default': {
@@ -115,16 +119,17 @@ DATABASES = {
 # }
 
 # Development Database
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'dc14m2smvlgdol',
-#         'USER': 'epuehcbeyfqlde',
-#         'PASSWORD': 'd3d86103315271d06e6200a4ec9736d55aed5d28377c66a6603a19255ad1bee3',
-#         'HOST': 'ec2-34-232-149-136.compute-1.amazonaws.com',
-#         'PORT': '5432',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'dc14m2smvlgdol',
+        'USER': 'epuehcbeyfqlde',
+        'PASSWORD': 'd3d86103315271d06e6200a4ec9736d55aed5d28377c66a6603a19255ad1bee3',
+        'HOST': 'ec2-34-232-149-136.compute-1.amazonaws.com',
+        'PORT': '5432',
+    }
+}
+
 
 # Production Database
 # DATABASES = {
@@ -251,26 +256,36 @@ if os.environ.get('DEBUG') == 'FALSE':
     DEBUG = False
 else:
     DEBUG = True
-django_heroku.settings(locals())
 
-#
-# env = environ.Env(DEBUG=(bool, False))
-# env_file = os.path.join(BASE_DIR, ".env")
-#
+
+env = environ.Env(DEBUG=(bool, True))
+env_file = os.path.join(BASE_DIR, ".env")
+
 # if os.path.isfile(env_file):
-#     # Use a local secret file, if provided
-#
-#     env.read_env(env_file)
+    # Use a local secret file, if provided
+
+    # env.read_env(env_file)
 # # ...
-# elif os.environ.get("GOOGLE_CLOUD_PROJECT", None):
-#     # Pull secrets from Secret Manager
-#     project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
-#
-#     client = secretmanager.SecretManagerServiceClient()
-#     settings_name = os.environ.get("SETTINGS_NAME", "django_settings")
-#     name = f"projects/{project_id}/secrets/{settings_name}/versions/latest"
-#     payload = client.access_secret_version(name=name).payload.data.decode("UTF-8")
-#
-#     env.read_env(io.StringIO(payload))
-# else:
-#     raise Exception("No local .env or GOOGLE_CLOUD_PROJECT detected. No secrets found.")
+if os.environ.get('USE_HEROKU', None) == 'TRUE':
+    django_heroku.settings(locals())
+
+elif os.environ.get("GOOGLE_CLOUD_PROJECT", None):
+    # Pull secrets from Secret Manager
+    project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
+
+    client = secretmanager.SecretManagerServiceClient()
+    settings_name = os.environ.get("SETTINGS_NAME", "django_settings")
+    name = f"projects/{project_id}/secrets/{settings_name}/versions/latest"
+    payload = client.access_secret_version(name=name).payload.data.decode("UTF-8")
+
+    env.read_env(io.StringIO(payload))
+
+    # Use django-environ to parse the connection string
+    DATABASES = {"default": env.db()}
+
+    # If the flag as been set, configure to use proxy
+    if os.getenv("USE_CLOUD_SQL_AUTH_PROXY", None):
+        DATABASES["default"]["HOST"] = "127.0.0.1"
+        DATABASES["default"]["PORT"] = 5555
+else:
+    raise Exception("No USE_HEROKU or GOOGLE_CLOUD_PROJECT detected. No secrets found.")

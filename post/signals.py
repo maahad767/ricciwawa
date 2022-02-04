@@ -151,7 +151,7 @@ def create_follow_notification(instance, created, *args, **kwargs):
     if to_user == followed_by:
         return
 
-    follows_count = instance.followed_user.follow_set.count()
+    follows_count = instance.followed_user.followers.count()
 
     if follows_count == 1:
         content = f'@{followed_by.username} followed you.'
