@@ -390,7 +390,9 @@ class SearchPostView(generics.ListAPIView):
 
     def get_queryset(self):
         myself = self.request.user
-        search_result = PostDocument.search().query("multi_match", query=self.kwargs['qs']).to_queryset()
+        search_result = PostDocument.search()\
+            .query("query_string", query=f'*{self.kwargs["qs"]}*', fields=['title', 'description', 'text'])\
+            .to_queryset()
 
         if myself.is_authenticated:
             my_subscriptions = myself.subscriptions.all().values('subscription')
