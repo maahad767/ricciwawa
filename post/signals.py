@@ -32,7 +32,7 @@ def add_audio_in_post(instance, created, *args, **kwargs):
         sim_spaced_sentence = sim_spaced_sentence.replace("<p>", "\n").replace("<BR>", "\n<BR>\n")
         instance.audio_simplified_chinese = storage_prefix + str_hashed_id + "_tw" + ".mp3"
         instance.timing_simplified_chinese = storage_prefix + str_hashed_id + "_tw" + "_timing.txt"
-        create_mp3_task.delay("tw", sim_spaced_sentence, instance.audio_simplified_chinese)
+        create_mp3_task(language_code="tw", text=sim_spaced_sentence, output_filename=instance.audio_simplified_chinese).delay()
 
     if instance.text_traditional_chinese:
         trad_spaced_sentence = "\n".join(instance.text_traditional_chinese)
@@ -40,11 +40,11 @@ def add_audio_in_post(instance, created, *args, **kwargs):
         trad_spaced_sentence = trad_spaced_sentence.replace("<p>", "\n").replace("<BR>", "\n<BR>\n")
         instance.audio_traditional_chinese = storage_prefix + str_hashed_id + "_hk" + ".mp3"
         instance.timing_traditional_chinese = storage_prefix + str_hashed_id + "_hk" + "_timing.txt"
-        create_mp3_task.delay("hk", trad_spaced_sentence, instance.audio_traditional_chinese)
+        create_mp3_task(language_code="hk", text=trad_spaced_sentence, output_filename=instance.audio_traditional_chinese).delay()
 
     instance.save()
     if instance.text_traditional_chinese and instance.text_simplified_chinese and instance.meaning_words and instance.pin_yin_words:
-        add_full_data_translations.delay(instance.id)
+        add_full_data_translations(instance_id=instance.id).delay()
 
 
 """
