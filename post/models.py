@@ -409,7 +409,8 @@ class SavePlaylist(models.Model):
 
 class FavouriteVocabulary(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    word = models.CharField(max_length=50)
+    word = models.CharField(max_length=500)
+    meaning = models.CharField(max_length=500)
 
     @staticmethod
     def has_read_permission(request):
@@ -423,6 +424,8 @@ class FavouriteVocabulary(models.Model):
         return True
 
     def has_object_write_permission(self, request):
+        if not request.user.is_authenticated():
+            return False
         return request.user == self.user
 
     class Meta:
