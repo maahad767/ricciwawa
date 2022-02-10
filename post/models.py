@@ -410,7 +410,10 @@ class SavePlaylist(models.Model):
 class FavouriteVocabulary(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     word = models.CharField(max_length=500)
-    meaning = models.CharField(max_length=500)
+    pinyin = models.CharField(max_length=500)
+    meaning = models.CharField(max_length=2000)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='vocabulary/', null=True, blank=True)
 
     @staticmethod
     def has_read_permission(request):

@@ -401,6 +401,22 @@ class FavouriteSerializer(serializers.ModelSerializer):
 
 class FavouriteVocabularySerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    author = UserField(source='post.owner', read_only=True)
+    post_likes = serializers.SerializerMethodField(read_only=True)
+    post_title = serializers.CharField(read_only=True, source='post.title')
+
+    def get_is_liked(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            return LikePost.objects.filter(post=obj.post, liker=user).exists()
+        return False
+
+    def get_post_likes(self, obj):
+        return obj.post.likepost_set.all().count()
+
+    def get_post_title(self, obj):
+        return obj.post.title
+
 
     class Meta:
         model = FavouriteVocabulary
