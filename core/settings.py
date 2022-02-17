@@ -107,16 +107,16 @@ WSGI_APPLICATION = 'core.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'riccidb',
-        'USER': 'ricciuser',
-        'PASSWORD': 'test123456',
-        'HOST': '127.0.0.1',
-        'PORT': '5555',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'riccidb',
+#         'USER': 'ricciuser',
+#         'PASSWORD': 'test123456',
+#         'HOST': '127.0.0.1',
+#         'PORT': '5555',
+#     }
+# }
 
 # Development Database
 # DATABASES = {
@@ -132,16 +132,16 @@ DATABASES = {
 
 
 # Production Database
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'dbbefc24poppkf',
-#         'USER': 'u4va2b8gkrlh25',
-#         'PASSWORD': 'peca0ca905cdacd5996aa190bb0db291e7080a3785a0b3fa95a9beac36555f8ed',
-#         'HOST': 'ec2-23-21-100-200.compute-1.amazonaws.com',
-#         'PORT': '5432',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'dbbefc24poppkf',
+        'USER': 'u4va2b8gkrlh25',
+        'PASSWORD': 'peca0ca905cdacd5996aa190bb0db291e7080a3785a0b3fa95a9beac36555f8ed',
+        'HOST': 'ec2-23-21-100-200.compute-1.amazonaws.com',
+        'PORT': '5432',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
