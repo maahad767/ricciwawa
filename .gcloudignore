@@ -18,4 +18,5 @@ __pycache__/
 # Ignored by the build system
 /setup.cfg
 translation_data.json
+data.json
 venv
