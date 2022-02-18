@@ -1,7 +1,8 @@
 runtime: python38
 
 entrypoint: gunicorn -b :$PORT core.wsgi
-min_instances: 1
+
+instance_class: f2
 
 handlers:
   # This configures Google App Engine to serve the files in the app's static

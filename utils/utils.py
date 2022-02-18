@@ -174,8 +174,8 @@ def speech_to_text(speech_file, sample_rate, audio_channel_count, language_code)
         speech_recognizer.stop_continuous_recognition()
         nonlocal done
         done = True
-
-    with open(tmp_filename, "wb") as f:
+    storage_path = "/tmp/"
+    with open(storage_path + tmp_filename, "wb") as f:
         f.write(speech_file.file.read())
     audio_input = speechsdk.AudioConfig(filename=tmp_filename)
     speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_input)
@@ -251,12 +251,13 @@ def upload_blob(source_file_name):
     Uploads a file to the bucket.
     Created by: Kenneth Y.
     """
+    storage_path = "/tmp/"
     bucket_name = "ricciwawa"
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(source_file_name)
 
-    blob.upload_from_filename(source_file_name)
+    blob.upload_from_filename(storage_path + source_file_name)
     print("Successful")
 
 
@@ -288,6 +289,7 @@ def speech_tts_msft(lang, original_input_text, mp3_output_filename):
     A text to speech converter function
     => Seems like abandoned function.
     """
+    storage_path = "/tmp/"
     lang = lang.lower().strip(" \"\'")
     # print(lang, original_input_text, mp3_output_filename)
     previous_word_boundry_offset = 0
@@ -304,7 +306,7 @@ def speech_tts_msft(lang, original_input_text, mp3_output_filename):
         SpeechSynthesisOutputFormat, SpeechSynthesisEventArgs, SpeechSynthesisWordBoundaryEventArgs
     from azure.cognitiveservices.speech.audio import AudioOutputConfig
     timing_file_name = mp3_output_filename.replace(".mp3", "_timing.txt")
-    with open(timing_file_name, 'a') as f:
+    with open(storage_path + timing_file_name, 'a') as f:
         pass
     # first offset is to remove the first string that contains Azure information
     first_offset = 0
@@ -318,7 +320,7 @@ def speech_tts_msft(lang, original_input_text, mp3_output_filename):
             global previous_word_boundry_offset, previous_word_audio_offset, first_offset
             # print (input_text[previous_word_boundry_offset : evt.text_offset],previous_word_boundry_offset, evt.text_offset, evt.audio_offset, evt.audio_offset - previous_word_audio_offset)
             # use mp3_timing here... return it as json data
-            with open(timing_file_name, 'a') as f:
+            with open(storage_path + timing_file_name, 'a') as f:
                 temp_line = {}
 
                 temp_line["char_start"] = previous_word_boundry_offset - first_offset
@@ -393,7 +395,7 @@ def speech_tts_msft(lang, original_input_text, mp3_output_filename):
             lambda evt: show_tts_text(evt))
         result = synthesizer.speak_ssml_async(input_text).get()
         stream = AudioDataStream(result)
-        stream.save_to_wav_file(mp3_output_filename)
+        stream.save_to_wav_file(storage_path + mp3_output_filename)
         # save to firebase storage
         upload_blob(mp3_output_filename)
         # upload timing file
@@ -731,7 +733,7 @@ def uid_to_id_token(uid):
 
 
 def add_translation_data_to_database(filename):
-    """Add translation data to the database."""
+    """Add translation data to the database. Not a regularly used function in the server(a script file actually)"""
     words = open(filename, 'r', encoding="utf-8").readlines()
 
     for i, word in enumerate(words):
