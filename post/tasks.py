@@ -1,18 +1,21 @@
 from celery import shared_task
+from cloudtask import (
+    CloudTaskRequest,
+    task)
 
 from post.models import Post
 from utils.models import Word
 from utils.utils import speech_tts_msft, google_translate
 
 
-@shared_task
-def create_mp3_task(language_code, text, output_filename):
+@task()
+def create_mp3_task(request, language_code, text, output_filename):
     speech_tts_msft(language_code, text, output_filename)
     return f'mp3 file is created for {output_filename}'
 
 
-@shared_task
-def add_full_data_translations(instance_id):
+@task()
+def add_full_data_translations(request, instance_id):
     instance = Post.objects.get(id=instance_id)
     trad_words = instance.text_traditional_chinese
     pinyin_words = instance.pin_yin_words
