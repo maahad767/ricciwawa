@@ -55,7 +55,7 @@ def upload_get_signed_up(filename, bucket_name="ricciwawa"):
 
     url = blob.generate_signed_url(
         version="v4",
-        expiration=datetime.timedelta(minutes=15),
+        expiration=datetime.timedelta(minutes=60),
         method="PUT",
         content_type="application/octet-stream",
     )
@@ -76,7 +76,7 @@ def download_get_signed_up(filename, bucket_name="ricciwawa"):
 
     url = blob.generate_signed_url(
         version="v4",
-        expiration=datetime.timedelta(minutes=30),
+        expiration=datetime.timedelta(minutes=60),
         method="GET",
     )
 

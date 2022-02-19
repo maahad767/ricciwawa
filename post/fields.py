@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from post.models import HashTag
+from post.models import HashTag, LikeHashTag
 
 
 class AuthoredPostsPrimaryKeyRelatedField(serializers.PrimaryKeyRelatedField):
@@ -21,9 +21,23 @@ class HashTagSerializer(serializers.ModelSerializer):
     Serializer for HashTag model.
     """
     posts_count = serializers.SerializerMethodField()
+    s_followed = serializers.SerializerMethodField()
+    is_liked = serializers.SerializerMethodField()
 
     def get_posts_count(self, obj):
         return obj.post_set.count()
+
+    def get_is_followed(self, obj):
+        user = self.context['request'].user
+        if not user.is_authenticated:
+            return False
+        return user.followhashtag_set.count() > 0
+
+    def get_is_liked(self, obj):
+        user = self.context['request'].user
+        if not user.is_authenticated:
+            return False
+        return LikeHashTag.objects.filter(hashtag=obj, liker=user).exists()
 
     class Meta:
         model = HashTag
