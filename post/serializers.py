@@ -532,6 +532,8 @@ class LikeHashTagSerializer(serializers.ModelSerializer):
 
 
 class FollowHashTagSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     class Meta:
         model = FollowHashTag
         exclude = ['id']
