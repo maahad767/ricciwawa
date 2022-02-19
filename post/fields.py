@@ -21,7 +21,7 @@ class HashTagSerializer(serializers.ModelSerializer):
     Serializer for HashTag model.
     """
     posts_count = serializers.SerializerMethodField()
-    s_followed = serializers.SerializerMethodField()
+    is_followed = serializers.SerializerMethodField()
     is_liked = serializers.SerializerMethodField()
 
     def get_posts_count(self, obj):
@@ -53,7 +53,7 @@ class HashTagPrimaryKeyRelatedField(serializers.PrimaryKeyRelatedField):
         """
         Override to_representation to return a list of HashTag objects
         """
-        return HashTagSerializer(value).data
+        return HashTagSerializer(value, context=self.context).data
         # return value.name
 
     def to_internal_value(self, data):
