@@ -107,28 +107,28 @@ WSGI_APPLICATION = 'core.wsgi.application'
 #     }
 # }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'riccidb',
-#         'USER': 'ricciuser',
-#         'PASSWORD': 'test123456',
-#         'HOST': '127.0.0.1',
-#         'PORT': '5555',
-#     }
-# }
-
-# Development Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dc14m2smvlgdol',
-        'USER': 'epuehcbeyfqlde',
-        'PASSWORD': 'd3d86103315271d06e6200a4ec9736d55aed5d28377c66a6603a19255ad1bee3',
-        'HOST': 'ec2-34-232-149-136.compute-1.amazonaws.com',
-        'PORT': '5432',
+        'NAME': 'dbprod',
+        'USER': 'ricciuser',
+        'PASSWORD': 'test123456',
+        'HOST': '127.0.0.1',
+        'PORT': '5555',
     }
 }
+
+# Development Database
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'dc14m2smvlgdol',
+#         'USER': 'epuehcbeyfqlde',
+#         'PASSWORD': 'd3d86103315271d06e6200a4ec9736d55aed5d28377c66a6603a19255ad1bee3',
+#         'HOST': 'ec2-34-232-149-136.compute-1.amazonaws.com',
+#         'PORT': '5432',
+#     }
+# }
 
 
 # Production Database

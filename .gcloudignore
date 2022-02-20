@@ -19,4 +19,6 @@ __pycache__/
 /setup.cfg
 translation_data.json
 data.json
+initial_data.json
+latest.dump
 venv
