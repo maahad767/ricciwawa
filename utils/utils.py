@@ -174,6 +174,7 @@ def speech_to_text(speech_file, sample_rate, audio_channel_count, language_code)
         speech_recognizer.stop_continuous_recognition()
         nonlocal done
         done = True
+
     storage_path = "/tmp/"
     with open(storage_path + tmp_filename, "wb") as f:
         f.write(speech_file.file.read())
@@ -274,7 +275,7 @@ def get_random_string(length):
 def get_hashed_filename(ext='.wav'):
     date_time = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
     hashed_id = sha1(str.encode(get_random_string(10) + date_time)).hexdigest()
-    return str(hashed_id)+ext
+    return str(hashed_id) + ext
 
 
 ############################################ Speech to Text MSFT ################################
@@ -1015,11 +1016,8 @@ def check_file_successfully_uploaded(filename, size, bucket_name='ricciwawa'):
     """
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
-    print(bucket)
-    print(bucket_name)
-    print(filename)
     blob = bucket.get_blob(filename)
-    print(blob)
+    print(blob.size)
     if blob and blob.size == size:
         return True
     return False
@@ -1069,3 +1067,18 @@ def get_transcription_url(transcription_id):
         'transcription_url': response['values'][1]['links']['contentUrl'],
     }
     return data
+
+
+def start_transcribing(filename):
+    host = "http://74.207.245.137:5000"
+    # host = "http://localhost:5000"
+    url = f"{host}/transcription/start/{filename}/"
+    response = requests.get(url).json()
+    return response
+
+
+def get_transcript(tid):
+    host = "http://74.207.245.137:5000"
+    url = f"{host}/transcription/result/{tid}/"
+    response = requests.get(url).json()
+    return response
