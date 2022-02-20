@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'drf_spectacular_sidecar',
     'django_elasticsearch_dsl',
     'djstripe',
+    'cloudtask',
 
     # local apps
     'account',
@@ -118,6 +119,8 @@ DATABASES = {
     }
 }
 
+
+
 # Development Database
 # DATABASES = {
 #     'default': {
@@ -131,7 +134,7 @@ DATABASES = {
 # }
 
 
-# Production Database
+# # Production Database
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
@@ -281,5 +284,14 @@ elif os.environ.get("GOOGLE_CLOUD_PROJECT", None):
     if os.getenv("USE_CLOUD_SQL_AUTH_PROXY", None):
         DATABASES["default"]["HOST"] = "127.0.0.1"
         DATABASES["default"]["PORT"] = 5555
+
+    CLOUDTASK: dict = {
+        'PROJECT': project_id,
+        'LOCATION': 'asia-east2',
+        'SAE': 'wwwiipcc@appspot.gserviceaccount.com',
+        'QUEUE': 'djangotestqueue',
+        'URL': 'https://wwwiipcc.uc.r.appspot.com/_tasks/',
+        'SECRET': SECRET_KEY,
+    }
 else:
     raise Exception("No USE_HEROKU or GOOGLE_CLOUD_PROJECT detected. No secrets found.")

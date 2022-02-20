@@ -10,7 +10,7 @@ from .serializers import TextToSpeechSerializer, SpeechToTextSerializer, Pronunc
     UIDToIdTokenSerializer, WordGroupingSerializer, STTSerializer, STTResultSerializer
 from . import utils
 from .utils import upload_get_signed_up, google_translate, check_file_successfully_uploaded, initiate_transcribing, \
-    get_transcription_status, get_transcription_url
+    get_transcription_status, get_transcription_url, get_transcript, start_transcribing
 
 """
 The file contains View Classes for utility APIs such as Text To Speech, Speech To Text, etc. 
@@ -191,7 +191,8 @@ class StartSTTView(generics.GenericAPIView):
             if not upload_status:
                 return Response({'errors': 'File not uploaded successfully'}, status=status.HTTP_400_BAD_REQUEST)
 
-            data = initiate_transcribing(data['filename'], data['language_code'], 'ricciwawa_mp3')
+            # data = initiate_transcribing(data['filename'], data['language_code'], 'ricciwawa_mp3')
+            data = start_transcribing(data['filename'])
             return Response(data, status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -204,10 +205,12 @@ class GetSTTResultView(generics.GenericAPIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             data = serializer.data
-            transcription_status = get_transcription_status(data['transcription_id'])
-            if transcription_status.lower() != 'succeeded':
-                return Response({'status': transcription_status}, status=status.HTTP_206_PARTIAL_CONTENT)
-            data = get_transcription_url(data['transcription_id'])
-            data['status'] = transcription_status
+            # transcription_status = get_transcription_status(data['transcription_id'])
+            # if transcription_status.lower() != 'succeeded':
+            #     return Response({'status': transcription_status}, status=status.HTTP_206_PARTIAL_CONTENT)
+            # data = get_transcription_url(data['transcription_id'])
+            # data['status'] = transcription_status
+
+            data = get_transcript(data['transcription_id'])
             return Response(data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -37,4 +37,5 @@ urlpatterns += [
     # Optional UI:
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    path('_tasks/', include('cloudtask.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

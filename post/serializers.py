@@ -401,6 +401,22 @@ class FavouriteSerializer(serializers.ModelSerializer):
 
 class FavouriteVocabularySerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    author = UserField(source='post.owner', read_only=True)
+    post_likes = serializers.SerializerMethodField(read_only=True)
+    post_title = serializers.CharField(read_only=True, source='post.title')
+
+    def get_is_liked(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            return LikePost.objects.filter(post=obj.post, liker=user).exists()
+        return False
+
+    def get_post_likes(self, obj):
+        return obj.post.likepost_set.all().count()
+
+    def get_post_title(self, obj):
+        return obj.post.title
+
 
     class Meta:
         model = FavouriteVocabulary
@@ -486,9 +502,23 @@ class NotificationMarkSeenSerializer(serializers.ModelSerializer):
 
 class HashTagSerializer(serializers.ModelSerializer):
     posts_count = serializers.SerializerMethodField()
+    is_followed = serializers.SerializerMethodField()
+    is_liked = serializers.SerializerMethodField()
 
     def get_posts_count(self, obj):
         return obj.post_set.count()
+
+    def get_is_followed(self, obj):
+        user = self.context['request'].user
+        if not user.is_authenticated:
+            return False
+        return user.followhashtag_set.count() > 0
+
+    def get_is_liked(self, obj):
+        user = self.context['request'].user
+        if not user.is_authenticated:
+            return False
+        return LikeHashTag.objects.filter(hashtag=obj, liker=user).exists()
 
     class Meta:
         model = HashTag
@@ -502,6 +532,8 @@ class LikeHashTagSerializer(serializers.ModelSerializer):
 
 
 class FollowHashTagSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     class Meta:
         model = FollowHashTag
         exclude = ['id']

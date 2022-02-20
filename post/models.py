@@ -409,7 +409,14 @@ class SavePlaylist(models.Model):
 
 class FavouriteVocabulary(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    word = models.CharField(max_length=50)
+    word = models.CharField(max_length=2000)
+    trad = models.CharField(max_length=2000)
+    sim = models.CharField(max_length=2000)
+    eng = models.CharField(max_length=2000)
+    pinyin = models.CharField(max_length=2000)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='vocabulary/', null=True, blank=True)
+    is_liked = models.BooleanField(default=False)
 
     @staticmethod
     def has_read_permission(request):
@@ -423,6 +430,8 @@ class FavouriteVocabulary(models.Model):
         return True
 
     def has_object_write_permission(self, request):
+        if not request.user.is_authenticated():
+            return False
         return request.user == self.user
 
     class Meta:

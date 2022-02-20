@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from post.models import HashTag
+from post.models import HashTag, LikeHashTag, FollowHashTag
 
 
 class AuthoredPostsPrimaryKeyRelatedField(serializers.PrimaryKeyRelatedField):
@@ -21,9 +21,23 @@ class HashTagSerializer(serializers.ModelSerializer):
     Serializer for HashTag model.
     """
     posts_count = serializers.SerializerMethodField()
+    is_followed = serializers.SerializerMethodField()
+    is_liked = serializers.SerializerMethodField()
 
     def get_posts_count(self, obj):
         return obj.post_set.count()
+
+    def get_is_followed(self, obj):
+        user = self.context['request'].user
+        if not user.is_authenticated:
+            return False
+        return FollowHashTag.objects.filter(hashtag=obj, user=user).exists()
+
+    def get_is_liked(self, obj):
+        user = self.context['request'].user
+        if not user.is_authenticated:
+            return False
+        return LikeHashTag.objects.filter(hashtag=obj, user=user).exists()
 
     class Meta:
         model = HashTag
@@ -39,7 +53,7 @@ class HashTagPrimaryKeyRelatedField(serializers.PrimaryKeyRelatedField):
         """
         Override to_representation to return a list of HashTag objects
         """
-        return HashTagSerializer(value).data
+        return HashTagSerializer(value, context=self.parent.context).data
         # return value.name
 
     def to_internal_value(self, data):
