@@ -1017,8 +1017,8 @@ def check_file_successfully_uploaded(filename, size, bucket_name='ricciwawa'):
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.get_blob(filename)
-    print(blob.size)
     if blob and blob.exists() and blob.size == size:
+        print(blob.size)
         return True
     return False
 
