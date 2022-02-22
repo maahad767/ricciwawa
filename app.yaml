@@ -4,6 +4,10 @@ entrypoint: gunicorn -b :$PORT core.wsgi
 
 instance_class: f2
 
+automatic_scaling:
+  min_idle_instances: 1
+  max_idle_instances: 1
+
 handlers:
   # This configures Google App Engine to serve the files in the app's static
   # directory.

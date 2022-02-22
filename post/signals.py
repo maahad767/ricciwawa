@@ -81,6 +81,7 @@ def create_like_notification(instance, created, *args, **kwargs):
     notification, created = Notification.objects.get_or_create(
         notification_type=notification_type,
         to_user=to_user,
+        from_user=liked_by,
         object_id=instance.post.id)
     notification.content = content
     notification.save()
@@ -108,6 +109,7 @@ def create_comment_notification(instance, created, *args, **kwargs):
     Notification.objects.create(
         notification_type=notification_type,
         to_user=to_user,
+        from_user=commented_by,
         content=content,
         object_id=instance.post.id)
 
@@ -135,6 +137,7 @@ def create_subscribe_notification(instance, created, *args, **kwargs):
     Notification.objects.create(
         notification_type=notification_type,
         to_user=to_user,
+        from_user=subscribed_by,
         content=content,
         object_id=instance.subscription.id)
 
@@ -161,5 +164,6 @@ def create_follow_notification(instance, created, *args, **kwargs):
     Notification.objects.create(
         notification_type=notification_type,
         to_user=to_user,
+        from_user=followed_by,
         content=content,
         object_id=instance.followed_user.id)

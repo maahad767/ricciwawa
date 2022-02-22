@@ -474,6 +474,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
 class NotificationSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
+    from_user = UserField(queryset=get_user_model().objects.all())
 
     def get_image(self, obj):
         image = None

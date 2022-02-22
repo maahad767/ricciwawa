@@ -438,80 +438,47 @@ def translate_word(word):
 
 def google_translate(text, source_language_code, target_language_code):
     try:
-        # if source_language_code == 'zh-TW' and len(text) < 1500:
-        #     query = datastore_client.query(kind='dictionary')
-        #     query.add_filter('trad', '=', text)
-        #     datastore_query_result = list(query.fetch(limit=1))
-        # else:
-        #     datastore_query_result = []
-        # # has the translation from the datastore
-        # if datastore_query_result:
-        #     if target_language_code == 'ur':
-        #         return datastore_query_result[0]['ur']
-        #     elif target_language_code == 'ko':
-        #         return datastore_query_result[0]['korean']
-        #     elif target_language_code == 'id':
-        #         return datastore_query_result[0]['indonesian']
-        #     elif target_language_code == 'zh':
-        #         return datastore_query_result[0]['sim']
-        #     elif target_language_code == 'tl':
-        #         return datastore_query_result[0]['tagalog']
-        #     elif target_language_code == 'en':
-        #         return datastore_query_result[0]['english']
-        #     elif target_language_code == 'es':
-        #         return datastore_query_result[0]['es']
-        #     elif target_language_code == 'de':
-        #         return datastore_query_result[0]['de']
-        #     elif target_language_code == 'hu':
-        #         return datastore_query_result[0]['hu']
-        #     else:
-        #         return "target_language_code mismatch"
-        #
-        # # use Google translate if not in datastore
-        # else:
-        # The input text could be simplified or traditional
-        # loop twice to get the simplified and traditional versions
         client = translate.TranslationServiceClient()
         return_translated_text = ""
         # handle 1500 character limit
 
-        # if len(text) > 1500:
-        #     text_list = []
-        #     sentences = text.split(".")
-        #     split_count = len(text) // 1200
-        #     sentence_count = len(sentences) // split_count
-        #
-        #     for sc in range(split_count):
-        #         start_ind = sc * sentence_count
-        #         end_ind = start_ind + sentence_count
-        #         text_list.append(".".join(sentences[start_ind:end_ind]))
-        #
-        #     for text_part in text_list:
-        #         response = client.translate_text(
-        #             parent="projects/ricciwawa/locations/global",
-        #             contents=[text_part],
-        #             mime_type="text/html",  # mime types: text/plain, text/html
-        #             source_language_code=source_language_code,
-        #             target_language_code=target_language_code
-        #         )
-        #         # Display the translation for each input text provided
-        #         for translation in response.translations:
-        #             # for some reasons, Google may add spaces
-        #             return_translated_text = return_translated_text + translation.translated_text
-        # else:
-        # Detail on supported types can be found here:
-        # https://cloud.google.com/translate/docs/supported-formats
-        response = client.translate_text(
-            parent="projects/ricciwawa/locations/global",
-            contents=[text],
-            mime_type="text/html",  # mime types: text/plain, text/html
-            source_language_code=source_language_code,
-            target_language_code=target_language_code
-        )
-        # Display the translation for each input text provided
-        for translation in response.translations:
-            # for some reasons, Google may add spaces
-            return_translated_text = return_translated_text + translation.translated_text
+        if len(text) > 1500:
+            text_list = []
+            sentences = text.split(".")
+            split_count = len(text) // 1200
+            sentence_count = len(sentences) // split_count
+
+            for sc in range(split_count):
+                start_ind = sc * sentence_count
+                end_ind = start_ind + sentence_count
+                text_list.append(".".join(sentences[start_ind:end_ind]))
+
+            for text_part in text_list:
+                response = client.translate_text(
+                    parent="projects/ricciwawa/locations/global",
+                    contents=[text_part],
+                    mime_type="text/html",  # mime types: text/plain, text/html
+                    source_language_code=source_language_code,
+                    target_language_code=target_language_code
+                )
+                # Display the translation for each input text provided
+                for translation in response.translations:
+                    # for some reasons, Google may add spaces
+                    return_translated_text = return_translated_text + translation.translated_text
+        else:
+            # Detail on supported types can be found here:
+            # https://cloud.google.com/translate/docs/supported-formats
+            response = client.translate_text(
+                parent="projects/ricciwawa/locations/global",
+                contents=[text],
+                mime_type="text/html",  # mime types: text/plain, text/html
+                source_language_code=source_language_code,
+                target_language_code=target_language_code
+            )
+            # Display the translation for each input text provided
+            for translation in response.translations:
+                # for some reasons, Google may add spaces
+                return_translated_text = return_translated_text + translation.translated_text
         return return_translated_text.replace("> ", ">").replace(" < ", "<")
     except ValueError as exc:
         # This will be raised if the token is expired or any other

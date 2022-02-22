@@ -508,6 +508,7 @@ class Notification(models.Model):
         (40, 'subscribe'),
     )
     to_user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='notifications_received')
+    from_user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='notifications_sent')
     content = models.TextField(null=True, blank=True)
     notification_type = models.PositiveSmallIntegerField(default=4, choices=TYPES)
     object_id = models.PositiveIntegerField(null=True, blank=True)
