@@ -513,13 +513,13 @@ class HashTagSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         if not user.is_authenticated:
             return False
-        return user.followhashtag_set.count() > 0
+        return FollowHashTag.objects.filter(hashtag=obj, user=user).exists()
 
     def get_is_liked(self, obj):
         user = self.context['request'].user
         if not user.is_authenticated:
             return False
-        return LikeHashTag.objects.filter(hashtag=obj, liker=user).exists()
+        return LikeHashTag.objects.filter(hashtag=obj, user=user).exists()
 
     class Meta:
         model = HashTag
@@ -527,6 +527,8 @@ class HashTagSerializer(serializers.ModelSerializer):
 
 
 class LikeHashTagSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     class Meta:
         model = LikeHashTag
         exclude = ['id']

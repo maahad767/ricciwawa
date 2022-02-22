@@ -1,7 +1,6 @@
 from django.urls import path
 from rest_framework import routers
 
-from post.models import LikeHashTag
 from post.views import SubscriptionViewset, PlaylistViewset, PostViewset, CommentViewset, NewsfeedView, \
     FavouriteVocabularyViewset, LikePostView, UnlikePostView, ViewPostView, FollowView, AddFavouriteView, \
     RemoveFavouriteView, SavePlaylistView, UnsavePlaylistView, SubscribeView, UnfollowView, IgnorePostView, \
@@ -26,7 +25,8 @@ router.register(r'posts', PostViewset, basename='post')
 router.register(r'comments', CommentViewset, basename='post')
 router.register(r'fav-vocabs', FavouriteVocabularyViewset, basename='post')
 router.register(r'category', CategoryViewset, basename='category')
-
+router.register(r'like-hashtag', LikeHashTagView, basename='like-hashtags')
+router.register(r'follow-hashtag', FollowHashTagView, basename='follow-hashtags')
 
 urlpatterns = [
     path('', WebHome.as_view()),
@@ -76,8 +76,5 @@ urlpatterns = [
     # search post
     path('search-post/<str:qs>/', SearchPostView.as_view()),
     path('search-hashtag/<str:qs>/', SearchHashTagView.as_view()),
-    path('like-hashtag/', LikeHashTagView.as_view()),
-    path('unlike-hashtag/<hashtag_id>/', LikeHashTagView.as_view()),
-    path('follow-hashtag/', FollowHashTagView.as_view()),
-    path('unfollow-hashtag/<hashtag_id>/', FollowHashTagView.as_view()),
 ] + router.urls
+

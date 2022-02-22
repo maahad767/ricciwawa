@@ -4,6 +4,7 @@ from django.db.models import Q
 from dry_rest_permissions.generics import DRYPermissions
 
 from rest_framework import viewsets, generics, status
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
@@ -154,7 +155,9 @@ class PostViewset(viewsets.ModelViewSet):
         return PostSerializer
 
     def get_queryset(self):
-        return Post.objects.filter(owner=self.request.user)
+        if self.request.user.is_authenticated:
+            return Post.objects.filter(owner=self.request.user)
+        return Post.objects.none()
 
 
 class ResourcesView(generics.RetrieveAPIView):
@@ -412,17 +415,17 @@ class SearchHashTagView(generics.ListAPIView):
         return HashTag.objects.filter(name__icontains=self.kwargs['qs'].strip())
 
 
-class LikeHashTagView(generics.CreateAPIView, generics.DestroyAPIView):
+class LikeHashTagView(generics.CreateAPIView, generics.DestroyAPIView, viewsets.GenericViewSet):
     serializer_class = LikeHashTagSerializer
     permission_classes = [DRYPermissions]
 
     def get_object(self):
-        return LikeHashTag.objects.get(id=self.kwargs['hashtag_id'])
+        return get_object_or_404(LikeHashTag, user=self.request.user, hashtag__id=self.kwargs['pk'])
 
 
-class FollowHashTagView(generics.CreateAPIView, generics.DestroyAPIView):
+class FollowHashTagView(generics.CreateAPIView, generics.DestroyAPIView, viewsets.GenericViewSet):
     serializer_class = FollowHashTagSerializer
     permission_classes = [DRYPermissions]
 
     def get_object(self):
-        return FollowHashTag.objects.get(id=self.kwargs['hashtag_id'])
+        return get_object_or_404(FollowHashTag, user=self.request.user, hashtag__id=self.kwargs['pk'])
