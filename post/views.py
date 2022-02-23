@@ -216,7 +216,7 @@ class UnlikePostView(generics.DestroyAPIView):
     def get_object(self):
         post_id = self.kwargs['post_id']
         user = self.request.user
-        return LikePost.objects.get(post__id=post_id, liker=user)
+        return get_object_or_404(LikePost, post__id=post_id, liker=user)
 
 
 class ViewPostView(generics.CreateAPIView):
