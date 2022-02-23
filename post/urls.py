@@ -8,7 +8,7 @@ from post.views import SubscriptionViewset, PlaylistViewset, PostViewset, Commen
     GetCommentsByPostIDView, \
     GetCommentsByParentIDView, SharePostView, GetUserInfoView, GetSubscriptionsByUserView, GetPlaylistsByUserView, \
     CategoryListCreateView, SearchPostView, SubscribedPlansView, UnsubscribeView, ResourcesView, \
-    NotificationView, SearchHashTagView, LikeHashTagView, FollowHashTagView, LikedPostsView
+    NotificationView, SearchHashTagView, LikeHashTagView, FollowHashTagView, LikedPostsView, HashTagViewSet
 
 """
 Router is used to route ViewSets. 
@@ -25,6 +25,7 @@ router.register(r'posts', PostViewset, basename='post')
 router.register(r'comments', CommentViewset, basename='post')
 router.register(r'fav-vocabs', FavouriteVocabularyViewset, basename='post')
 router.register(r'category', CategoryViewset, basename='category')
+router.register(r'hashtag', HashTagViewSet, basename='hashtag')
 router.register(r'like-hashtag', LikeHashTagView, basename='like-hashtags')
 router.register(r'follow-hashtag', FollowHashTagView, basename='follow-hashtags')
 

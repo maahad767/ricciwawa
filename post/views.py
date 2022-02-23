@@ -429,3 +429,11 @@ class FollowHashTagView(generics.CreateAPIView, generics.DestroyAPIView, viewset
 
     def get_object(self):
         return get_object_or_404(FollowHashTag, user=self.request.user, hashtag__id=self.kwargs['pk'])
+
+
+class HashTagViewSet(viewsets.ModelViewSet):
+    serializer_class = HashTagSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        return HashTag.objects.all()
