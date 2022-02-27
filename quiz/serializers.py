@@ -1,6 +1,4 @@
 from rest_framework import serializers
-from drf_writable_nested import WritableNestedModelSerializer
-
 from .models import Quiz, MultipleChoiceQuestion, Choice, InputAnswerQuestion, QuizAttempt, \
     MultipleChoiceQuestionAttempt, InputAnswerQuestionAttempt
 from post.models import Post
@@ -44,7 +42,7 @@ class InputAnswerQuestionSerializer(serializers.ModelSerializer):
         read_only_fields = ['quiz']
 
 
-class QuizSerializer(WritableNestedModelSerializer):
+class QuizSerializer(serializers.ModelSerializer):
     creator = serializers.HiddenField(default=serializers.CurrentUserDefault())
     post = AuthoredPostsPrimaryKeyRelatedField(queryset=Post.objects.all())
     mc_questions = MultipleChoiceQuestionSerializer(source='quiz_multiplechoicequestion_related',

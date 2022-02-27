@@ -129,10 +129,6 @@ venv.bak/
 .dmypy.json
 dmypy.json
 data.json
-<<<<<<< HEAD
-=======
-
->>>>>>> dev
 # Pyre type checker
 .pyre/
 
@@ -147,3 +143,4 @@ cython_debug/
 /translation_data.json
 /initial_data.json
 /latest.dump
+cloud_sql_proxy

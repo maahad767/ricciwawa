@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import io
 from pathlib import Path
-import django_heroku
 import os
 import environ
 
@@ -251,9 +250,7 @@ ELASTICSEARCH_DSL = {
         'http_auth': HTTP_AUTH
     }
 }
-
 # CELERY CONFIG
-CELERY_BROKER_URL = os.getenv('REDISCLOUD_URL', 'amqp://test:test@localhost:5672//')
 
 if os.environ.get('DEBUG') == 'FALSE':
     DEBUG = False
@@ -263,11 +260,7 @@ else:
 env = environ.Env(DEBUG=(bool, True))
 env_file = os.path.join(BASE_DIR, ".env")
 
-if os.environ.get('USE_HEROKU', None) == 'TRUE':
-    # if we use heroku server
-    django_heroku.settings(locals())
-
-elif os.environ.get("GOOGLE_CLOUD_PROJECT", None):
+if os.environ.get("GOOGLE_CLOUD_PROJECT", None):
     # Pull secrets from Secret Manager
     project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
 
@@ -294,4 +287,4 @@ elif os.environ.get("GOOGLE_CLOUD_PROJECT", None):
         'SECRET': SECRET_KEY,
     }
 else:
-    raise Exception("No USE_HEROKU or GOOGLE_CLOUD_PROJECT detected. No secrets found.")
+    raise Exception("No GOOGLE_CLOUD_PROJECT  detected. No secrets found.")
