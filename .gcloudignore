@@ -23,3 +23,5 @@ initial_data.json
 latest.dump
 venv
 cloud_sql_proxy
+.vscode/
+pandas/

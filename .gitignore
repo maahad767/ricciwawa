@@ -144,3 +144,5 @@ cython_debug/
 /initial_data.json
 /latest.dump
 cloud_sql_proxy
+.vscode/
+pandas/
