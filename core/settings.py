@@ -280,10 +280,10 @@ if os.environ.get("GOOGLE_CLOUD_PROJECT", None):
 
     CLOUDTASK: dict = {
         'PROJECT': project_id,
-        'LOCATION': 'asia-east2',
-        'SAE': 'wwwiipcc@appspot.gserviceaccount.com',
+        'LOCATION': 'us-central1',
+        'SAE': 'gaeinittest@appspot.gserviceaccount.com',
         'QUEUE': 'djangotestqueue',
-        'URL': 'https://wwwiipcc.uc.r.appspot.com/_tasks/',
+        'URL': 'https://gaeinittest.uc.r.appspot.com/_tasks/',
         'SECRET': SECRET_KEY,
     }
 else:
