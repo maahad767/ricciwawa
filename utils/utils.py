@@ -356,7 +356,7 @@ def speech_tts_msft(lang, original_input_text, mp3_output_filename):
 
     try:
         # speech_key, service_region = "9b8ded5a42674ea59cac09faeff3b616", "eastus"
-        speech_key, service_region = "aae01d96cdce4194a17db9f5be956e11", "eastasia"
+        speech_key, service_region = "d054b5988d384c6da942e00133de18e7", "centralus"
         # speech_key, service_region = "d273b009107642f6ab9ea4e1727a3b9b", "eastasia"
         speech_config = SpeechConfig(
             subscription=speech_key, region=service_region)
@@ -1037,15 +1037,16 @@ def get_transcription_url(transcription_id):
 
 
 def start_transcribing(filename):
-    host = "http://74.207.245.137:5000"
-    # host = "http://localhost:5000"
+    # host = "http://74.207.245.137:5000"
+    host = "http://127.0.0.1:5000"
     url = f"{host}/transcription/start/{filename}/"
     response = requests.get(url).json()
     return response
 
 
 def get_transcript(tid):
-    host = "http://74.207.245.137:5000"
+    # host = "http://74.207.245.137:5000"
+    host = "http://127.0.0.1:5000"
     url = f"{host}/transcription/result/{tid}/"
     response = requests.get(url).json()
     return response

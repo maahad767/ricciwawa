@@ -9,13 +9,18 @@ from utils.utils import speech_tts_msft, google_translate
 
 @task()
 def create_mp3_task(request, language_code, text, output_filename):
-    speech_tts_msft(language_code, text, output_filename)
+    try: 
+        speech_tts_msft(language_code, text, output_filename)
+    except Exception as e:
+        print(e)
     return f'mp3 file is created for {output_filename}'
 
 
 @task()
 def add_full_data_translations(request, instance_id):
-    instance = Post.objects.get(id=instance_id)
+    instance = Post.objects.filter(id=instance_id).first()
+    if not instance:
+        return
     trad_words = instance.text_traditional_chinese
     pinyin_words = instance.pin_yin_words
     sim_words = instance.text_simplified_chinese
