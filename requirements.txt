@@ -8,6 +8,7 @@ charset-normalizer==2.0.12
 Cython==0.29.28
 dj-cloud-task==0.1.2
 dj-database-url==0.5.0
+dj-stripe==2.6.1
 Django==3.2.7
 django-dry-rest-permissions==1.2.0
 django-elasticsearch-dsl==7.2.0
@@ -46,6 +47,7 @@ httplib2==0.20.4
 idna==3.3
 importlib-resources==5.4.0
 inflection==0.5.1
+jsonfield==3.1.0
 jsonschema==4.4.0
 libcst==0.4.1
 msgpack==1.0.3
@@ -68,6 +70,7 @@ requests==2.26.0
 rsa==4.8
 six==1.16.0
 sqlparse==0.4.2
+stripe==2.66.0
 typing-inspect==0.7.1
 typing_extensions==4.1.1
 uritemplate==3.0.1
