@@ -239,8 +239,16 @@ if os.environ.get("GOOGLE_CLOUD_PROJECT", None):
 
     # If the flag as been set, configure to use proxy
     if os.getenv("USE_CLOUD_SQL_AUTH_PROXY", None):
-        DATABASES["default"]["HOST"] = "127.0.0.1"
-        DATABASES["default"]["PORT"] = 5555
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': 'ricciwawadevdb',
+                'USER': 'ricciwawadevuser',
+                'PASSWORD': 'lkCLt2sKmODpoNEe',
+                'HOST': '127.0.0.1',
+                'PORT': '5555',
+            }
+        }
 
     CLOUDTASK: dict = {
         'PROJECT': project_id,

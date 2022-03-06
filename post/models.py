@@ -123,6 +123,7 @@ class Post(models.Model):
     """
     PRIVACY_CHOICES = [(0, 'private'), (1, 'public')]
     ATTACHMENT_TYPE_CHOICES = [(0, 'none'), (1, 'image'), (2, 'audio'), (3, 'video')]
+    VOICE_OVER_CHOICES = ((0, 'woman'), (1, 'man'), (2, 'child'), (4, 'custom'))
 
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     subscription = models.ForeignKey(Subscription, on_delete=models.SET_NULL, null=True, blank=True)
@@ -141,6 +142,9 @@ class Post(models.Model):
     text_chinese = models.TextField(null=True, blank=True)
     text_simplified_chinese = models.JSONField(null=True, blank=True)
     text_traditional_chinese = models.JSONField(null=True, blank=True)
+    voice_over_type = models.PositiveSmallIntegerField(choices=VOICE_OVER_CHOICES)
+    has_cantonese_audio = models.BooleanField(default=True)
+    has_mandarin_audio = models.BooleanField(default=True)
     audio_simplified_chinese = models.CharField(max_length=1000, null=True, blank=True)
     timing_simplified_chinese = models.CharField(max_length=1000, null=True, blank=True)
     audio_traditional_chinese = models.CharField(max_length=1000, null=True, blank=True)
