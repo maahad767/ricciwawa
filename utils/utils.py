@@ -282,9 +282,28 @@ def get_hashed_filename(ext='.wav'):
 previous_word_boundry_offset = 0
 previous_word_audio_offset = 0
 first_offset = 0
+tts_choices_list = {
+        "cantonese_fast":'<voice name="zh-HK-HiuMaanNeural"><mstts:express-as style="newscast"><prosody rate="10.00%">',
+        "cantonese_slow":'<voice name="zh-HK-HiuMaanNeural"><mstts:express-as style="newscast"><prosody rate="-35.00%">',
+        "cantonese_normal":'<voice name="zh-HK-HiuMaanNeural"><mstts:express-as style="newscast"><prosody rate="-15.00%">',
+        "cantonese_normal_male":'<voice name="zh-HK-WanLungNeural "><mstts:express-as style="newscast"><prosody rate="-15.00%">',
+        "cantonese_normal_male_slow":'<voice name="zh-HK-WanLungNeural "><mstts:express-as style="newscast"><prosody rate="-35.00%">',
+
+        "cantonese_learning":'<voice name="zh-HK-HiuMaanNeural"><mstts:express-as style="newscast"><prosody rate="-30.00%">',
+        "mandarin_fast":'<voice name="zh-CN-XiaoxiaoNeural"><mstts:express-as style="newscast"><prosody rate="10.00%">',
+        "mandarin_slow":'<voice name="zh-CN-XiaoxiaoNeural"><mstts:express-as style="newscast"><prosody rate="-45.00%">',
+        "mandarin_normal":'<voice name="zh-CN-XiaoxiaoNeural"><mstts:express-as style="newscast"><prosody rate="-15.00%">',
+        "mandarin_normal_male":'<voice name="zh-CN-YunyangNeural"><mstts:express-as style="newscast"><prosody rate="-15.00%">',
+        "mandarin_normal_male_slow":'<voice name="zh-CN-YunyangNeural"><mstts:express-as style="newscast"><prosody rate="-45.00%">',
+
+        "mandarin_learning":'<voice name="zh-CN-XiaoxiaoNeural"><mstts:express-as style="newscast"><prosody rate="-30.00%">',
+        "mandarin_child_fast":'<voice name="zh-CN-XiaoyouNeural"><mstts:express-as style="newscast"><prosody rate="10.00%">',
+        "mandarin_child_slow":'<voice name="zh-CN-XiaoyouNeural"><mstts:express-as style="newscast"><prosody rate="-45.00%">',
+        "mandarin_child_normal":'<voice name="zh-CN-XiaoyouNeural"><mstts:express-as style="newscast"><prosody rate="-15.00%">'
+    }
 
 
-def speech_tts_msft(lang, original_input_text, mp3_output_filename):
+def speech_tts_msft(lang, speaker, original_input_text, mp3_output_filename):
     """COPIED"""
     """
     A text to speech converter function
@@ -292,6 +311,7 @@ def speech_tts_msft(lang, original_input_text, mp3_output_filename):
     """
     storage_path = "/tmp/"
     lang = lang.lower().strip(" \"\'")
+    speaker_config = tts_choices_list[speaker]
     # print(lang, original_input_text, mp3_output_filename)
     previous_word_boundry_offset = 0
     previous_word_audio_offset = 0
@@ -1037,16 +1057,16 @@ def get_transcription_url(transcription_id):
 
 
 def start_transcribing(filename):
-    # host = "http://74.207.245.137:5000"
-    host = "http://127.0.0.1:5000"
+    host = "http://74.207.245.137:5000"
+    # host = "http://127.0.0.1:5000"
     url = f"{host}/transcription/start/{filename}/"
     response = requests.get(url).json()
     return response
 
 
 def get_transcript(tid):
-    # host = "http://74.207.245.137:5000"
-    host = "http://127.0.0.1:5000"
+    host = "http://74.207.245.137:5000"
+    # host = "http://127.0.0.1:5000"
     url = f"{host}/transcription/result/{tid}/"
     response = requests.get(url).json()
     return response

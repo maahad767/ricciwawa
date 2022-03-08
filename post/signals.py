@@ -14,6 +14,7 @@ def add_audio_in_post(instance, created, *args, **kwargs):
     """
     Instance is an object of a model class.
     Will be transferred to Google task for MP3 creation.
+    VOICE_OVER_CHOICES = ((0, 'woman'), (1, 'man'), (2, 'child'), (4, 'custom'))
     """
     if not created:
         return
@@ -33,6 +34,11 @@ def add_audio_in_post(instance, created, *args, **kwargs):
         instance.audio_simplified_chinese = storage_prefix + str_hashed_id + "_tw" + ".mp3"
         instance.timing_simplified_chinese = storage_prefix + str_hashed_id + "_tw" + "_timing.txt"
         create_mp3_task(language_code="tw", text=sim_spaced_sentence, output_filename=instance.audio_simplified_chinese).delay()
+        # cantonese_normal_male
+        # cantonese_normal
+        # mandarin_normal_male
+        # mandarin_normal
+        # mandarin_child_normal
 
     if instance.text_traditional_chinese:
         trad_spaced_sentence = "\n".join(instance.text_traditional_chinese)
