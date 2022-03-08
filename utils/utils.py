@@ -1037,16 +1037,16 @@ def get_transcription_url(transcription_id):
 
 
 def start_transcribing(filename):
-    # host = "http://74.207.245.137:5000"
-    host = "http://127.0.0.1:5000"
+    host = "http://74.207.245.137:5000"
+    # host = "http://127.0.0.1:5000"
     url = f"{host}/transcription/start/{filename}/"
     response = requests.get(url).json()
     return response
 
 
 def get_transcript(tid):
-    # host = "http://74.207.245.137:5000"
-    host = "http://127.0.0.1:5000"
+    host = "http://74.207.245.137:5000"
+    # host = "http://127.0.0.1:5000"
     url = f"{host}/transcription/result/{tid}/"
     response = requests.get(url).json()
     return response
