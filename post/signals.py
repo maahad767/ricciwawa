@@ -45,6 +45,7 @@ def add_audio_in_post(instance, created, *args, **kwargs):
         instance.timing_simplified_chinese = storage_prefix + str_hashed_id + "_tw" + "_timing.txt"
         if cant_votype:
             create_mp3_task(language_code="tw", speaker=cant_votype, text=sim_spaced_sentence, output_filename=instance.audio_simplified_chinese).delay()
+            instance.has_cantonese_audio = True
         
     if instance.text_traditional_chinese:
         trad_spaced_sentence = "\n".join(instance.text_traditional_chinese)
@@ -54,11 +55,12 @@ def add_audio_in_post(instance, created, *args, **kwargs):
         instance.timing_traditional_chinese = storage_prefix + str_hashed_id + "_hk" + "_timing.txt"
         if mand_votype:
             create_mp3_task(language_code="hk", speaker=mand_votype, text=trad_spaced_sentence, output_filename=instance.audio_traditional_chinese).delay()
+            instance.has_mandarin_audio = True
 
     instance.save()
     if instance.text_traditional_chinese and instance.text_simplified_chinese and instance.meaning_words and instance.pin_yin_words:
         add_full_data_translations(instance_id=instance.id).delay()
-
+        
 
 """
 TYPES = (
