@@ -8,9 +8,9 @@ from utils.utils import speech_tts_msft, google_translate
 
 
 @task()
-def create_mp3_task(request, language_code, text, output_filename):
+def create_mp3_task(request, language_code, speaker, text, output_filename):
     try: 
-        speech_tts_msft(language_code, text, output_filename)
+        speech_tts_msft(language_code, speaker, text, output_filename)
     except Exception as e:
         print(e)
     return f'mp3 file is created for {output_filename}'

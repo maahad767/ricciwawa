@@ -14,7 +14,7 @@ def add_audio_in_post(instance, created, *args, **kwargs):
     """
     Instance is an object of a model class.
     Will be transferred to Google task for MP3 creation.
-    VOICE_OVER_CHOICES = ((0, 'woman'), (1, 'man'), (2, 'child'), (4, 'custom'))
+    VOICE_OVER_CHOICES = ((0, 'woman'), (1, 'man'), (2, 'child'), (3, 'custom'))
     """
     if not created:
         return
@@ -26,6 +26,16 @@ def add_audio_in_post(instance, created, *args, **kwargs):
     if instance.attachment:
         ext = instance.attachment.split('.')[-1]
         instance.attachment = "attachment_" + str_hashed_id + "." + ext  # change file name
+    votype = instance.voice_over_type
+    
+    voiceover_type = (
+        ('cantonese_normal', 'mandarin_normal'),
+        ('cantonese_normal_male', 'mandarin_normal_male'),
+        (None, 'mandarin_child_normal'),
+        (None, None),
+    )
+    cant_votype = voiceover_type[votype][0]
+    mand_votype = voiceover_type[votype][1]
 
     if instance.text_simplified_chinese:
         sim_spaced_sentence = "\n".join(instance.text_simplified_chinese)
@@ -33,20 +43,17 @@ def add_audio_in_post(instance, created, *args, **kwargs):
         sim_spaced_sentence = sim_spaced_sentence.replace("<p>", "\n").replace("<BR>", "\n<BR>\n")
         instance.audio_simplified_chinese = storage_prefix + str_hashed_id + "_tw" + ".mp3"
         instance.timing_simplified_chinese = storage_prefix + str_hashed_id + "_tw" + "_timing.txt"
-        create_mp3_task(language_code="tw", text=sim_spaced_sentence, output_filename=instance.audio_simplified_chinese).delay()
-        # cantonese_normal_male
-        # cantonese_normal
-        # mandarin_normal_male
-        # mandarin_normal
-        # mandarin_child_normal
-
+        if cant_votype:
+            create_mp3_task(language_code="tw", speaker=cant_votype, text=sim_spaced_sentence, output_filename=instance.audio_simplified_chinese).delay()
+        
     if instance.text_traditional_chinese:
         trad_spaced_sentence = "\n".join(instance.text_traditional_chinese)
         instance.trad_spaced_datastore_text = ''.join([str(elem) for elem in trad_spaced_sentence])
         trad_spaced_sentence = trad_spaced_sentence.replace("<p>", "\n").replace("<BR>", "\n<BR>\n")
         instance.audio_traditional_chinese = storage_prefix + str_hashed_id + "_hk" + ".mp3"
         instance.timing_traditional_chinese = storage_prefix + str_hashed_id + "_hk" + "_timing.txt"
-        create_mp3_task(language_code="hk", text=trad_spaced_sentence, output_filename=instance.audio_traditional_chinese).delay()
+        if mand_votype:
+            create_mp3_task(language_code="hk", speaker=mand_votype, text=trad_spaced_sentence, output_filename=instance.audio_traditional_chinese).delay()
 
     instance.save()
     if instance.text_traditional_chinese and instance.text_simplified_chinese and instance.meaning_words and instance.pin_yin_words:

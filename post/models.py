@@ -123,7 +123,7 @@ class Post(models.Model):
     """
     PRIVACY_CHOICES = [(0, 'private'), (1, 'public')]
     ATTACHMENT_TYPE_CHOICES = [(0, 'none'), (1, 'image'), (2, 'audio'), (3, 'video')]
-    VOICE_OVER_CHOICES = ((0, 'woman'), (1, 'man'), (2, 'child'), (4, 'custom'))
+    VOICE_OVER_CHOICES = ((0, 'woman'), (1, 'man'), (2, 'child'), (3, 'custom'))
 
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     subscription = models.ForeignKey(Subscription, on_delete=models.SET_NULL, null=True, blank=True)
