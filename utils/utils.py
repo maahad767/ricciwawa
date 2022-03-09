@@ -47,6 +47,7 @@ def upload_get_signed_up(filename, bucket_name="ricciwawa"):
     this if you are using Application Default Credentials from Google Compute
     Engine or from the Google Cloud SDK.
     """
+    print(filename)
     blob_name = filename
 
     storage_client = storage.Client()

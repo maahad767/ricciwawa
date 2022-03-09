@@ -1,13 +1,33 @@
 from datetime import datetime
+from fileinput import filename
 from hashlib import sha1
 
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 
 from .models import Post, LikePost, Notification, Comment, Subscribe, Follow
 from .tasks import create_mp3_task, add_full_data_translations
-from utils.utils import get_random_string
+from utils.utils import get_hashed_filename, get_random_string
 
+@receiver(pre_save, sender=Post)
+def add_audio_filenames(instance, *args, **kwargs):
+    if instance.filename:
+        return
+    filename = get_hashed_filename(ext="")
+    prefix_cant = "cantonese"
+    prefix_mand = "mandarin"
+    ext_audio = "_.mp3"
+    ext_timing = "_timing.txt"
+    # TODO : add logic so that it doesn't replace everytime the post is updated.
+    # TODO : only update when a filename is not present.
+    instance.filename = filename
+    instance.audio_simplified_chinese = prefix_cant + filename + ext_audio
+    instance.timing_simplified_chinese =  prefix_cant + filename + ext_timing
+    instance.audio_traditional_chinese = prefix_mand + filename + ext_audio
+    instance.timing_traditional_chinese = prefix_mand + filename + ext_timing
+    if instance.attachment:
+        ext = instance.attachment.split('.')[-1]
+        instance.attachment = "attachment_" +  + "." + ext 
 
 @receiver(post_save, sender=Post)
 def add_audio_in_post(instance, created, *args, **kwargs):
@@ -18,16 +38,8 @@ def add_audio_in_post(instance, created, *args, **kwargs):
     """
     if not created:
         return
-    date_time = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-    hashed_id = sha1(str.encode(get_random_string(10) + date_time)).hexdigest()
-    str_hashed_id = str(hashed_id)
-    storage_prefix = ""
 
-    if instance.attachment:
-        ext = instance.attachment.split('.')[-1]
-        instance.attachment = "attachment_" + str_hashed_id + "." + ext  # change file name
     votype = instance.voice_over_type
-    
     voiceover_type = (
         ('cantonese_normal', 'mandarin_normal'),
         ('cantonese_normal_male', 'mandarin_normal_male'),
@@ -37,30 +49,24 @@ def add_audio_in_post(instance, created, *args, **kwargs):
     cant_votype = voiceover_type[votype][0]
     mand_votype = voiceover_type[votype][1]
 
-    if instance.text_simplified_chinese:
+    if instance.text_simplified_chinese and cant_votype:
         sim_spaced_sentence = "\n".join(instance.text_simplified_chinese)
         instance.sim_spaced_datastore_text = ''.join([str(elem) for elem in sim_spaced_sentence])
         sim_spaced_sentence = sim_spaced_sentence.replace("<p>", "\n").replace("<BR>", "\n<BR>\n")
-        instance.audio_simplified_chinese = storage_prefix + str_hashed_id + "_tw" + ".mp3"
-        instance.timing_simplified_chinese = storage_prefix + str_hashed_id + "_tw" + "_timing.txt"
-        if cant_votype:
-            create_mp3_task(language_code="tw", speaker=cant_votype, text=sim_spaced_sentence, output_filename=instance.audio_simplified_chinese).delay()
-            instance.has_cantonese_audio = True
+        create_mp3_task(language_code="tw", speaker=cant_votype, text=sim_spaced_sentence, output_filename=instance.audio_simplified_chinese).delay()
+        instance.has_cantonese_audio = True
         
-    if instance.text_traditional_chinese:
+    if instance.text_traditional_chinese and mand_votype:
         trad_spaced_sentence = "\n".join(instance.text_traditional_chinese)
         instance.trad_spaced_datastore_text = ''.join([str(elem) for elem in trad_spaced_sentence])
         trad_spaced_sentence = trad_spaced_sentence.replace("<p>", "\n").replace("<BR>", "\n<BR>\n")
-        instance.audio_traditional_chinese = storage_prefix + str_hashed_id + "_hk" + ".mp3"
-        instance.timing_traditional_chinese = storage_prefix + str_hashed_id + "_hk" + "_timing.txt"
-        if mand_votype:
-            create_mp3_task(language_code="hk", speaker=mand_votype, text=trad_spaced_sentence, output_filename=instance.audio_traditional_chinese).delay()
-            instance.has_mandarin_audio = True
+        create_mp3_task(language_code="hk", speaker=mand_votype, text=trad_spaced_sentence, output_filename=instance.audio_traditional_chinese).delay()
+        instance.has_mandarin_audio = True
 
     instance.save()
     if instance.text_traditional_chinese and instance.text_simplified_chinese and instance.meaning_words and instance.pin_yin_words:
         add_full_data_translations(instance_id=instance.id).delay()
-        
+
 
 """
 TYPES = (

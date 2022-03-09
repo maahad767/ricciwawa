@@ -97,7 +97,7 @@ class PostSerializer(serializers.ModelSerializer):
             return upload_get_signed_up(obj.audio_simplified_chinese)
         return None
 
-    def mand_upload_url(self, obj):
+    def get_mand_upload_url(self, obj):
         if obj.voice_over_type ==3 and obj.has_mandarin_audio:
             return upload_get_signed_up(obj.audio_traditional_chinese)
         return None
