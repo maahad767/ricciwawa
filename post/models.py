@@ -162,7 +162,7 @@ class Post(models.Model):
     story_source = models.CharField(max_length=500, null=True, blank=True)
     sim_spaced_datastore_text = models.TextField(null=True, blank=True)
     trad_spaced_datastore_text = models.TextField(null=True, blank=True)
-    filename = models.CharField(max_length=500, null=True)
+    filename = models.CharField(max_length=500, null=True, blank=True)
 
     # line-6750, 6765-6767, there are a lot of string operations that
     # because text to speech in azure and google are different, they
