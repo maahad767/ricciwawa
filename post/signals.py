@@ -16,7 +16,7 @@ def add_audio_filenames(instance, *args, **kwargs):
     filename = get_hashed_filename(ext="")
     prefix_cant = "cantonese_"
     prefix_mand = "mandarin_"
-    ext_audio = "_.mp3"
+    ext_audio = ".mp3"
     ext_timing = "_timing.txt"
     # TODO : add logic so that it doesn't replace everytime the post is updated.
     # TODO : only update when a filename is not present.
