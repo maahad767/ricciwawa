@@ -36,9 +36,6 @@ def add_audio_in_post(instance, created, *args, **kwargs):
     Will be transferred to Google task for MP3 creation.
     VOICE_OVER_CHOICES = ((0, 'woman'), (1, 'man'), (2, 'child'), (3, 'custom'))
     """
-    if not created:
-        return
-
     votype = instance.voice_over_type
     voiceover_type = (
         ('cantonese_normal', 'mandarin_normal'),
@@ -46,24 +43,28 @@ def add_audio_in_post(instance, created, *args, **kwargs):
         (None, 'mandarin_child_normal'),
         (None, None),
     )
-    cant_votype = voiceover_type[votype][0]
-    mand_votype = voiceover_type[votype][1]
+    if instance.generate_voiceovers and votype is not None:
+        cant_votype = voiceover_type[votype][0]
+        mand_votype = voiceover_type[votype][1]
+        if instance.text_simplified_chinese and cant_votype:
+            sim_spaced_sentence = "\n".join(instance.text_simplified_chinese)
+            instance.sim_spaced_datastore_text = ''.join([str(elem) for elem in sim_spaced_sentence])
+            sim_spaced_sentence = sim_spaced_sentence.replace("<p>", "\n").replace("<BR>", "\n<BR>\n")
+            create_mp3_task(language_code="tw", speaker=cant_votype, text=sim_spaced_sentence, output_filename=instance.audio_simplified_chinese).delay()
+            instance.has_cantonese_audio = True
+            
+        if instance.text_traditional_chinese and mand_votype:
+            trad_spaced_sentence = "\n".join(instance.text_traditional_chinese)
+            instance.trad_spaced_datastore_text = ''.join([str(elem) for elem in trad_spaced_sentence])
+            trad_spaced_sentence = trad_spaced_sentence.replace("<p>", "\n").replace("<BR>", "\n<BR>\n")
+            create_mp3_task(language_code="hk", speaker=mand_votype, text=trad_spaced_sentence, output_filename=instance.audio_traditional_chinese).delay()
+            instance.has_mandarin_audio = True
+        instance.generate_voiceovers = False
+        instance.save()
 
-    if instance.text_simplified_chinese and cant_votype:
-        sim_spaced_sentence = "\n".join(instance.text_simplified_chinese)
-        instance.sim_spaced_datastore_text = ''.join([str(elem) for elem in sim_spaced_sentence])
-        sim_spaced_sentence = sim_spaced_sentence.replace("<p>", "\n").replace("<BR>", "\n<BR>\n")
-        create_mp3_task(language_code="tw", speaker=cant_votype, text=sim_spaced_sentence, output_filename=instance.audio_simplified_chinese).delay()
-        instance.has_cantonese_audio = True
-        
-    if instance.text_traditional_chinese and mand_votype:
-        trad_spaced_sentence = "\n".join(instance.text_traditional_chinese)
-        instance.trad_spaced_datastore_text = ''.join([str(elem) for elem in trad_spaced_sentence])
-        trad_spaced_sentence = trad_spaced_sentence.replace("<p>", "\n").replace("<BR>", "\n<BR>\n")
-        create_mp3_task(language_code="hk", speaker=mand_votype, text=trad_spaced_sentence, output_filename=instance.audio_traditional_chinese).delay()
-        instance.has_mandarin_audio = True
+    if not created:
+        return
 
-    instance.save()
     if instance.text_traditional_chinese and instance.text_simplified_chinese and instance.meaning_words and instance.pin_yin_words:
         add_full_data_translations(instance_id=instance.id).delay()
 

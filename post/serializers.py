@@ -159,11 +159,11 @@ class ResourcesSerializer(serializers.ModelSerializer):
         return obj.sharepost_set.all().count()
 
     def get_audio_simplified_chinese_url(self, obj):
-        if obj.audio_simplified_chinese:
+        if obj.has_cantonese_audio:
             return download_get_signed_up(obj.audio_simplified_chinese)
 
     def get_audio_traditional_chinese_url(self, obj):
-        if obj.audio_traditional_chinese:
+        if obj.has_mandarin_audio:
             return download_get_signed_up(obj.audio_traditional_chinese)
 
     def get_timing_simplified_chinese_url(self, obj):

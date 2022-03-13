@@ -1,3 +1,4 @@
+from email.policy import default
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
@@ -142,7 +143,8 @@ class Post(models.Model):
     text_chinese = models.TextField(null=True, blank=True)
     text_simplified_chinese = models.JSONField(null=True, blank=True)
     text_traditional_chinese = models.JSONField(null=True, blank=True)
-    voice_over_type = models.PositiveSmallIntegerField(choices=VOICE_OVER_CHOICES)
+    voice_over_type = models.PositiveSmallIntegerField(choices=VOICE_OVER_CHOICES, null=True, blank=True)
+    generate_voiceovers = models.BooleanField(default=False)
     has_cantonese_audio = models.BooleanField(default=False)
     has_mandarin_audio = models.BooleanField(default=False)
     audio_simplified_chinese = models.CharField(max_length=1000, null=True, blank=True)
