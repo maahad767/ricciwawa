@@ -93,12 +93,12 @@ class PostSerializer(serializers.ModelSerializer):
             return download_get_signed_up(obj.attachment)
     
     def get_cant_upload_url(self, obj):
-        if obj.voice_over_type == 3 and obj.has_cantonese_audio:
+        if obj.voice_over_type == 3 or obj.voice_over_type == 5:
             return upload_get_signed_up(obj.audio_simplified_chinese)
         return None
 
     def get_mand_upload_url(self, obj):
-        if obj.voice_over_type ==3 and obj.has_mandarin_audio:
+        if obj.voice_over_type == 4 or obj.voice_over_type == 5:
             return upload_get_signed_up(obj.audio_traditional_chinese)
         return None
 
@@ -159,11 +159,11 @@ class ResourcesSerializer(serializers.ModelSerializer):
         return obj.sharepost_set.all().count()
 
     def get_audio_simplified_chinese_url(self, obj):
-        if obj.has_cantonese_audio:
+        if obj.audio_simplified_chinese:
             return download_get_signed_up(obj.audio_simplified_chinese)
 
     def get_audio_traditional_chinese_url(self, obj):
-        if obj.has_mandarin_audio:
+        if obj.audio_traditional_chinese:
             return download_get_signed_up(obj.audio_traditional_chinese)
 
     def get_timing_simplified_chinese_url(self, obj):

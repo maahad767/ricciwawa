@@ -18,8 +18,6 @@ def add_audio_filenames(instance, *args, **kwargs):
     prefix_mand = "mandarin_"
     ext_audio = ".mp3"
     ext_timing = "_timing.txt"
-    # TODO : add logic so that it doesn't replace everytime the post is updated.
-    # TODO : only update when a filename is not present.
     instance.filename = filename
     instance.audio_simplified_chinese = prefix_cant + filename + ext_audio
     instance.timing_simplified_chinese =  prefix_cant + filename + ext_timing
@@ -27,23 +25,32 @@ def add_audio_filenames(instance, *args, **kwargs):
     instance.timing_traditional_chinese = prefix_mand + filename + ext_timing
     if instance.attachment:
         ext = instance.attachment.split('.')[-1]
-        instance.attachment = "attachment_" +  + "." + ext 
+        instance.attachment = "attachment_" + filename + "." + ext 
 
 @receiver(post_save, sender=Post)
 def add_audio_in_post(instance, created, *args, **kwargs):
     """
     Instance is an object of a model class.
     Will be transferred to Google task for MP3 creation.
-    VOICE_OVER_CHOICES = ((0, 'woman'), (1, 'man'), (2, 'child'), (3, 'custom'))
+    VOICE_OVER_CHOICES = (
+            (0, 'woman-woman'),
+            (1, 'man-man'),
+            (2, 'woman-child'),
+            (3, 'custom-woman'),
+            (4, 'women-custom'),
+            (5, 'custom-custom'),
+        )
     """
     votype = instance.voice_over_type
     voiceover_type = (
         ('cantonese_normal', 'mandarin_normal'),
         ('cantonese_normal_male', 'mandarin_normal_male'),
-        (None, 'mandarin_child_normal'),
+        ('cantonese_normal', 'mandarin_child_normal'),
+        (None, 'mandarin_normal'),
+        ('cantonese_normal', None),
         (None, None),
     )
-    if instance.generate_voiceovers and votype is not None:
+    if instance.generate_voiceovers:
         cant_votype = voiceover_type[votype][0]
         mand_votype = voiceover_type[votype][1]
         if instance.text_simplified_chinese and cant_votype:
@@ -51,14 +58,12 @@ def add_audio_in_post(instance, created, *args, **kwargs):
             instance.sim_spaced_datastore_text = ''.join([str(elem) for elem in sim_spaced_sentence])
             sim_spaced_sentence = sim_spaced_sentence.replace("<p>", "\n").replace("<BR>", "\n<BR>\n")
             create_mp3_task(language_code="tw", speaker=cant_votype, text=sim_spaced_sentence, output_filename=instance.audio_simplified_chinese).delay()
-            instance.has_cantonese_audio = True
             
         if instance.text_traditional_chinese and mand_votype:
             trad_spaced_sentence = "\n".join(instance.text_traditional_chinese)
             instance.trad_spaced_datastore_text = ''.join([str(elem) for elem in trad_spaced_sentence])
             trad_spaced_sentence = trad_spaced_sentence.replace("<p>", "\n").replace("<BR>", "\n<BR>\n")
             create_mp3_task(language_code="hk", speaker=mand_votype, text=trad_spaced_sentence, output_filename=instance.audio_traditional_chinese).delay()
-            instance.has_mandarin_audio = True
         instance.generate_voiceovers = False
         instance.save()
 
