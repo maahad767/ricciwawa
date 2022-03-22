@@ -214,7 +214,6 @@ ELASTICSEARCH_DSL = {
         'http_auth': HTTP_AUTH
     }
 }
-# CELERY CONFIG
 
 if os.environ.get('DEBUG') == 'FALSE':
     DEBUG = False
