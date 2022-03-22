@@ -1,7 +1,3 @@
-from datetime import datetime
-from fileinput import filename
-from hashlib import sha1
-
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 
@@ -46,13 +42,26 @@ def add_audio_in_post(instance, created, *args, **kwargs):
         ('cantonese_normal', 'mandarin_normal'),
         ('cantonese_normal_male', 'mandarin_normal_male'),
         ('cantonese_normal', 'mandarin_child_normal'),
-        (None, 'mandarin_normal'),
-        ('cantonese_normal', None),
+        # (None, 'mandarin_normal'),
+        # ('cantonese_normal', None),
         (None, None),
     )
     if instance.generate_voiceovers:
         cant_votype = voiceover_type[votype][0]
         mand_votype = voiceover_type[votype][1]
+        print(instance.has_cantonese_audio, "cant audio")
+        print("votype", instance.voice_over_type)
+
+        if instance.voice_over_type==3:
+            print("votype inside", votype)
+            if not instance.has_cantonese_audio:
+                print("here")
+                cant_votype = voiceover_type[0][0]
+            if not instance.has_mandarin_audio:
+                mand_votype = voiceover_type[0][1]    
+        
+        print(cant_votype)
+        print(mand_votype)
         if instance.text_simplified_chinese and cant_votype:
             sim_spaced_sentence = "\n".join(instance.text_simplified_chinese)
             instance.sim_spaced_datastore_text = ''.join([str(elem) for elem in sim_spaced_sentence])

@@ -1,4 +1,6 @@
 from email.policy import default
+from operator import mod
+from pyexpat import model
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
@@ -128,9 +130,9 @@ class Post(models.Model):
             (0, 'woman-woman'),
             (1, 'man-man'),
             (2, 'woman-child'),
-            (3, 'custom-woman'),
-            (4, 'women-custom'),
-            (5, 'custom-custom'),
+            (3, 'custom-woman'),  # represents custom all
+            (4, 'women-custom'),  # doesn't exist
+            (5, 'custom-custom'),  # doesn't exist
         )
 
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
@@ -151,8 +153,8 @@ class Post(models.Model):
     text_traditional_chinese = models.JSONField(null=True, blank=True)
     voice_over_type = models.PositiveSmallIntegerField(choices=VOICE_OVER_CHOICES, null=True, blank=True)
     generate_voiceovers = models.BooleanField(default=False)
-    # has_cantonese_audio = models.BooleanField(default=False)
-    # has_mandarin_audio = models.BooleanField(default=False)
+    has_cantonese_audio = models.BooleanField(default=False)
+    has_mandarin_audio = models.BooleanField(default=False)
     audio_simplified_chinese = models.CharField(max_length=1000, null=True, blank=True)
     timing_simplified_chinese = models.CharField(max_length=1000, null=True, blank=True)
     audio_traditional_chinese = models.CharField(max_length=1000, null=True, blank=True)
@@ -178,6 +180,8 @@ class Post(models.Model):
     sticker_url = models.URLField(null=True, blank=True)
     sticker_position_x = models.IntegerField(null=True, blank=True)
     sticker_position_y = models.IntegerField(null=True, blank=True)
+    photo_ids = models.JSONField(null=True, blank=True)
+    hsk_level = models.CharField(max_length=100, null=True, blank=True)
 
     # post creation and update datetime
     created_at = models.DateTimeField(auto_now_add=True)
