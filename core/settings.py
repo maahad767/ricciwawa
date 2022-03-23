@@ -261,7 +261,7 @@ if os.environ.get("GOOGLE_CLOUD_PROJECT", None):
         'LOCATION': 'us-central1',
         'SAE': 'gaeinittest@appspot.gserviceaccount.com',
         'QUEUE': 'djangotestqueue',
-        'URL': 'https://gaeinittest.uc.r.appspot.com/_tasks/',
+        'URL': f'https://{project_id}.uc.r.appspot.com/_tasks/',
         'SECRET': SECRET_KEY,
     }
 else:
