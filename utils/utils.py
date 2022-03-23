@@ -47,6 +47,7 @@ def upload_get_signed_up(filename, bucket_name="ricciwawa"):
     this if you are using Application Default Credentials from Google Compute
     Engine or from the Google Cloud SDK.
     """
+    print(filename)
     blob_name = filename
 
     storage_client = storage.Client()
@@ -282,9 +283,28 @@ def get_hashed_filename(ext='.wav'):
 previous_word_boundry_offset = 0
 previous_word_audio_offset = 0
 first_offset = 0
+tts_choices_list = {
+        "cantonese_fast":'<voice name="zh-HK-HiuMaanNeural"><mstts:express-as style="newscast"><prosody rate="10.00%">',
+        "cantonese_slow":'<voice name="zh-HK-HiuMaanNeural"><mstts:express-as style="newscast"><prosody rate="-35.00%">',
+        "cantonese_normal":'<voice name="zh-HK-HiuMaanNeural"><mstts:express-as style="newscast"><prosody rate="-15.00%">',
+        "cantonese_normal_male":'<voice name="zh-HK-WanLungNeural "><mstts:express-as style="newscast"><prosody rate="-15.00%">',
+        "cantonese_normal_male_slow":'<voice name="zh-HK-WanLungNeural "><mstts:express-as style="newscast"><prosody rate="-35.00%">',
+
+        "cantonese_learning":'<voice name="zh-HK-HiuMaanNeural"><mstts:express-as style="newscast"><prosody rate="-30.00%">',
+        "mandarin_fast":'<voice name="zh-CN-XiaoxiaoNeural"><mstts:express-as style="newscast"><prosody rate="10.00%">',
+        "mandarin_slow":'<voice name="zh-CN-XiaoxiaoNeural"><mstts:express-as style="newscast"><prosody rate="-45.00%">',
+        "mandarin_normal":'<voice name="zh-CN-XiaoxiaoNeural"><mstts:express-as style="newscast"><prosody rate="-15.00%">',
+        "mandarin_normal_male":'<voice name="zh-CN-YunyangNeural"><mstts:express-as style="newscast"><prosody rate="-15.00%">',
+        "mandarin_normal_male_slow":'<voice name="zh-CN-YunyangNeural"><mstts:express-as style="newscast"><prosody rate="-45.00%">',
+
+        "mandarin_learning":'<voice name="zh-CN-XiaoxiaoNeural"><mstts:express-as style="newscast"><prosody rate="-30.00%">',
+        "mandarin_child_fast":'<voice name="zh-CN-XiaoyouNeural"><mstts:express-as style="newscast"><prosody rate="10.00%">',
+        "mandarin_child_slow":'<voice name="zh-CN-XiaoyouNeural"><mstts:express-as style="newscast"><prosody rate="-45.00%">',
+        "mandarin_child_normal":'<voice name="zh-CN-XiaoyouNeural"><mstts:express-as style="newscast"><prosody rate="-15.00%">'
+    }
 
 
-def speech_tts_msft(lang, original_input_text, mp3_output_filename):
+def speech_tts_msft(lang, speaker, original_input_text, mp3_output_filename):
     """COPIED"""
     """
     A text to speech converter function
@@ -292,6 +312,7 @@ def speech_tts_msft(lang, original_input_text, mp3_output_filename):
     """
     storage_path = "/tmp/"
     lang = lang.lower().strip(" \"\'")
+    speaker_config = tts_choices_list[speaker]
     # print(lang, original_input_text, mp3_output_filename)
     previous_word_boundry_offset = 0
     previous_word_audio_offset = 0
@@ -365,18 +386,18 @@ def speech_tts_msft(lang, original_input_text, mp3_output_filename):
         if (lang == "hk"):
             speech_config.speech_synthesis_language = "zh-HK"
             speech_config.speech_synthesis_voice_name = "Microsoft Server Speech Text to Speech Voice (zh-HK, HiuMaanNeural)"
-            input_text = '<speak version="1.0" xmlns="https://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="zn-HK"><voice name="zh-HK-HiuMaanNeural"><mstts:express-as style="newscast"><prosody rate="-35.00%">' + \
+            input_text = f'<speak version="1.0" xmlns="https://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="zn-HK">{speaker_config}' + \
                          input_text + ' </prosody></mstts:express-as></voice></speak>'
         elif (lang == "tw"):
             # print("HELLO")
             speech_config.speech_synthesis_language = "zh-CN"
             speech_config.speech_synthesis_voice_name = "Microsoft Server Speech Text to Speech Voice (zh-CN, XiaoxiaoNeural)"
-            input_text = '<speak version="1.0" xmlns="https://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="zh-CN"><voice name="zh-CN-XiaoxiaoNeural"><mstts:express-as style="newscast"><prosody rate="-45.00%">' + \
+            input_text = f'<speak version="1.0" xmlns="https://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="zh-CN">{speaker_config}' + \
                          input_text + '</prosody></mstts:express-as></voice></speak>'
         elif (lang == "ja"):
             speech_config.speech_synthesis_language = "ja-JP"
             speech_config.speech_synthesis_voice_name = "Microsoft Server Speech Text to Speech Voice (ja-JP, NanamiNeural)"
-            input_text = '<speak version="1.0" xmlns="https://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="ja-JP"><voice name="ja-JP-NanamiNeural"><mstts:express-as style="newscast"><prosody rate="-25.00%">' + \
+            input_text = f'<speak version="1.0" xmlns="https://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="ja-JP"><voice name="ja-JP-NanamiNeural"><mstts:express-as style="newscast"><prosody rate="-25.00%">' + \
                          input_text + '</prosody></mstts:express-as></voice></speak>'
         elif (lang == "en-US"):
             print("line 461")

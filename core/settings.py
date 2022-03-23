@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django_elasticsearch_dsl',
     'djstripe',
     'cloudtask',
+    "corsheaders",
 
     # local apps
     'account',
@@ -70,6 +71,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -96,54 +99,18 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'ricciwawadb',
-#         'USER': 'ricciwawadbuser',
-#         'PASSWORD': 'abcdefgh123',
-#         'HOST': '127.0.0.1',
-#         'PORT': '5432',
-#     }
-# }
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dbprod',
-        'USER': 'ricciuser',
-        'PASSWORD': 'test123456',
+        'NAME': 'ricciwawadevdb',
+        'USER': 'ricciwawadevuser',
+        'PASSWORD': 'lkCLt2sKmODpoNEe',
         'HOST': '127.0.0.1',
         'PORT': '5555',
     }
 }
 
-
-
-# Development Database
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'dc14m2smvlgdol',
-#         'USER': 'epuehcbeyfqlde',
-#         'PASSWORD': 'd3d86103315271d06e6200a4ec9736d55aed5d28377c66a6603a19255ad1bee3',
-#         'HOST': 'ec2-34-232-149-136.compute-1.amazonaws.com',
-#         'PORT': '5432',
-#     }
-# }
-
-
-# # Production Database
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'dbbefc24poppkf',
-#         'USER': 'u4va2b8gkrlh25',
-#         'PASSWORD': 'peca0ca905cdacd5996aa190bb0db291e7080a3785a0b3fa95a9beac36555f8ed',
-#         'HOST': 'ec2-23-21-100-200.compute-1.amazonaws.com',
-#         'PORT': '5432',
-#     }
-# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -250,7 +217,6 @@ ELASTICSEARCH_DSL = {
         'http_auth': HTTP_AUTH
     }
 }
-# CELERY CONFIG
 
 if os.environ.get('DEBUG') == 'FALSE':
     DEBUG = False
@@ -259,6 +225,7 @@ else:
 
 env = environ.Env(DEBUG=(bool, True))
 env_file = os.path.join(BASE_DIR, ".env")
+CORS_ALLOW_ALL_ORIGINS = True
 
 if os.environ.get("GOOGLE_CLOUD_PROJECT", None):
     # Pull secrets from Secret Manager
@@ -275,15 +242,23 @@ if os.environ.get("GOOGLE_CLOUD_PROJECT", None):
 
     # If the flag as been set, configure to use proxy
     if os.getenv("USE_CLOUD_SQL_AUTH_PROXY", None):
-        DATABASES["default"]["HOST"] = "127.0.0.1"
-        DATABASES["default"]["PORT"] = 5555
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': 'ricciwawadevdb',
+                'USER': 'ricciwawadevuser',
+                'PASSWORD': 'lkCLt2sKmODpoNEe',
+                'HOST': '127.0.0.1',
+                'PORT': '5555',
+            }
+        }
 
     CLOUDTASK: dict = {
         'PROJECT': project_id,
-        'LOCATION': 'asia-east2',
-        'SAE': 'wwwiipcc@appspot.gserviceaccount.com',
+        'LOCATION': 'us-central1',
+        'SAE': 'gaeinittest@appspot.gserviceaccount.com',
         'QUEUE': 'djangotestqueue',
-        'URL': 'https://wwwiipcc.uc.r.appspot.com/_tasks/',
+        'URL': 'https://gaeinittest.uc.r.appspot.com/_tasks/',
         'SECRET': SECRET_KEY,
     }
 else:

@@ -64,8 +64,8 @@ class User(AbstractUser):
     background_image = models.ImageField(upload_to='profile_background_pictures', null=True, blank=True)
     birthday = models.DateField(null=True, blank=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=True, blank=True)
-    country = models.CharField(max_length=3, null=True, blank=True)
-    language = models.CharField(max_length=3, default='en')
+    country = models.CharField(max_length=120, null=True, blank=True)
+    language = models.CharField(max_length=120, default='en', blank=True)
     hashtags = models.ManyToManyField('post.HashTag', blank=True)
 
     USERNAME_FIELD = 'uid'

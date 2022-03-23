@@ -1,3 +1,6 @@
+from email.policy import default
+from operator import mod
+from pyexpat import model
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
@@ -123,6 +126,14 @@ class Post(models.Model):
     """
     PRIVACY_CHOICES = [(0, 'private'), (1, 'public')]
     ATTACHMENT_TYPE_CHOICES = [(0, 'none'), (1, 'image'), (2, 'audio'), (3, 'video')]
+    VOICE_OVER_CHOICES = (
+            (0, 'woman-woman'),
+            (1, 'man-man'),
+            (2, 'woman-child'),
+            (3, 'custom-woman'),  # represents custom all
+            (4, 'women-custom'),  # doesn't exist
+            (5, 'custom-custom'),  # doesn't exist
+        )
 
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     subscription = models.ForeignKey(Subscription, on_delete=models.SET_NULL, null=True, blank=True)
@@ -134,13 +145,16 @@ class Post(models.Model):
     text = models.TextField(null=True)
     image = models.ImageField(null=True, blank=True)
     language = models.CharField(max_length=20, default='en')
-    # store both spaced and not-spaced
     privacy = models.SmallIntegerField(choices=PRIVACY_CHOICES, default=1)
     attachment_type = models.SmallIntegerField(choices=ATTACHMENT_TYPE_CHOICES, default=0)
     attachment = models.CharField(max_length=200, null=True, blank=True)
     text_chinese = models.TextField(null=True, blank=True)
     text_simplified_chinese = models.JSONField(null=True, blank=True)
     text_traditional_chinese = models.JSONField(null=True, blank=True)
+    voice_over_type = models.PositiveSmallIntegerField(choices=VOICE_OVER_CHOICES, null=True, blank=True)
+    generate_voiceovers = models.BooleanField(default=False)
+    has_cantonese_audio = models.BooleanField(default=False)
+    has_mandarin_audio = models.BooleanField(default=False)
     audio_simplified_chinese = models.CharField(max_length=1000, null=True, blank=True)
     timing_simplified_chinese = models.CharField(max_length=1000, null=True, blank=True)
     audio_traditional_chinese = models.CharField(max_length=1000, null=True, blank=True)
@@ -158,28 +172,20 @@ class Post(models.Model):
     story_source = models.CharField(max_length=500, null=True, blank=True)
     sim_spaced_datastore_text = models.TextField(null=True, blank=True)
     trad_spaced_datastore_text = models.TextField(null=True, blank=True)
-
-    # line-6750, 6765-6767, there are a lot of string operations that
-    # because text to speech in azure and google are different, they
-    # expect different formats, which are similar but different
-    # 6769, 6770: create mp3 for simplified chinese and traditional text_chinese
-    # don't change
+    filename = models.CharField(max_length=500, null=True, blank=True)
     hashtags = models.ManyToManyField(HashTag, blank=True)
-
     text_on_post = models.CharField(max_length=500, null=True, blank=True)
     text_position_x = models.IntegerField(null=True, blank=True)
     text_position_y = models.IntegerField(null=True, blank=True)
     sticker_url = models.URLField(null=True, blank=True)
     sticker_position_x = models.IntegerField(null=True, blank=True)
     sticker_position_y = models.IntegerField(null=True, blank=True)
+    photo_ids = models.JSONField(null=True, blank=True)
+    hsk_level = models.CharField(max_length=100, null=True, blank=True)
 
     # post creation and update datetime
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    # I'll create a utility function in a utils.py and call it from here
-    # and will upload the created file to google cloud storage and
-    # then will store the file location in a model field(will be created).
 
     @staticmethod
     def has_read_permission(request):

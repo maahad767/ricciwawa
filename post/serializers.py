@@ -71,6 +71,10 @@ class PostSerializer(serializers.ModelSerializer):
     has_resources = serializers.SerializerMethodField(read_only=True)
     has_quiz = serializers.SerializerMethodField(read_only=True)
 
+    # voice over upload url
+    cant_upload_url = serializers.SerializerMethodField(read_only=True)
+    mand_upload_url = serializers.SerializerMethodField(read_only=True)
+
     def get_likes(self, obj):
         return obj.likepost_set.count()
 
@@ -87,6 +91,16 @@ class PostSerializer(serializers.ModelSerializer):
     def get_attachment_url(self, obj):
         if obj.attachment:
             return download_get_signed_up(obj.attachment)
+    
+    def get_cant_upload_url(self, obj):
+        if obj.voice_over_type == 3 and obj.has_cantonese_audio:
+            return upload_get_signed_up(obj.audio_simplified_chinese)
+        return None
+
+    def get_mand_upload_url(self, obj):
+        if obj.voice_over_type == 3 and obj.has_mandarin_audio:
+            return upload_get_signed_up(obj.audio_traditional_chinese)
+        return None
 
     def get_is_liked(self, obj):
         user = self.context['request'].user
