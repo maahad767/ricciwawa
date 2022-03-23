@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django_elasticsearch_dsl',
     'djstripe',
     'cloudtask',
+    "corsheaders",
 
     # local apps
     'account',
@@ -70,6 +71,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -222,6 +225,7 @@ else:
 
 env = environ.Env(DEBUG=(bool, True))
 env_file = os.path.join(BASE_DIR, ".env")
+CORS_ALLOW_ALL_ORIGINS = True
 
 if os.environ.get("GOOGLE_CLOUD_PROJECT", None):
     # Pull secrets from Secret Manager
