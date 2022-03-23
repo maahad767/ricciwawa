@@ -94,12 +94,12 @@ class PostSerializer(serializers.ModelSerializer):
     
     def get_cant_upload_url(self, obj):
         if obj.voice_over_type == 3 and obj.has_cantonese_audio:
-            return upload_get_signed_up(obj.audio_simplified_chinese)
+            return upload_get_signed_up(obj.audio_traditional_chinese)
         return None
 
     def get_mand_upload_url(self, obj):
         if obj.voice_over_type == 3 and obj.has_mandarin_audio:
-            return upload_get_signed_up(obj.audio_traditional_chinese)
+            return upload_get_signed_up(obj.audio_simplified_chinese)
         return None
 
     def get_is_liked(self, obj):
@@ -193,6 +193,7 @@ class CommentSerializer(serializers.ModelSerializer):
     author = UserField(source='owner', read_only=True)
     likes = serializers.SerializerMethodField(read_only=True)
     is_liked = serializers.SerializerMethodField(read_only=True)
+    is_self_comment = serializers.SerializerMethodField(read_only=True)
 
     def get_likes(self, obj):
         return obj.likecomment_set.count()
@@ -202,6 +203,12 @@ class CommentSerializer(serializers.ModelSerializer):
         if user.is_authenticated:
             return LikeComment.objects.filter(comment=obj, liker=user).exists()
         return False
+
+    def get_is_self_comment(self, obj):
+        user = self.context['request'].user
+        if not user.is_authenticated:
+            return False
+        return user == obj.owner
 
     class Meta:
         model = Comment

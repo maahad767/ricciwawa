@@ -245,9 +245,12 @@ if os.environ.get("GOOGLE_CLOUD_PROJECT", None):
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.postgresql',
-                'NAME': 'ricciwawadevdb',
-                'USER': 'ricciwawadevuser',
-                'PASSWORD': 'lkCLt2sKmODpoNEe',
+                # 'NAME': 'ricciwawadevdb',
+                # 'USER': 'ricciwawadevuser',
+                # 'PASSWORD': 'lkCLt2sKmODpoNEe',
+                'NAME': 'dbprod',
+                'USER': 'ricciuser',
+                'PASSWORD': 'test123456',
                 'HOST': '127.0.0.1',
                 'PORT': '5555',
             }

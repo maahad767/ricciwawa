@@ -15,10 +15,10 @@ def add_audio_filenames(instance, *args, **kwargs):
     ext_audio = ".mp3"
     ext_timing = "_timing.txt"
     instance.filename = filename
-    instance.audio_simplified_chinese = prefix_cant + filename + ext_audio
-    instance.timing_simplified_chinese =  prefix_cant + filename + ext_timing
-    instance.audio_traditional_chinese = prefix_mand + filename + ext_audio
-    instance.timing_traditional_chinese = prefix_mand + filename + ext_timing
+    instance.audio_simplified_chinese = prefix_mand + filename + ext_audio
+    instance.timing_simplified_chinese = prefix_mand + filename + ext_timing
+    instance.audio_traditional_chinese = prefix_cant + filename + ext_audio
+    instance.timing_traditional_chinese = prefix_cant + filename + ext_timing
     if instance.attachment:
         ext = instance.attachment.split('.')[-1]
         instance.attachment = "attachment_" + filename + "." + ext 
@@ -49,13 +49,9 @@ def add_audio_in_post(instance, created, *args, **kwargs):
     if instance.generate_voiceovers:
         cant_votype = voiceover_type[votype][0]
         mand_votype = voiceover_type[votype][1]
-        print(instance.has_cantonese_audio, "cant audio")
-        print("votype", instance.voice_over_type)
 
         if instance.voice_over_type==3:
-            print("votype inside", votype)
             if not instance.has_cantonese_audio:
-                print("here")
                 cant_votype = voiceover_type[0][0]
             if not instance.has_mandarin_audio:
                 mand_votype = voiceover_type[0][1]    
