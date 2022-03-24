@@ -259,10 +259,14 @@ if os.environ.get("GOOGLE_CLOUD_PROJECT", None):
     CLOUDTASK: dict = {
         'PROJECT': project_id,
         'LOCATION': 'us-central1',
-        'SAE': 'gaeinittest@appspot.gserviceaccount.com',
         'QUEUE': 'djangotestqueue',
         'URL': f'https://{project_id}.uc.r.appspot.com/_tasks/',
         'SECRET': SECRET_KEY,
     }
+    if project_id == 'gaeinittest':
+        CLOUDTASK['SAE'] = 'gaeinittest@appspot.gserviceaccount.com'
+    else:
+        CLOUDTASK['SAE'] = 'wwwiipcc@appspot.gserviceaccount.com'
+        CLOUDTASK['LOCATION'] = 'asia-east2'
 else:
     raise Exception("No GOOGLE_CLOUD_PROJECT  detected. No secrets found.")
