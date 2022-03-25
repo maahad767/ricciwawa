@@ -19,9 +19,7 @@ def add_audio_filenames(instance, *args, **kwargs):
     instance.timing_simplified_chinese = prefix_mand + filename + ext_timing
     instance.audio_traditional_chinese = prefix_cant + filename + ext_audio
     instance.timing_traditional_chinese = prefix_cant + filename + ext_timing
-    if instance.attachment:
-        ext = instance.attachment.split('.')[-1]
-        instance.attachment = "attachment_" + filename + "." + ext 
+     
 
 @receiver(post_save, sender=Post)
 def add_audio_in_post(instance, created, *args, **kwargs):
@@ -73,6 +71,10 @@ def add_audio_in_post(instance, created, *args, **kwargs):
     if not created:
         return
 
+    if instance.attachment:
+        ext = instance.attachment.split('.')[-1]
+        instance.attachment = "attachment_" + instance.filename + "." + ext
+        
     if instance.text_traditional_chinese and instance.text_simplified_chinese and instance.meaning_words and instance.pin_yin_words:
         add_full_data_translations(instance_id=instance.id).delay()
 
