@@ -1,7 +1,7 @@
 from django.urls import path
 from rest_framework import routers
 
-from post.views import SubscriptionViewset, PlaylistViewset, PostViewset, CommentViewset, NewsfeedView, \
+from post.views import MarkNotificationSeenView, SubscriptionViewset, PlaylistViewset, PostViewset, CommentViewset, NewsfeedView, \
     FavouriteVocabularyViewset, LikePostView, UnlikePostView, ViewPostView, FollowView, AddFavouriteView, \
     RemoveFavouriteView, SavePlaylistView, UnsavePlaylistView, SubscribeView, UnfollowView, IgnorePostView, \
     UnignorePostView, UserPostListView, WebHome, GetContentsListView, CategoryViewset, UploadPostImageView, \
@@ -74,6 +74,7 @@ urlpatterns = [
     path('create-categories/', CategoryListCreateView.as_view()),
     # notifications
     path('notifications/', NotificationView.as_view()),
+    path('mark-notifications-read/', MarkNotificationSeenView.as_view()),
     # search post
     path('search-post/<str:qs>/', SearchPostView.as_view()),
     path('search-hashtag/<str:qs>/', SearchHashTagView.as_view()),

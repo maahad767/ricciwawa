@@ -377,7 +377,7 @@ class MarkNotificationSeenView(generics.GenericAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        notification_ids = self.request.kwargs['notifications']
+        notification_ids = self.request.body['notifications']
         return Notification.objects.filter(id__in=notification_ids, to_user=user)
 
     def post(self, request, *args, **kwargs):
