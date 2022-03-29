@@ -66,7 +66,6 @@ def add_audio_in_post(instance, created, *args, **kwargs):
             trad_spaced_sentence = trad_spaced_sentence.replace("<p>", "\n").replace("<BR>", "\n<BR>\n")
             create_mp3_task(language_code="hk", speaker=cant_votype, text=trad_spaced_sentence, output_filename=instance.audio_traditional_chinese).delay()
         instance.generate_voiceovers = False
-        instance.save()
 
     if not created:
         return
@@ -74,7 +73,8 @@ def add_audio_in_post(instance, created, *args, **kwargs):
     if instance.attachment:
         ext = instance.attachment.split('.')[-1]
         instance.attachment = "attachment_" + instance.filename + "." + ext
-        
+    instance.save()
+
     if instance.text_traditional_chinese and instance.text_simplified_chinese and instance.meaning_words and instance.pin_yin_words:
         add_full_data_translations(instance_id=instance.id).delay()
 
