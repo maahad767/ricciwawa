@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'djstripe',
     'cloudtask',
     "corsheaders",
+    'push_notifications',
 
     # local apps
     'account',
@@ -218,6 +219,11 @@ ELASTICSEARCH_DSL = {
     }
 }
 
+# push notifications
+PUSH_NOTIFICATIONS_SETTINGS = {
+        "FCM_API_KEY": "[your api key]",
+}
+
 if os.environ.get('DEBUG') == 'FALSE':
     DEBUG = False
 else:
@@ -245,12 +251,12 @@ if os.environ.get("GOOGLE_CLOUD_PROJECT", None):
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.postgresql',
-                # 'NAME': 'ricciwawadevdb',
-                # 'USER': 'ricciwawadevuser',
-                # 'PASSWORD': 'lkCLt2sKmODpoNEe',
-                'NAME': 'dbprod',
-                'USER': 'ricciuser',
-                'PASSWORD': 'test123456',
+                'NAME': 'ricciwawadevdb',
+                'USER': 'ricciwawadevuser',
+                'PASSWORD': 'lkCLt2sKmODpoNEe',
+                # 'NAME': 'dbprod',
+                # 'USER': 'ricciuser',
+                # 'PASSWORD': 'test123456',
                 'HOST': '127.0.0.1',
                 'PORT': '5555',
             }

@@ -375,16 +375,11 @@ class MarkNotificationSeenView(generics.GenericAPIView):
     serializer_class = NotificationMarkSeenSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        user = self.request.user
-        notification_ids = self.request.body['notifications']
-        return Notification.objects.filter(id__in=notification_ids, to_user=user)
-
     def post(self, request, *args, **kwargs):
-        notifications = self.get_queryset()
-
+        user = self.request.user
+        notification_ids = request.data['notification_ids']
+        notifications = Notification.objects.filter(id__in=notification_ids, to_user=user)
         notifications.update(is_seen=True)
-        notifications.save()
 
 
 class SearchPostView(generics.ListAPIView):

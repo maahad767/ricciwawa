@@ -515,11 +515,11 @@ class NotificationSerializer(serializers.ModelSerializer):
 
 
 class NotificationMarkSeenSerializer(serializers.ModelSerializer):
-    to_user = UserField(queryset=get_user_model().objects.all())
+    # to_user = UserField(queryset=get_user_model().objects.all())
 
     class Meta:
         model = Notification
-        fields = ['id', 'to_user']
+        fields = ['id']
 
 
 class HashTagSerializer(serializers.ModelSerializer):

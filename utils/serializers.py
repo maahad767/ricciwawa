@@ -55,7 +55,7 @@ class WordGroupingSerializer(serializers.Serializer):
 
 class STTSerializer(serializers.Serializer):
     language_code = serializers.CharField(max_length=50, default='zh-CN')
-    filename = serializers.CharField(max_length=200, default=get_hashed_filename)
+    filename = serializers.CharField(max_length=200, required=False)
     size = serializers.IntegerField(min_value=0)
     duration = serializers.IntegerField(min_value=0)
 

@@ -237,7 +237,7 @@ class Comment(models.Model):
         return True
 
     def has_object_write_permission(self, request):
-        return request.user == self.owner
+        return request.user == self.owner or request.user == self.post.owner
 
     class Meta:
         ordering = ['-created_at']
