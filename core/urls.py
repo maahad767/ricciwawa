@@ -13,13 +13,19 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from push_notifications.api.rest_framework import APNSDeviceAuthorizedViewSet, GCMDeviceAuthorizedViewSet
+from rest_framework.routers import DefaultRouter
 
+router = DefaultRouter()
+router.register(r'device/apns', APNSDeviceAuthorizedViewSet)
+router.register(r'device/gcm', GCMDeviceAuthorizedViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,7 +35,7 @@ urlpatterns = [
     path('web/', include('web.urls', namespace='web')),
     path('quiz/', include('quiz.urls', namespace='quiz')),
     path('system/', include('system.urls', namespace='system')),
-]
+] + router.urls
 
 urlpatterns += [
     path("stripe/", include("djstripe.urls", namespace="djstripe")),

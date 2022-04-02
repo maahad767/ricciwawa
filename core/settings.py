@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     'djstripe',
     'cloudtask',
     "corsheaders",
-    'push_notifications',
+    "push_notifications",
 
     # local apps
     'account',
@@ -170,7 +170,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 10,
@@ -221,7 +221,15 @@ ELASTICSEARCH_DSL = {
 
 # push notifications
 PUSH_NOTIFICATIONS_SETTINGS = {
-        "FCM_API_KEY": "[your api key]",
+        "FCM_API_KEY": "AAAAboWuKVU:APA91bFQKK2fA__JwFK5mACCWxe5zPAhus4OKDwHyFU7Yf3w6IAaO6YIMMg-PhrqPz33UHU57zAZpcfObV-Zmc-Cm-oyRFIHtX_TTyZLwp3Lzzcu7DFEPHhFTj9qTIpjxlFKb2NqBBSn",
+        "UPDATE_ON_DUPLICATE_REG_ID": True,
+        # "GCM_API_KEY": "[your api key]",
+        # "APNS_CERTIFICATE": "/path/to/your/certificate.pem",
+        # "APNS_TOPIC": "com.example.push_test",
+        # "WNS_PACKAGE_SECURITY_ID": "[your package security id, e.g: 'ms-app://e-3-4-6234...']",
+        # "WNS_SECRET_KEY": "[your app secret key, e.g.: 'KDiejnLKDUWodsjmewuSZkk']",
+        # "WP_PRIVATE_KEY": "/path/to/your/private.pem",
+        # "WP_CLAIMS": {'sub': "mailto: development@example.com"}
 }
 
 if os.environ.get('DEBUG') == 'FALSE':

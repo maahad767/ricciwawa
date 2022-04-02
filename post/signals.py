@@ -1,6 +1,7 @@
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 
+from push_notifications.models import APNSDevice, GCMDevice
 from .models import Post, LikePost, Notification, Comment, Subscribe, Follow
 from .tasks import create_mp3_task, add_full_data_translations
 from utils.utils import get_hashed_filename, get_random_string
@@ -199,3 +200,18 @@ def create_follow_notification(instance, created, *args, **kwargs):
         from_user=followed_by,
         content=content,
         object_id=instance.followed_user.id)
+
+
+@receiver(post_save, sender=Notification)
+def send_push_notifications(instance, created, *args, **kargs):
+    if not created:
+        return
+    fcm_devices = GCMDevice.objects.filter(cloud_message_type="FCM", user=instance.to_user)
+    if not fcm_devices:
+        return
+    extra = {
+        'notification_type': instance.notification_type,
+        'from_user':instance.from_user,
+        'object_id':instance.object_id,
+    }
+    fcm_devices.send_message(instance.content, extra=extra)
