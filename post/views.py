@@ -348,8 +348,9 @@ class GetUserInfoView(generics.RetrieveAPIView):
         uid = self.request.query_params.get('uid')
         if uid:
             return get_user_model().objects.get(uid=uid)
-        return self.request.user
-
+        if self.request.user.is_authenticated:
+            return self.request.user
+        return None
 
 class NotificationView(generics.ListAPIView):
     """
