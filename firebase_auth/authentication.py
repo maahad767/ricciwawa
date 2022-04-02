@@ -22,9 +22,10 @@ class FirebaseAuthentication(BaseAuthentication):
     def authenticate(self, request):
         auth_header = request.headers.get("FirebaseAuthorization")
         if not auth_header:
-            if AllowAny in api_settings.DEFAULT_PERMISSION_CLASSES:
-                return None
-            raise NoAuthToken("No auth token provided")
+            # if AllowAny in api_settings.DEFAULT_PERMISSION_CLASSES:
+                # return None
+            # raise NoAuthToken("No auth token provided")
+            return None
 
         id_token = auth_header.split(" ").pop()
         try:
